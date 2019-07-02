@@ -1,4 +1,4 @@
-# vue-calendar
+# Rollespilsfabrikken's Forum and Calendar frontend
 
 ## Project setup
 ```
