@@ -1,12 +1,25 @@
 <template>
   <li class="day" :class="{ 'active-date': isActive }">
     <h6>{{ timestamp.getDate() }}</h6>
+    <CalendarEvent
+      v-for="event in eventsOnThisDay()"
+      :key="event.id"
+      :title="event.title"
+      :desc="event.desc"
+      :start="event.timeframe.start"
+      :end="event.timeframe.end"
+    />
   </li>
 </template>
 
 <script>
+import CalendarEvent from '@/components/CalendarEvent.vue';
+
 export default {
   name: 'CalendarDay',
+  components: {
+    CalendarEvent,
+  },
 
   props: {
     timestamp: {
@@ -16,6 +29,12 @@ export default {
     isActive: {
       type: Boolean,
       default: false,
+    },
+  },
+
+  methods: {
+    eventsOnThisDay() {
+      return this.$store.getters.eventsOnDate(this.timestamp);
     },
   },
 };

@@ -104,8 +104,11 @@ ul {
   list-style-type: none;
   display: grid;
   height: 100%;
-  grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: 2rem auto;
+  /*  FIXME: Consider how this will be affected by e.g. sidebars */
+  max-width: 100vw;
+  grid-template-columns: repeat(7, minmax(calc(100% / 7), 1fr));
+  grid-template-rows: 2rem;
+  grid-auto-rows: 1fr;
   border-right: $border-style;
   /* border-top: $border-style; */
 
