@@ -46,3 +46,20 @@ export function isSameDay(a, b) {
     && a.getMonth() === b.getMonth()
     && a.getDate() === b.getDate();
 }
+
+export function dateRangesOverlap(aStart, aEnd, bStart, bEnd) {
+  const a = {
+    start: aStart.getTime(),
+    end: aEnd.getTime(),
+  };
+  const b = {
+    start: bStart.getTime(),
+    end: bEnd.getTime(),
+  };
+
+  const overlaps = (a.start <= b.start && b.start <= a.end) // b starts in a
+    || (a.start <= b.end && b.end <= a.end) // b ends in a
+    || (a.start > b.start && b.end > a.end); // a is inside b
+
+  return overlaps;
+}
