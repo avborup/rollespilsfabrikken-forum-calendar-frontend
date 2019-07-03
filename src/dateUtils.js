@@ -1,5 +1,15 @@
-export function today() {
+export function now() {
   return new Date();
+}
+
+export function today() {
+  const rightNow = now();
+
+  const year = rightNow.getFullYear();
+  const month = rightNow.getMonth();
+  const date = rightNow.getDate();
+
+  return new Date(year, month, date);
 }
 
 export function daysInMonth(month, year) {
