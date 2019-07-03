@@ -1,6 +1,6 @@
 <template>
   <li class="day" :class="{ 'active-date': isActive }">
-    <h6>{{ date }}</h6>
+    <h6>{{ timestamp.getDate() }}</h6>
   </li>
 </template>
 
@@ -9,8 +9,8 @@ export default {
   name: 'CalendarDay',
 
   props: {
-    date: {
-      type: Number,
+    timestamp: {
+      type: Date,
       required: true,
     },
     isActive: {

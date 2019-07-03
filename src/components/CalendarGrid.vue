@@ -17,7 +17,7 @@
         v-for="date in gridInfo.numDays"
         :key="date"
         class="day"
-        :date="date"
+        :timestamp="new Date(timestamp.getFullYear(), timestamp.getMonth(), date)"
         :isActive="isSameDay(
           activeDate,
           new Date(timestamp.getFullYear(), timestamp.getMonth(), date),
