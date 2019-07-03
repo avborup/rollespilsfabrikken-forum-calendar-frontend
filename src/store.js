@@ -1,12 +1,13 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { dateRangesOverlap } from '@/dateUtils';
+import { testEvents } from '@/testData';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    calendarEvents: [],
+    calendarEvents: testEvents,
   },
   mutations: {
 
