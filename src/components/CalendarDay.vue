@@ -5,11 +5,9 @@
 </template>
 
 <script>
-import { today } from '@/dateUtils';
-
 export default {
   name: 'CalendarDay',
-  
+
   props: {
     date: {
       type: Number,
