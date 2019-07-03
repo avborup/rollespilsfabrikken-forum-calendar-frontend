@@ -13,19 +13,16 @@
         :key="-1 * emptyDay"
         class="empty-field"
       ></li>
-      <li
+      <CalendarDay
         v-for="date in gridInfo.numDays"
         :key="date"
         class="day"
-        :class="{
-          'active-date': isSameDay(
-            activeDate,
-            new Date(timestamp.getFullYear(), timestamp.getMonth(), date),
-          ),
-        }"
-      >
-        <h6>{{ date }}</h6>
-      </li>
+        :date="date"
+        :isActive="isSameDay(
+          activeDate,
+          new Date(timestamp.getFullYear(), timestamp.getMonth(), date),
+        )"
+      />
       <li
         v-for="emptyDay in gridInfo.numLeftOverFields"
         :key="100 - emptyDay"
@@ -36,6 +33,7 @@
 </template>
 
 <script>
+import CalendarDay from '@/components/CalendarDay.vue';
 import { weekDayNames } from '@/constants';
 import {
   today,
@@ -48,6 +46,9 @@ import {
 
 export default {
   name: 'CalendarGrid',
+  components: {
+    CalendarDay,
+  },
 
   props: {
     timestamp: {
@@ -131,25 +132,6 @@ ul {
   .day {
     border-left: $border-style;
     border-bottom: $border-style;
-    text-align: center;
-    padding: 0.5rem 0.1rem;
-
-    h6 {
-      font-weight: 400;
-      font-size: 0.8rem;
-      width: 1.3rem;
-      height: 1.3rem;
-      border-radius: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto;
-    }
-
-    &.active-date h6 {
-      background-color: $primary-accent;
-      color: #fff;
-    }
   }
 }
 </style>
