@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { dateRangesOverlap } from '@/dateUtils';
@@ -8,12 +10,17 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     calendarEvents: testEvents,
+    currentlyFocusedEventId: testEvents[0].id, // FIXME: Better way in the end product
   },
   mutations: {
-
+    SET_CURRENTLY_FOCUSED_EVENT_ID(state, newEventId) {
+      state.currentlyFocusedEventId = newEventId;
+    },
   },
   actions: {
-
+    updateCurrentlyFocusedEventId(context, eventId) {
+      context.commit('SET_CURRENTLY_FOCUSED_EVENT_ID', eventId);
+    },
   },
   getters: {
     // FIXME: Should this be done server side instead?
@@ -28,6 +35,10 @@ export default new Vuex.Store({
         event.timeframe.start,
         event.timeframe.end,
       ));
+    },
+    getCurrentlyFocusedEvent(state) {
+      const id = state.currentlyFocusedEventId;
+      return state.calendarEvents.find(event => event.id === id);
     },
   },
 });
