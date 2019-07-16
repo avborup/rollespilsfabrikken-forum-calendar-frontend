@@ -13,18 +13,6 @@ export default {
       type: String,
       required: true,
     },
-    desc: {
-      type: String,
-      default: '',
-    },
-    start: {
-      type: Date,
-      required: true,
-    },
-    end: {
-      type: Date,
-      required: true,
-    },
   },
 };
 </script>
