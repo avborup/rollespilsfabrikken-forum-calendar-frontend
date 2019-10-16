@@ -1,10 +1,14 @@
 <template>
-  <div class="event-container">
-    <p>{{ title }}</p>
-  </div>
+  <router-link to="/begivenhed" title="Se begivenhed">
+    <div class="event-container" @click="updateCurrentlyFocusedEventId(id)">
+      <p>{{ title }}</p>
+    </div>
+  </router-link>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'CalendarEvent',
 
@@ -13,18 +17,16 @@ export default {
       type: String,
       required: true,
     },
-    desc: {
+    id: {
       type: String,
-      default: '',
-    },
-    start: {
-      type: Date,
       required: true,
     },
-    end: {
-      type: Date,
-      required: true,
-    },
+  },
+
+  methods: {
+    ...mapActions([
+      'updateCurrentlyFocusedEventId',
+    ]),
   },
 };
 </script>
@@ -32,11 +34,16 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
 
+a {
+  text-decoration: none;
+}
+
 .event-container {
   background-color: $primary-accent;
   border-radius: 0.2rem;
   padding: 0.2rem 0.4rem;
   margin-top: 0.3rem;
+  cursor: pointer;
 
   p {
     white-space: nowrap;

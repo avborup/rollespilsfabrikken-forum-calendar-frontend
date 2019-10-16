@@ -1,3 +1,5 @@
+import { weekDayNames, monthNames } from '@/constants';
+
 export function now() {
   return new Date();
 }
@@ -62,4 +64,16 @@ export function dateRangesOverlap(aStart, aEnd, bStart, bEnd) {
     || (a.start > b.start && b.end > a.end); // a is inside b
 
   return overlaps;
+}
+
+export function toFormattedString(date) {
+  const weekdayIndex = getWeekday(date.getFullYear(), date.getMonth(), date.getDate());
+  const weekday = weekDayNames[weekdayIndex];
+  const year = date.getFullYear();
+  const month = monthNames[date.getMonth()].toLowerCase().substring(0, 3);
+  const dayDate = date.getDate();
+  const hour = date.getHours();
+  const minute = date.getMinutes();
+
+  return `${weekday} ${dayDate}. ${month} ${year} kl. ${hour}:${minute}`;
 }

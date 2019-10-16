@@ -5,9 +5,7 @@
       v-for="event in getEventsOnDate(timestamp)"
       :key="event.id"
       :title="event.title"
-      :desc="event.desc"
-      :start="event.timeframe.start"
-      :end="event.timeframe.end"
+      :id="event.id"
     />
   </li>
 </template>
