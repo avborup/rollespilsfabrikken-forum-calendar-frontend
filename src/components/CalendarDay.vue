@@ -2,7 +2,7 @@
   <li class="day" :class="{ 'active-date': isActive }">
     <h6>{{ timestamp.getDate() }}</h6>
     <CalendarEvent
-      v-for="event in eventsOnThisDay()"
+      v-for="event in getEventsOnDate(timestamp)"
       :key="event.id"
       :title="event.title"
       :desc="event.desc"
@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import CalendarEvent from '@/components/CalendarEvent.vue';
 
 export default {
@@ -32,10 +33,10 @@ export default {
     },
   },
 
-  methods: {
-    eventsOnThisDay() {
-      return this.$store.getters.eventsOnDate(this.timestamp);
-    },
+  computed: {
+    ...mapGetters([
+      'getEventsOnDate',
+    ]),
   },
 };
 </script>

@@ -17,7 +17,7 @@ export default new Vuex.Store({
   },
   getters: {
     // FIXME: Should this be done server side instead?
-    eventsOnDate: state => (date) => {
+    getEventsOnDate: state => (date) => {
       const dayDate = [date.getFullYear(), date.getMonth(), date.getDate()];
       const dayStart = new Date(...dayDate);
       const dayEnd = new Date(...dayDate, 23, 59);
