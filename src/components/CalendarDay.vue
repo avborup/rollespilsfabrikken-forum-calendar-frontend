@@ -5,6 +5,7 @@
       v-for="event in getEventsOnDate(timestamp)"
       :key="event.id"
       :title="event.title"
+      :id="event.id"
     />
   </li>
 </template>
