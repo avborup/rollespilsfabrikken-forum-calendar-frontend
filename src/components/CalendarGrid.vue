@@ -135,6 +135,7 @@ ul {
   .day {
     border-left: $border-style;
     border-bottom: $border-style;
+    color: $primary-text;
   }
 }
 </style>

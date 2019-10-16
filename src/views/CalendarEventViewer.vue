@@ -62,10 +62,12 @@ export default {
   font-size: 1.75rem;
   margin-top: 1rem;
   line-height: 1.75rem;
+  color: $primary-text;
 }
 
 .timeframe {
   margin-top: 0.5rem;
+  color: $primary-text;
 }
 
 .fields {
@@ -82,6 +84,7 @@ export default {
 
 .description {
   font-size: 0.95rem;
+  color: $primary-text;
 }
 
 @media (min-width: 600px) {
