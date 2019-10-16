@@ -8,7 +8,7 @@ export const testEvents = [
       start: new Date(2019, 9, 3, 12, 30),
       end: new Date(2019, 9, 3, 13, 30),
     },
-    category: 'Song',
+    category: 'Short',
     id: 'e9e020fe',
   },
   {
@@ -18,7 +18,7 @@ export const testEvents = [
       start: new Date(2019, 9, 3, 12, 30),
       end: new Date(2019, 9, 3, 13, 30),
     },
-    category: 'Song',
+    category: 'Medium',
     id: 'fds67sd8',
   },
   {
@@ -28,7 +28,7 @@ export const testEvents = [
       start: new Date(2019, 9, 5, 12, 30),
       end: new Date(2019, 9, 5, 15, 30),
     },
-    category: 'Song',
+    category: 'Medium',
     id: '9d8d11e9',
   },
   {
@@ -38,7 +38,22 @@ export const testEvents = [
       start: new Date(2019, 9, 8, 12, 30),
       end: new Date(2019, 9, 13, 15, 30),
     },
-    category: 'Song',
+    category: 'Long',
     id: 'fsda78a9f',
+  },
+];
+
+export const testCategories = [
+  {
+    name: 'Short',
+    colour: '#76034b',
+  },
+  {
+    name: 'Medium',
+    colour: '#01015e',
+  },
+  {
+    name: 'Long',
+    colour: '#da4e52',
   },
 ];

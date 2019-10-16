@@ -3,13 +3,14 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { dateRangesOverlap } from '@/dateUtils';
-import { testEvents } from '@/testData';
+import { testEvents, testCategories } from '@/testData';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     calendarEvents: testEvents,
+    calendarCategories: testCategories,
     currentlyFocusedEventId: testEvents[0].id, // FIXME: Better way in the end product
   },
   mutations: {
@@ -40,5 +41,13 @@ export default new Vuex.Store({
       const id = state.currentlyFocusedEventId;
       return state.calendarEvents.find(event => event.id === id);
     },
+
+    // FIXME: Handle the case of this finding no match.
+    // Currently, it is no problem, because the background colour defaults to
+    // the CSS-defined one, but it might become one.
+    getCategoryColour: state => name => state
+      .calendarCategories
+      .find(category => category.name === name)
+      .colour,
   },
 });

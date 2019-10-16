@@ -6,6 +6,7 @@
       :key="event.id"
       :title="event.title"
       :id="event.id"
+      :category="event.category"
     />
   </li>
 </template>

@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <h4 class="category">{{ event.category }}</h4>
+    <h4
+      class="category"
+      :style="{ backgroundColor: getCategoryColour(event.category) }"
+    >
+      {{ event.category }}
+    </h4>
     <h1 class="title">{{ event.title }}</h1>
     <p class="timeframe">{{ formatTimeframe(event.timeframe) }}</p>
     <div class="fields">
@@ -21,6 +26,7 @@ export default {
   computed: {
     ...mapGetters({
       event: 'getCurrentlyFocusedEvent',
+      getCategoryColour: 'getCategoryColour',
     }),
   },
 
