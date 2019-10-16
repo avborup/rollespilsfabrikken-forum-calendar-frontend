@@ -100,6 +100,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/theme.scss';
+
 $header-height: 3rem;
 
 .calendar {
@@ -121,6 +123,7 @@ $header-height: 3rem;
       text-align: center;
       font-weight: 600;
       font-size: 1.5rem;
+      color: $primary-text;
     }
 
     button {
