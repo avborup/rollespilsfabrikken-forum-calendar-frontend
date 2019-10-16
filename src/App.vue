@@ -1,11 +1,25 @@
 <template>
   <div id="app">
-    <nav class="temp-spacer">Kalender</nav>
+    <header class="header">
+      <PageSidebar />
+      Kalender
+    </header>
     <transition name="fade" mode="out-in">
       <router-view />
     </transition>
   </div>
 </template>
+
+<script>
+import PageSidebar from '@/components/PageSidebar.vue';
+
+export default {
+  name: 'App',
+  components: {
+    PageSidebar,
+  },
+};
+</script>
 
 <style lang="scss">
 @import '@/assets/scss/theme.scss';
@@ -25,15 +39,17 @@
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
 
-.temp-spacer {
+.header {
   height: 3rem;
   background-color: $primary-accent;
   color: #fff;
   padding: 0 1rem;
   font-size: 1.5rem;
   font-weight: 600;
-  display: flex;
+  display: grid;
   align-items: center;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 1rem;
 }
 
 .fade-enter-active,
