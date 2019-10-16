@@ -4,7 +4,7 @@
     <h1 class="title">{{ event.title }}</h1>
     <p class="timeframe">{{ formatTimeframe(event.timeframe) }}</p>
     <div class="fields">
-      <img class="icon" src="assets/icons/desc.svg" alt="Description" title="description">
+      <img class="icon" src="assets/icons/desc.svg" alt="Beskrivelse" title="Beskrivelse">
       <p class="description">{{ event.desc }}</p>
     </div>
   </div>
