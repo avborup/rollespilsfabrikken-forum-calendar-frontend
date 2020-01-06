@@ -13,9 +13,17 @@
             <span>&times;</span>
           </button>
         </div>
+        <h3 class="sidebar-section-header">Kalendervisning</h3>
         <ul class="choose-category">
           <li v-for="category in categories" :key="category">
-            <input type="checkbox" checked :value="category" :id="'checkbox-' + category">
+            <input
+              type="checkbox"
+              checked
+              :value="category"
+              :id="'checkbox-' + category"
+              v-model="checkedCategories"
+              @change="updateCurrentCalendarCategories(checkedCategories)"
+            >
             <label class="category-option" :for="'checkbox-' + category" tabindex="0">
               <div class="checkbox" :style="{ backgroundColor: getCategoryColour(category) }">
                 <img src="assets/icons/checkmark.svg" alt="Flueben">
@@ -30,7 +38,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: 'PageSidebar',
@@ -38,10 +46,15 @@ export default {
   data() {
     return {
       isOpen: false,
+      checkedCategories: this.$store.getters.getAllCategories,
     };
   },
 
   methods: {
+    ...mapActions([
+      'updateCurrentCalendarCategories',
+    ]),
+
     openSidebar() {
       this.isOpen = true;
     },
@@ -125,6 +138,15 @@ export default {
     justify-content: flex-end;
   }
 
+  .sidebar-section-header:not(:first-of-type) {
+    margin-top: 1rem;
+  }
+
+  .sidebar-section-header {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
   .choose-category {
     list-style-type: none;
 
@@ -133,6 +155,8 @@ export default {
     }
 
     li {
+      user-select: none;
+
       input[type='checkbox'] {
         opacity: 0;
         position: absolute;
@@ -154,7 +178,6 @@ export default {
           display: flex;
           align-items: center;
           justify-content: center;
-          user-select: none;
           width: 1.1rem;
           height: 1.1rem;
           border-radius: 0.2rem;
