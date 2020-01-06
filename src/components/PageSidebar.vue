@@ -13,12 +13,25 @@
             <span>&times;</span>
           </button>
         </div>
+        <ul class="choose-category">
+          <li v-for="category in categories" :key="category">
+            <input type="checkbox" checked :value="category" :id="'checkbox-' + category">
+            <label class="category-option" :for="'checkbox-' + category" tabindex="0">
+              <div class="checkbox" :style="{ backgroundColor: getCategoryColour(category) }">
+                <img src="assets/icons/checkmark.svg" alt="Flueben">
+              </div>
+              <span class="option-text">{{ category }}</span>
+            </label>
+          </li>
+        </ul>
       </div>
     </transition>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'PageSidebar',
 
@@ -36,6 +49,13 @@ export default {
     closeSidebar() {
       this.isOpen = false;
     },
+  },
+
+  computed: {
+    ...mapGetters({
+      categories: 'getAllCategories',
+      getCategoryColour: 'getCategoryColour',
+    }),
   },
 };
 </script>
@@ -78,6 +98,8 @@ export default {
   color: $primary-text;
   width: 15rem;
   padding: 1rem;
+  font-size: 1rem;
+  font-weight: 400;
 
   .close-button {
     position: relative;
@@ -101,6 +123,60 @@ export default {
     width: 100%;
     display: flex;
     justify-content: flex-end;
+  }
+
+  .choose-category {
+    list-style-type: none;
+
+    li:not(:last-child) {
+      margin-bottom: 0.5rem;
+    }
+
+    li {
+      input[type='checkbox'] {
+        opacity: 0;
+        position: absolute;
+        left: -100vw;
+        top: -100vh;
+        z-index: -100;
+      }
+
+      label {
+        position: relative;
+        display: grid;
+        grid-template-columns: 1.1rem auto;
+        align-items: center;
+        grid-column-gap: 0.5rem;
+        cursor: pointer;
+        width: fit-content;
+
+        .checkbox {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          user-select: none;
+          width: 1.1rem;
+          height: 1.1rem;
+          border-radius: 0.2rem;
+
+          img {
+            width: 100%;
+            height: 100%;
+            transition: all 0.2s;
+          }
+        }
+      }
+
+      input[type="checkbox"]:not(:checked) + label .checkbox img {
+        opacity: 0;
+        transform: scale(0);
+      }
+
+      input[type="checkbox"]:checked + label .checkbox img {
+        opacity: 1;
+        transform: scale(0.75);
+      }
+    }
   }
 }
 

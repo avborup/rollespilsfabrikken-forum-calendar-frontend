@@ -49,5 +49,9 @@ export default new Vuex.Store({
       .calendarCategories
       .find(category => category.name === name)
       .colour,
+
+    getAllCategories(state) {
+      return state.calendarCategories.map(({ name }) => name);
+    },
   },
 });
