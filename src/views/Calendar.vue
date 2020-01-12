@@ -101,12 +101,11 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
-
-$header-height: 3rem;
+@import '@/assets/scss/consts.scss';
 
 .calendar {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: $header-height 1fr;
   height: 100%;
   position: relative;
   overflow-x: hidden;
@@ -150,9 +149,9 @@ $header-height: 3rem;
   transition: transform 0.3s ease-in-out;
   /* FIXME: Is this a good solution? */
   position: absolute;
-  margin-top: $header-height;
+  padding-top: $header-height;
   width: 100%;
-  height: calc(100% - #{$header-height});
+  height: 100%;
 }
 
 .slide-leave-to.slide-next, .slide-enter.slide-prev {

@@ -1,39 +1,29 @@
 <template>
-  <div>
-    <button class="open-button" @click="openSidebar" title="Åben sidebjælke">
-      <img src="assets/icons/sidebar.svg">
-    </button>
-    <transition name="open-sidebar-fade">
-      <div v-if="isOpen" class="darkened-bg" @click="closeSidebar"></div>
-    </transition>
-    <transition name="open-sidebar-slide">
-      <div v-if="isOpen" class="content">
-        <div class="align-left">
-          <button class="close-button" @click="closeSidebar" title="Luk sidebjælke">
-            <span>&times;</span>
-          </button>
-        </div>
-        <h3 class="sidebar-section-header">Kalendervisning</h3>
-        <ul class="choose-category">
-          <li v-for="category in categories" :key="category">
-            <input
-              type="checkbox"
-              checked
-              :value="category"
-              :id="'checkbox-' + category"
-              v-model="checkedCategories"
-              @change="updateCurrentCalendarCategories(checkedCategories)"
-            >
-            <label class="category-option" :for="'checkbox-' + category" tabindex="0">
-              <div class="checkbox" :style="{ backgroundColor: getCategoryColour(category) }">
-                <img src="assets/icons/checkmark.svg" alt="Flueben">
-              </div>
-              <span class="option-text">{{ category }}</span>
-            </label>
-          </li>
-        </ul>
-      </div>
-    </transition>
+  <div class="content">
+    <div class="align-left">
+      <button class="close-sidebar-button" @click="$emit('close-sidebar')" title="Luk sidebjælke">
+        <span>&times;</span>
+      </button>
+    </div>
+    <h3 class="sidebar-section-header">Kalendervisning</h3>
+    <ul class="choose-category">
+      <li v-for="category in categories" :key="category">
+        <input
+          type="checkbox"
+          checked
+          :value="category"
+          :id="'checkbox-' + category"
+          v-model="checkedCategories"
+          @change="updateCurrentCalendarCategories(checkedCategories)"
+        >
+        <label class="category-option" :for="'checkbox-' + category" tabindex="0">
+          <div class="checkbox" :style="{ backgroundColor: getCategoryColour(category) }">
+            <img src="assets/icons/checkmark.svg" alt="Flueben">
+          </div>
+          <span class="option-text">{{ category }}</span>
+        </label>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -45,7 +35,6 @@ export default {
 
   data() {
     return {
-      isOpen: false,
       checkedCategories: this.$store.getters.getAllCategories,
     };
   },
@@ -54,14 +43,6 @@ export default {
     ...mapActions([
       'updateCurrentCalendarCategories',
     ]),
-
-    openSidebar() {
-      this.isOpen = true;
-    },
-
-    closeSidebar() {
-      this.isOpen = false;
-    },
   },
 
   computed: {
@@ -76,35 +57,19 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
 
-.open-button, .close-button {
+.close-sidebar-button {
   border: none;
   background: none;
   cursor: pointer;
 }
 
-.open-button {
-  padding: 0.1rem;
-  width: 1.5rem;
-  height: 1.5rem;
-
-  img {
-    width: 100%;
-    height: 100%;
-  }
-}
-
-.content, .darkened-bg {
-  position: absolute;
-  z-index: 100;
-  height: 100vh;
-  top: 0;
-  left: 0;
-}
-
-.darkened-bg {
-  background-color: rgba(0, 0, 0, 0.5);
-  width: 100vw;
-}
+// .content {
+//   position: absolute;
+//   z-index: 100;
+//   height: 100vh;
+//   top: 0;
+//   left: 0;
+// }
 
 .content {
   background-color: #fff;
@@ -114,7 +79,7 @@ export default {
   font-size: 1rem;
   font-weight: 400;
 
-  .close-button {
+  .close-sidebar-button {
     position: relative;
     margin: 0;
     padding: 0;
@@ -203,16 +168,9 @@ export default {
   }
 }
 
-.open-sidebar-slide-leave-active,
-.open-sidebar-slide-enter-active,
-.open-sidebar-fade-leave-active,
-.open-sidebar-fade-enter-active {
-  transition: 0.5s;
-}
-.open-sidebar-slide-enter, .open-sidebar-slide-leave-to {
-  transform: translate(-100%, 0);
-}
-.open-sidebar-fade-enter, .open-sidebar-fade-leave-to {
-  opacity: 0;
+@media (min-width: 1000px) {
+  .close-sidebar-button {
+    display: none;
+  }
 }
 </style>
