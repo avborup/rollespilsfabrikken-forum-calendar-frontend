@@ -1,5 +1,10 @@
 <template>
   <div class="container">
+    <router-link to="/kalender" title="Luk begivenhed">
+      <button class="close-event-button">
+        <span>&times;</span>
+      </button>
+    </router-link>
     <h4
       class="category"
       :style="{ backgroundColor: getCategoryColour(event.category) }"
@@ -51,6 +56,28 @@ export default {
 
 .container {
   margin: 0.8rem;
+}
+
+.close-event-button {
+  float: right;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+
+  span {
+    position: absolute;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 2rem;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-55%);
+    font-weight: 300;
+  }
 }
 
 .category {

@@ -1,5 +1,5 @@
 <template>
-  <router-link to="/begivenhed" title="Se begivenhed">
+  <router-link to="/kalender/begivenhed" title="Se begivenhed">
     <div
       class="event-container"
       @click="updateCurrentlyFocusedEventId(id)"

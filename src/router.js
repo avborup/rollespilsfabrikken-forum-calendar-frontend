@@ -7,13 +7,18 @@ Vue.use(Router);
 
 export default new Router({
   routes: [
+    // {
+    //   path: '/',
+    //   name: 'home',
+    //   component: Calendar,
+    // },
     {
-      path: '/',
-      name: 'home',
+      path: '/kalender',
+      name: 'calendar',
       component: Calendar,
     },
     {
-      path: '/begivenhed',
+      path: '/kalender/begivenhed',
       component: CalendarEventViewer,
     },
   ],
