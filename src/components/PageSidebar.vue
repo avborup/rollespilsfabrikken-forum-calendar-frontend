@@ -14,7 +14,6 @@
           :value="category"
           :id="'checkbox-' + category"
           v-model="checkedCategories"
-          @change="updateCurrentCalendarCategories(checkedCategories)"
         >
         <label class="category-option" :for="'checkbox-' + category" tabindex="0">
           <div class="checkbox" :style="{ backgroundColor: getCategoryColour(category) }">
@@ -28,28 +27,24 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'PageSidebar',
-
-  data() {
-    return {
-      checkedCategories: this.$store.getters.getAllCategories,
-    };
-  },
-
-  methods: {
-    ...mapActions([
-      'updateCurrentCalendarCategories',
-    ]),
-  },
 
   computed: {
     ...mapGetters({
       categories: 'getAllCategories',
       getCategoryColour: 'getCategoryColour',
     }),
+    checkedCategories: {
+      get() {
+        return this.$store.getters.getCurrentCalendarCategories;
+      },
+      set(newCategories) {
+        this.$store.dispatch('updateCurrentCalendarCategories', newCategories);
+      },
+    },
   },
 };
 </script>

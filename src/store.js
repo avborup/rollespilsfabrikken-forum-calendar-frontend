@@ -69,5 +69,9 @@ export default new Vuex.Store({
     getAllCategories(state) {
       return state.calendarCategories.map(({ name }) => name);
     },
+
+    getCurrentCalendarCategories(state) {
+      return state.currentCalendarCategories;
+    },
   },
 });
