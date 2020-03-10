@@ -1,10 +1,20 @@
 <template>
   <div class="container">
-    <h4 class="category">{{ event.category }}</h4>
+    <router-link to="/kalender" title="Luk begivenhed">
+      <button class="close-event-button">
+        <span>&times;</span>
+      </button>
+    </router-link>
+    <h4
+      class="category"
+      :style="{ backgroundColor: getCategoryColour(event.category) }"
+    >
+      {{ event.category }}
+    </h4>
     <h1 class="title">{{ event.title }}</h1>
     <p class="timeframe">{{ formatTimeframe(event.timeframe) }}</p>
     <div class="fields">
-      <img class="icon" src="assets/icons/desc.svg" alt="Description" title="description">
+      <img class="icon" src="assets/icons/desc.svg" alt="Beskrivelse" title="Beskrivelse">
       <p class="description">{{ event.desc }}</p>
     </div>
   </div>
@@ -21,6 +31,7 @@ export default {
   computed: {
     ...mapGetters({
       event: 'getCurrentlyFocusedEvent',
+      getCategoryColour: 'getCategoryColour',
     }),
   },
 
@@ -45,6 +56,28 @@ export default {
 
 .container {
   margin: 0.8rem;
+}
+
+.close-event-button {
+  float: right;
+  border: none;
+  background: none;
+  cursor: pointer;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+
+  span {
+    position: absolute;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 2rem;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-55%);
+    font-weight: 300;
+  }
 }
 
 .category {

@@ -1,13 +1,17 @@
 <template>
-  <router-link to="/begivenhed" title="Se begivenhed">
-    <div class="event-container" @click="updateCurrentlyFocusedEventId(id)">
+  <router-link to="/kalender/begivenhed" title="Se begivenhed">
+    <div
+      class="event-container"
+      @click="updateCurrentlyFocusedEventId(id)"
+      :style="{ backgroundColor: getCategoryColour(category) }"
+    >
       <p>{{ title }}</p>
     </div>
   </router-link>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'CalendarEvent',
@@ -21,11 +25,21 @@ export default {
       type: String,
       required: true,
     },
+    category: {
+      type: String,
+      required: true,
+    },
   },
 
   methods: {
     ...mapActions([
       'updateCurrentlyFocusedEventId',
+    ]),
+  },
+
+  computed: {
+    ...mapGetters([
+      'getCategoryColour',
     ]),
   },
 };

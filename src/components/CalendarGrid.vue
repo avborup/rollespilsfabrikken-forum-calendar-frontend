@@ -97,20 +97,23 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
+@import '@/assets/scss/consts.scss';
 
 $border-style: 1px solid #ccc;
 
 ul {
   list-style-type: none;
   display: grid;
-  height: 100%;
+  height: calc(100% - #{$header-height});
   /*  FIXME: Consider how this will be affected by e.g. sidebars */
-  max-width: 100vw;
+  // max-width: 100%;
   grid-template-columns: repeat(7, minmax(calc(100% / 7), 1fr));
   grid-template-rows: 2rem;
   grid-auto-rows: 1fr;
   border-right: $border-style;
   /* border-top: $border-style; */
+  position: absolute;
+  width: 100%;
 
   .weekday-name {
     border-bottom: $border-style;
