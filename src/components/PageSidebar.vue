@@ -5,6 +5,17 @@
         <span>&times;</span>
       </button>
     </div>
+    <h3 class="sidebar-section-header">Sider</h3>
+    <nav class="sidebar-nav">
+      <router-link :to="{ name: 'calendar'}">
+        <CalendarIcon class="icon" />
+        <p>Kalender</p>
+      </router-link>
+      <router-link :to="{ name: 'forum'}">
+        <img class="icon" src="assets/icons/forum.svg" alt="Forumikon">
+        <p>Forum</p>
+      </router-link>
+    </nav>
     <h3 class="sidebar-section-header">Kalendervisning</h3>
     <ul class="choose-category">
       <li v-for="category in categories" :key="category">
@@ -28,9 +39,13 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import CalendarIcon from '@/components/CalendarIcon.vue';
 
 export default {
   name: 'PageSidebar',
+  components: {
+    CalendarIcon,
+  },
 
   computed: {
     ...mapGetters({
@@ -51,6 +66,8 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
+
+$listitem-padding: 0.5rem;
 
 .close-sidebar-button {
   border: none;
@@ -116,6 +133,7 @@ export default {
 
     li {
       user-select: none;
+      padding-left: $listitem-padding;
 
       input[type='checkbox'] {
         opacity: 0;
@@ -159,6 +177,34 @@ export default {
         opacity: 1;
         transform: scale(0.75);
       }
+    }
+  }
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+
+  a {
+    display: flex;
+    align-items: center;
+    padding: 0.2rem $listitem-padding;
+    text-decoration: none;
+    color: $primary-text;
+
+    &:not(:last-child) {
+      margin-bottom: 0.2rem;
+    }
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.03);
+      border-radius: 0.25rem;
+    }
+
+    .icon {
+      width: 1.4rem;
+      height: 1.4rem;
+      margin-right: 0.6rem;
     }
   }
 }

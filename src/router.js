@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Calendar from '@/views/Calendar.vue';
 import CalendarEventViewer from '@/views/CalendarEventViewer.vue';
+import Forum from '@/views/Forum.vue';
 
 Vue.use(Router);
 
@@ -20,6 +21,11 @@ export default new Router({
     {
       path: '/kalender/begivenhed',
       component: CalendarEventViewer,
+    },
+    {
+      path: '/forum',
+      name: 'forum',
+      component: Forum,
     },
   ],
 });
