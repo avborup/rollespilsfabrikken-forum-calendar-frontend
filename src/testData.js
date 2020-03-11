@@ -57,3 +57,55 @@ export const testCategories = [
     colour: '#da4e52',
   },
 ];
+
+export const testPosts = [
+  {
+    title: 'Silence Speaks (feat. Oli Sykes)',
+    author: 'While She Sleeps',
+    commentCount: 10,
+    date: new Date(2020, 2, 10, 20, 13),
+    id: '5f549f64',
+  },
+  {
+    title: 'Equal Rights, Equal Lefts',
+    author: 'Otep',
+    commentCount: 5,
+    date: new Date(2020, 2, 11, 21, 54, 2),
+    id: '7304462c',
+  },
+  {
+    title: 'Echoes',
+    author: 'The Charm The Fury',
+    commentCount: 6,
+    date: new Date(2020, 2, 8, 11, 4),
+    id: '761ee024',
+  },
+  {
+    title: 'Now They See Me Now you Don\'t',
+    author: 'Above This',
+    commentCount: 2,
+    date: new Date(2019, 2, 10, 8, 59),
+    id: '794a05e4',
+  },
+  {
+    title: 'Highway to Hell',
+    author: 'AC/DC',
+    commentCount: 8,
+    date: new Date(2020, 2, 11, 21, 1),
+    id: '7cea0546',
+  },
+  {
+    title: 'Eye of the Tiger',
+    author: 'Survivor',
+    commentCount: 23,
+    date: new Date(2020, 0, 9, 18, 41),
+    id: '802bad18',
+  },
+  {
+    title: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.',
+    author: 'Sit Amet',
+    commentCount: 12,
+    date: new Date(2020, 2, 11, 22, 12),
+    id: '8043fad18',
+  },
+];

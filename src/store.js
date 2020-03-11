@@ -3,7 +3,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { dateRangesOverlap } from '@/dateUtils';
-import { testEvents, testCategories } from '@/testData';
+import { testEvents, testCategories, testPosts } from '@/testData';
 
 Vue.use(Vuex);
 
@@ -13,6 +13,7 @@ export default new Vuex.Store({
     calendarCategories: testCategories,
     currentCalendarCategories: testCategories.map(({ name }) => name),
     currentlyFocusedEventId: testEvents[0].id, // FIXME: Better way in the end product
+    forumPosts: testPosts,
   },
   mutations: {
     SET_CURRENTLY_FOCUSED_EVENT_ID(state, newEventId) {
@@ -72,6 +73,10 @@ export default new Vuex.Store({
 
     getCurrentCalendarCategories(state) {
       return state.currentCalendarCategories;
+    },
+
+    getAllPosts(state) {
+      return state.forumPosts;
     },
   },
 });
