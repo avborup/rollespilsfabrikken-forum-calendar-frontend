@@ -1,24 +1,26 @@
 <template>
-  <div class="forum">
-    <h1>Opslag</h1>
-    <ul class="posts">
-      <li v-for="post in posts" :key="post.id">
-        <div class="avatar">
-          <img src="/assets/icons/person.svg" alt="Avatar icon">
-        </div>
-        <h4>{{ post.title }}</h4>
-        <p class="author-date">
-          <span class="author">{{ post.author }}</span>
-          <span class="date"> &ndash; {{ toElapsedTimeStr(post.date) }}</span>
-        </p>
-        <div class="post-info">
-          <div class="post-comment-info">
-            <img src="/assets/icons/comment.svg" alt="Comment icon">
-            <span class="post-num-comments">{{ post.commentCount }}</span>
+  <div class="forum-content-wrapper">
+    <div class="forum">
+      <h1>Opslag</h1>
+      <ul class="posts">
+        <li v-for="post in posts" :key="post.id">
+          <div class="avatar">
+            <img src="/assets/icons/person.svg" alt="Avatar icon">
           </div>
-        </div>
-      </li>
-    </ul>
+          <h4>{{ post.title }}</h4>
+          <p class="author-date">
+            <span class="author">{{ post.author }}</span>
+            <span class="date"> &ndash; {{ toElapsedTimeStr(post.date) }}</span>
+          </p>
+          <div class="post-info">
+            <div class="post-comment-info">
+              <img src="/assets/icons/comment.svg" alt="Comment icon">
+              <span class="post-num-comments">{{ post.commentCount }}</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -46,9 +48,12 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
 
+.forum-content-wrapper {
+  overflow: auto;
+}
+
 .forum {
   padding: 2rem 1rem;
-  overflow: auto;
 }
 
 h1 {
