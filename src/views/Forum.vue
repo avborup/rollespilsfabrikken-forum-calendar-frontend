@@ -7,16 +7,19 @@
           <div class="avatar">
             <img src="/assets/icons/person.svg" alt="Avatar icon">
           </div>
-          <h4>{{ post.title }}</h4>
+          <h4 :title="post.title">{{ post.title }}</h4>
           <p class="author-date">
             <span class="author">{{ post.author }}</span>
             <span class="date"> &ndash; {{ toElapsedTimeStr(post.date) }}</span>
           </p>
           <div class="post-info">
-            <div class="post-comment-info">
+            <div class="post-comment-info" :title="`${post.commentCount} kommentarer`">
               <img src="/assets/icons/comment.svg" alt="Comment icon">
               <span class="post-num-comments">{{ post.commentCount }}</span>
             </div>
+          </div>
+          <div class="post-forum" :title="getForumNameFromId(post.forumId)">
+            {{ getForumNameFromId(post.forumId) }}
           </div>
         </li>
       </ul>
@@ -35,12 +38,20 @@ export default {
 
   computed: {
     ...mapGetters({
-      posts: 'getAllPosts',
+      posts: 'getCurrentForumPosts',
+      getForumNameFromId: 'getForumNameFromId',
     }),
   },
 
   methods: {
     toElapsedTimeStr,
+  },
+
+  watch: {
+    $route(to) {
+      const newForumView = to.params.forum;
+      this.$store.dispatch('updateCurrentForumView', newForumView);
+    },
   },
 };
 </script>
@@ -66,11 +77,11 @@ h1 {
 
   li {
     display: grid;
-    grid-template-columns: 3rem 1fr 3rem;
+    grid-template-columns: 3rem 1fr 3rem 6rem;
     grid-template-rows: 1fr 1fr;
     grid-template-areas:
-      "avatar title       info"
-      "avatar author-date info";
+      "avatar title       info forum"
+      "avatar author-date info forum";
     column-gap: 1rem;
     align-items: center;
     padding: 0.75rem 0.5rem;
@@ -105,6 +116,9 @@ h1 {
       grid-area: title;
       font-size: 1rem;
       font-weight: bold;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .author-date {
@@ -134,6 +148,21 @@ h1 {
           margin-right: 0.5rem;
         }
       }
+    }
+
+    .post-forum {
+      grid-area: forum;
+      border-radius: 10rem;
+      border: 0.1rem solid $primary-accent;
+      text-align: center;
+      padding: 0.4rem 0.7rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      font-weight: bold;
+      color: $primary-accent;
     }
   }
 }

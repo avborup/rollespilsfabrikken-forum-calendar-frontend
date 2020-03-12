@@ -65,6 +65,7 @@ export const testPosts = [
     commentCount: 10,
     date: new Date(2020, 2, 10, 20, 13),
     id: '5f549f64',
+    forumId: '1',
   },
   {
     title: 'Equal Rights, Equal Lefts',
@@ -72,6 +73,7 @@ export const testPosts = [
     commentCount: 5,
     date: new Date(2020, 2, 11, 21, 54, 2),
     id: '7304462c',
+    forumId: '123',
   },
   {
     title: 'Echoes',
@@ -79,6 +81,7 @@ export const testPosts = [
     commentCount: 6,
     date: new Date(2020, 2, 8, 11, 4),
     id: '761ee024',
+    forumId: '1',
   },
   {
     title: 'Now They See Me Now you Don\'t',
@@ -86,6 +89,7 @@ export const testPosts = [
     commentCount: 2,
     date: new Date(2019, 2, 10, 8, 59),
     id: '794a05e4',
+    forumId: '12345',
   },
   {
     title: 'Highway to Hell',
@@ -93,6 +97,7 @@ export const testPosts = [
     commentCount: 8,
     date: new Date(2020, 2, 11, 21, 1),
     id: '7cea0546',
+    forumId: '12',
   },
   {
     title: 'Eye of the Tiger',
@@ -100,6 +105,7 @@ export const testPosts = [
     commentCount: 23,
     date: new Date(2020, 0, 9, 18, 41),
     id: '802bad18',
+    forumId: '12',
   },
   {
     title: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.',
@@ -107,6 +113,7 @@ export const testPosts = [
     commentCount: 12,
     date: new Date(2020, 2, 11, 22, 12),
     id: '8043fad18',
+    forumId: '1234',
   },
 ];
 
@@ -116,21 +123,26 @@ export const testForums = [
   {
     name: 'Rude skov',
     pathName: 'rude-skov',
+    id: '1'
   },
   {
     name: 'Amager Fælled',
     pathName: 'amager-faelled',
+    id: '12'
   },
   {
     name: 'Den Magiske Skole',
     pathName: 'den-magiske-skole',
+    id: '123'
   },
   {
     name: 'Nøglebærere',
     pathName: 'noeglebaerere',
+    id: '1234'
   },
   {
     name: 'Andet',
     pathName: 'andet',
+    id: '12345'
   },
 ];

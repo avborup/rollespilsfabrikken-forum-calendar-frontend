@@ -20,6 +20,7 @@ export default new Vuex.Store({
     currentlyFocusedEventId: testEvents[0].id, // FIXME: Better way in the end product
     forumPosts: testPosts,
     forums: testForums,
+    currentForumViewPathName: '',
   },
   mutations: {
     SET_CURRENTLY_FOCUSED_EVENT_ID(state, newEventId) {
@@ -28,6 +29,9 @@ export default new Vuex.Store({
     SET_CURRENT_CALENDAR_CATEGORIES(state, newCategories) {
       state.currentCalendarCategories = newCategories;
     },
+    SET_CURRENT_FORUM_VIEW(state, newForumPathName) {
+      state.currentForumViewPathName = newForumPathName;
+    },
   },
   actions: {
     updateCurrentlyFocusedEventId(context, eventId) {
@@ -35,6 +39,10 @@ export default new Vuex.Store({
     },
     updateCurrentCalendarCategories(context, newCategories) {
       context.commit('SET_CURRENT_CALENDAR_CATEGORIES', newCategories);
+    },
+    updateCurrentForumView(context, newForumPathName) {
+      const pathName = newForumPathName === undefined ? '' : newForumPathName;
+      context.commit('SET_CURRENT_FORUM_VIEW', pathName);
     },
   },
 
@@ -84,6 +92,21 @@ export default new Vuex.Store({
     getAllPosts(state) {
       return state.forumPosts;
     },
+
+    getCurrentForumPosts(state) {
+      if (state.currentForumViewPathName === '') {
+        return state.forumPosts;
+      }
+
+      const { id } = state.forums
+        .find(({ pathName }) => pathName === state.currentForumViewPathName);
+
+      return state.forumPosts.filter(({ forumId }) => forumId === id);
+    },
+
+    getForumNameFromId: state => forumId => state.forums
+      .find(({ id }) => id === forumId)
+      .name,
 
     getAllForums(state) {
       return state.forums;
