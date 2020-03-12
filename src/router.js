@@ -23,7 +23,7 @@ export default new Router({
       component: CalendarEventViewer,
     },
     {
-      path: '/forum',
+      path: '/forum/:forum?',
       name: 'forum',
       component: Forum,
     },

@@ -109,3 +109,28 @@ export const testPosts = [
     id: '8043fad18',
   },
 ];
+
+// In the future, this will be fetched from the backend, and only forums that
+// the user has access to will be loaded.
+export const testForums = [
+  {
+    name: 'Rude skov',
+    pathName: 'rude-skov',
+  },
+  {
+    name: 'Amager Fælled',
+    pathName: 'amager-faelled',
+  },
+  {
+    name: 'Den Magiske Skole',
+    pathName: 'den-magiske-skole',
+  },
+  {
+    name: 'Nøglebærere',
+    pathName: 'noeglebaerere',
+  },
+  {
+    name: 'Andet',
+    pathName: 'andet',
+  },
+];
