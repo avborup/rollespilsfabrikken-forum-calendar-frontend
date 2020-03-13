@@ -10,7 +10,10 @@
           <h4 :title="post.title">{{ post.title }}</h4>
           <p class="author-date">
             <span class="author">{{ post.author }}</span>
-            <span class="date"> &ndash; {{ toElapsedTimeStr(post.date) }}</span>
+            <span class="date">
+              <span class="sep"> &ndash;</span>
+              {{ toElapsedTimeStr(post.date) }}
+            </span>
           </p>
           <div class="post-info">
             <div class="post-comment-info" :title="`${post.commentCount} kommentarer`">
@@ -176,6 +179,37 @@ h1 {
       text-transform: uppercase;
       font-weight: bold;
       color: $primary-accent;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .posts li {
+    grid-template-rows: auto auto;
+    grid-template-columns: 2rem 1fr 2.5rem 4rem;
+    grid-template-areas:
+      "avatar author-date info  forum"
+      "title  title  title title";
+    column-gap: 0.5rem;
+    row-gap: 0.5rem;
+
+    .avatar {
+      width: 2rem;
+      height: 2rem;
+
+      img {
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+
+    .author-date {
+      display: flex;
+      flex-direction: column;
+
+      .sep {
+        display: none;
+      }
     }
   }
 }
