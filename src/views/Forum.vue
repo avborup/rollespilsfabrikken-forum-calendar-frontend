@@ -18,7 +18,14 @@
               <span class="post-num-comments">{{ post.commentCount }}</span>
             </div>
           </div>
-          <div class="post-forum" :title="getForumFromId(post.forumId).name">
+          <div
+            class="post-forum"
+            :title="getForumFromId(post.forumId).name"
+            :style="{
+              borderColor: getForumFromId(post.forumId).color,
+              color: getForumFromId(post.forumId).color,
+            }"
+          >
             {{ getForumFromId(post.forumId).name }}
           </div>
         </li>
@@ -158,7 +165,8 @@ h1 {
     .post-forum {
       grid-area: forum;
       border-radius: 10rem;
-      border: 0.1rem solid $primary-accent;
+      border-style: solid;
+      border-width: 0.1rem;
       text-align: center;
       padding: 0.4rem 0.7rem;
       white-space: nowrap;

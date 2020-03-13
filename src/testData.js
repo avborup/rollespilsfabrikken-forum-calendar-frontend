@@ -123,26 +123,31 @@ export const testForums = [
   {
     name: 'Rude skov',
     pathName: 'rude-skov',
+    color: '#4E0944',
     id: '1'
   },
   {
     name: 'Amager Fælled',
     pathName: 'amager-faelled',
+    color: '#20639B',
     id: '12'
   },
   {
     name: 'Den Magiske Skole',
     pathName: 'den-magiske-skole',
+    color: '#3CAEA3',
     id: '123'
   },
   {
     name: 'Nøglebærere',
     pathName: 'noeglebaerere',
+    color: '#B84239',
     id: '1234'
   },
   {
     name: 'Andet',
     pathName: 'andet',
+    color: '#ED553B',
     id: '12345'
   },
 ];
