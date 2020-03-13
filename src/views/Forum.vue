@@ -18,8 +18,8 @@
               <span class="post-num-comments">{{ post.commentCount }}</span>
             </div>
           </div>
-          <div class="post-forum" :title="getForumNameFromId(post.forumId)">
-            {{ getForumNameFromId(post.forumId) }}
+          <div class="post-forum" :title="getForumFromId(post.forumId).name">
+            {{ getForumFromId(post.forumId).name }}
           </div>
         </li>
       </ul>
@@ -39,7 +39,7 @@ export default {
   computed: {
     ...mapGetters({
       posts: 'getCurrentForumPosts',
-      getForumNameFromId: 'getForumNameFromId',
+      getForumFromId: 'getForumFromId',
     }),
   },
 

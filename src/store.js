@@ -104,9 +104,7 @@ export default new Vuex.Store({
       return state.forumPosts.filter(({ forumId }) => forumId === id);
     },
 
-    getForumNameFromId: state => forumId => state.forums
-      .find(({ id }) => id === forumId)
-      .name,
+    getForumFromId: state => forumId => state.forums.find(({ id }) => id === forumId),
 
     getAllForums(state) {
       return state.forums;
