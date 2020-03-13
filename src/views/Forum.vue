@@ -47,6 +47,11 @@ export default {
     toElapsedTimeStr,
   },
 
+  beforeMount() {
+    const { forum } = this.$route.params;
+    this.$store.dispatch('updateCurrentForumView', forum);
+  },
+
   watch: {
     $route(to) {
       const newForumView = to.params.forum;
