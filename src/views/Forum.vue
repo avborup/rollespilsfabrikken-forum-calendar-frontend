@@ -157,6 +157,8 @@ h1 {
       .post-comment-info {
         display: flex;
         align-items: center;
+        font-size: 0.9rem;
+        color: rgba(0, 0, 0, 0.6);
 
         img {
           height: 1rem;
