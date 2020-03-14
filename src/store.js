@@ -21,6 +21,7 @@ export default new Vuex.Store({
     forumPosts: testPosts,
     forums: testForums,
     currentForumViewPathName: '',
+    currentlyFocusedPostId: testPosts[0].id, // FIXME: Better way in the end product
   },
   mutations: {
     SET_CURRENTLY_FOCUSED_EVENT_ID(state, newEventId) {
@@ -31,6 +32,9 @@ export default new Vuex.Store({
     },
     SET_CURRENT_FORUM_VIEW(state, newForumPathName) {
       state.currentForumViewPathName = newForumPathName;
+    },
+    SET_CURRENTLY_FOCUSED_POST_ID(state, newPostId) {
+      state.currentlyFocusedPostId = newPostId;
     },
   },
   actions: {
@@ -43,6 +47,9 @@ export default new Vuex.Store({
     updateCurrentForumView(context, newForumPathName) {
       const pathName = newForumPathName === undefined ? '' : newForumPathName;
       context.commit('SET_CURRENT_FORUM_VIEW', pathName);
+    },
+    updateCurrentlyFocusedPostId(context, postId) {
+      context.commit('SET_CURRENTLY_FOCUSED_POST_ID', postId);
     },
   },
 
@@ -108,6 +115,10 @@ export default new Vuex.Store({
 
     getAllForums(state) {
       return state.forums;
+    },
+
+    getCurrentlyFocusedPost(state) {
+      return state.forumPosts.find(({ id }) => id === state.currentlyFocusedPostId);
     },
   },
 });
