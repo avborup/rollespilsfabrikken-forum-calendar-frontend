@@ -4,6 +4,7 @@ import Calendar from '@/views/Calendar.vue';
 import CalendarEventViewer from '@/views/CalendarEventViewer.vue';
 import Forum from '@/views/Forum.vue';
 import ForumPostViewer from '@/views/ForumPostViewer.vue';
+import MarkdownGuideView from '@/views/MarkdownGuideView.vue';
 
 Vue.use(Router);
 
@@ -32,6 +33,11 @@ export default new Router({
       path: '/forum/:forum/opslag/:postId',
       name: 'post',
       component: ForumPostViewer,
+    },
+    {
+      path: '/markdown-guide',
+      name: 'markdown-guide',
+      component: MarkdownGuideView,
     },
   ],
 });

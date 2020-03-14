@@ -141,3 +141,74 @@ export default {
   }
 }
 </style>
+
+<style lang="scss">
+.md-content {
+  overflow-y: auto;
+}
+
+*.md-content {
+  p, ul:not(:last-child), ol:not(:last-child), pre,
+  h1, h2, h3, h4, h5, h6, table, hr {
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  code {
+    font-size: 0.9rem;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    &:not(:first-child) {
+      margin-top: 1rem;
+    }
+  }
+
+  ul p, ol p {
+    margin-bottom: 0.25rem;
+  }
+
+  pre, p > code {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: rgba(0, 0, 0, 0.025);
+    border-radius: 0.25rem;
+  }
+
+  pre {
+    padding: 0.75rem;
+  }
+
+  p > code {
+    padding: 0.25rem 0.4rem;
+  }
+
+  ul, ol {
+    padding-left: 2rem;
+  }
+
+  blockquote {
+    border-left: 0.2rem solid rgba(0, 0, 0, 0.1);
+    padding-left: 1rem;
+    font-style: italic;
+  }
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+
+    td, th {
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      padding: 0.3rem 0.5rem;
+    }
+  }
+
+  .katex-display {
+    display: flex;
+    justify-content: center;
+  }
+}
+</style>
