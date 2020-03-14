@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Calendar from '@/views/Calendar.vue';
 import CalendarEventViewer from '@/views/CalendarEventViewer.vue';
 import Forum from '@/views/Forum.vue';
+import ForumPostViewer from '@/views/ForumPostViewer.vue';
 
 Vue.use(Router);
 
@@ -26,6 +27,11 @@ export default new Router({
       path: '/forum/:forum?',
       name: 'forum',
       component: Forum,
+    },
+    {
+      path: '/forum/:forum/opslag/:postId',
+      name: 'post',
+      component: ForumPostViewer,
     },
   ],
 });

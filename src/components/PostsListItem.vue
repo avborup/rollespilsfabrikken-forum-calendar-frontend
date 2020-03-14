@@ -1,33 +1,35 @@
 <template>
-  <li>
-    <div class="avatar">
-      <img src="/assets/icons/person.svg" alt="Avatar icon">
-    </div>
-    <h4 :title="title">{{ title }}</h4>
-    <p class="author-date">
-      <span class="author">{{ author }}</span>
-      <span class="date">
-        <span class="sep"> &ndash;</span>
-        {{ toElapsedTimeStr(date) }}
-      </span>
-    </p>
-    <div class="post-info">
-      <div class="post-comment-info" :title="`${commentCount} kommentarer`">
-        <img src="/assets/icons/comment.svg" alt="Comment icon">
-        <span class="post-num-comments">{{ commentCount }}</span>
+  <router-link :to="{ name: 'post', params: { postId: id } }">
+    <li>
+      <div class="avatar">
+        <img src="/assets/icons/person.svg" alt="Avatar icon">
       </div>
-    </div>
-    <div
-      class="post-forum"
-      :title="forum.name"
-      :style="{
-        borderColor: forum.color,
-        color: forum.color,
-      }"
-    >
-      {{ forum.name }}
-    </div>
-  </li>
+      <h4 :title="title">{{ title }}</h4>
+      <p class="author-date">
+        <span class="author">{{ author }}</span>
+        <span class="date">
+          <span class="sep"> &ndash;</span>
+          {{ toElapsedTimeStr(date) }}
+        </span>
+      </p>
+      <div class="post-info">
+        <div class="post-comment-info" :title="`${commentCount} kommentarer`">
+          <img src="/assets/icons/comment.svg" alt="Comment icon">
+          <span class="post-num-comments">{{ commentCount }}</span>
+        </div>
+      </div>
+      <div
+        class="post-forum"
+        :title="forum.name"
+        :style="{
+          borderColor: forum.color,
+          color: forum.color,
+        }"
+      >
+        {{ forum.name }}
+      </div>
+    </li>
+  </router-link>
 </template>
 
 <script>
@@ -72,6 +74,11 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
 li {
   display: grid;
   grid-template-columns: 3rem 1fr 3rem 6rem;
@@ -84,10 +91,7 @@ li {
   padding: 0.75rem 0.5rem;
   border-radius: 0.5rem;
   border: 0.1rem solid rgba(0, 0, 0, 0.05);
-
-  &:not(:last-child) {
-    margin-bottom: 1rem;
-  }
+  margin-bottom: 1rem;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.03);
