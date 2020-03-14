@@ -4,7 +4,14 @@
       <button class="open-sidebar-button" @click="openSidebar" title="Åben sidebjælke">
         <img src="assets/icons/sidebar.svg">
       </button>
-      Kalender
+      <div class="page-title">
+        <img
+          class="logo"
+          src="/assets/icons/rollespilsfabrikken.svg"
+          alt="Rollespilsfabrikkens logo"
+        >
+        Rollespilsfabrikken
+      </div>
     </header>
     <PageSidebarWrapper class="sidebar-wrapper" ref="sidebar" />
     <PageSidebar class="sidebar" />
@@ -68,6 +75,7 @@ export default {
     padding: 0.1rem;
     width: 1.5rem;
     height: 1.5rem;
+    margin-right: 0.5rem;
 
     img {
       width: 100%;
@@ -85,6 +93,17 @@ export default {
   align-items: center;
   grid-template-columns: auto 1fr;
   grid-column-gap: 1rem;
+
+  .page-title {
+    display: flex;
+    align-items: center;
+
+    .logo {
+      width: 2rem;
+      height: 2rem;
+      margin-right: 0.5rem;
+    }
+  }
 }
 
 .sidebar {
