@@ -8,6 +8,7 @@ import {
   testCategories,
   testPosts,
   testForums,
+  testFullPosts,
 } from '@/testData';
 
 Vue.use(Vuex);
@@ -19,6 +20,9 @@ export default new Vuex.Store({
     currentCalendarCategories: testCategories.map(({ name }) => name),
     currentlyFocusedEventId: testEvents[0].id, // FIXME: Better way in the end product
     forumPosts: testPosts,
+    // TODO: Turn this into a request. This should NOT be stored locally due to
+    // the amount of information stored (full post and comments content).
+    forumFullPosts: testFullPosts,
     forums: testForums,
     currentForumViewPathName: '',
     currentlyFocusedPostId: testPosts[0].id, // FIXME: Better way in the end product
@@ -118,7 +122,7 @@ export default new Vuex.Store({
     },
 
     getCurrentlyFocusedPost(state) {
-      return state.forumPosts.find(({ id }) => id === state.currentlyFocusedPostId);
+      return state.forumFullPosts.find(({ id }) => id === state.currentlyFocusedPostId);
     },
   },
 });

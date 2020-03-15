@@ -1,9 +1,11 @@
 <template>
   <div class="view-container">
-    <vue-markdown
-        class="md-content"
-        :html="false"
-    >{{ guideMd }}</vue-markdown>
+    <div class="content-container">
+      <vue-markdown
+          class="md-content"
+          :html="false"
+      >{{ guideMd }}</vue-markdown>
+    </div>
   </div>
 </template>
 
@@ -28,12 +30,13 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.view-container {
+.content-container {
   margin: 0.8rem;
+  padding: 1rem 0;
 }
 
 @media (min-width: 700px) {
-  .view-container {
+  .content-container {
     width: 700px;
     margin-right: auto;
     margin-left: auto;

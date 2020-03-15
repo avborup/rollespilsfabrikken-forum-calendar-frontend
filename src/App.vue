@@ -113,6 +113,7 @@ export default {
 
 .main-content {
   grid-area: main;
+  overflow-y: auto;
 }
 
 .fade-enter-active,
@@ -143,6 +144,8 @@ export default {
 </style>
 
 <style lang="scss">
+@import '@/assets/scss/theme.scss';
+
 .md-content {
   overflow-y: auto;
 }
@@ -158,7 +161,8 @@ export default {
   }
 
   code {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    font-family: $fonts-monospace;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -174,7 +178,7 @@ export default {
   pre, p > code {
     white-space: pre-wrap;
     word-wrap: break-word;
-    background-color: rgba(0, 0, 0, 0.025);
+    background-color: rgba(0, 0, 0, 0.03);
     border-radius: 0.25rem;
   }
 
@@ -183,7 +187,7 @@ export default {
   }
 
   p > code {
-    padding: 0.25rem 0.4rem;
+    padding: 0.15rem 0.2rem;
   }
 
   ul, ol {

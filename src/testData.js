@@ -151,3 +151,57 @@ export const testForums = [
     id: '12345'
   },
 ];
+
+export const testFullPosts = [
+  {
+    title: 'Eye of the Tiger',
+    author: 'Survivor',
+    commentCount: 23,
+    date: new Date(2020, 0, 9, 18, 41),
+    id: '802bad18',
+    forumId: '12',
+    content: `Every great band needs a little luck. And for [Survivor](https://www.loudersound.com/features/buyer-s-guide-survivor) it came in 1981 when Sylvester Stallone commissioned them to write the theme song for the third movie in his blockbuster Rocky franchise. Stallone loved the Chicago rockers’ minor hit Poor Man’s Son, and wanted an anthem in a similar vein. “Something with a pulse!” he said.
+
+### Other albums released in June 1982
+- Private Audition - Heart
+- Battle Hymns - Manowar
+- Built for Speed - Stray Cats
+- Chicago 16 - Chicago
+- Screaming Blue Murder - Girlschool
+- Killers - Kiss
+- Beat - King Crimson
+- Mirage - Fleetwood Mac
+- Daylight Again - Crosby, Stills & Nash
+- Pictures At Eleven - Robert Plant
+- Animation - Jon Anderson
+- Eye In The Sky - The Alan Parsons Project
+- Good Trouble - REO Speedwagon
+- Nugent - Ted Nugent
+- Sunshine Dream - The Beach Boys
+
+Ovenstående er to uddrag fra https://www.loudersound.com/reviews/survivor-eye-of-the-tiger-album-of-the-week-club-review.
+
+### Lyrics
+> Risin' up, back on the street
+> Did my time, took my chances
+> Went the distance, now I'm back on my feet
+> Just a man and his will to survive
+> 
+> So many times, it happens too fast
+> You trade your passion for glory
+> Don't lose your grip on the dreams of the past
+> You must fight just to keep them alive
+>
+> ...
+`,
+  },
+  {
+    title: 'Equal Rights, Equal Lefts',
+    author: 'Otep',
+    commentCount: 5,
+    date: new Date(2020, 2, 11, 21, 54, 2),
+    id: '7304462c',
+    forumId: '123',
+    content: `Equal rights, Equal lefts, Fight for your right, To exist, Equal rights, Equal lefts, Fight for your right, To exist, Equal rights, Equal lefts, Fight for your right, To exist, Fight for your right, To exist`,
+  },
+]
