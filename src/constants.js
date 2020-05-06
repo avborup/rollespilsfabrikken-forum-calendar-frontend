@@ -22,3 +22,9 @@ export const weekDayNames = [
   'Lørdag',
   'Søndag',
 ];
+
+export const colourCycle = [
+  '#20639B',
+  '#ED553B',
+  '#3CAEA3',
+];

@@ -10,6 +10,7 @@ import {
   testForums,
   testFullPosts,
 } from '@/testData';
+import testComments from '@/assets/testComments';
 
 Vue.use(Vuex);
 
@@ -123,6 +124,22 @@ export default new Vuex.Store({
 
     getCurrentlyFocusedPost(state) {
       return state.forumFullPosts.find(({ id }) => id === state.currentlyFocusedPostId);
+    },
+
+    getCurrentPostComments() {
+      // Don't save the full-text comments. To be changed.
+      // In the future, this qill be a request.
+      function recursivelyFixData(comments) {
+        return comments.map(comment => ({
+          ...comment,
+          childComments: recursivelyFixData(comment.childComments),
+          createdAt: new Date(comment.createdAt),
+          updatedAt: new Date(comment.updatedAt),
+          id: comment.id.toString(),
+        }));
+      }
+
+      return recursivelyFixData(testComments);
     },
   },
 });

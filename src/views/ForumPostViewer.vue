@@ -25,7 +25,10 @@
           Del
         </button>
       </div>
-      <div class="comments-wrapper"></div>
+      <div class="comments-wrapper">
+        <h2 class="comments-header">Kommentarer</h2>
+        <CommentSection />
+      </div>
     </div>
   </div>
 </template>
@@ -33,12 +36,14 @@
 <script>
 import { mapGetters } from 'vuex';
 import VueMarkdown from 'vue-markdown';
+import CommentSection from '@/components/CommentSection.vue';
 import { toElapsedTimeStr } from '@/dateUtils';
 
 export default {
   name: 'ForumPostViewer',
   components: {
     VueMarkdown,
+    CommentSection,
   },
 
   computed: {
@@ -142,6 +147,10 @@ export default {
     padding: 0 0.8rem;
     margin-bottom: 0.5rem;
   }
+}
+
+.comments-header {
+  margin-top: 1.5rem;
 }
 
 @media (min-width: 700px) {
