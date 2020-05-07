@@ -35,7 +35,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters([
+    ...mapGetters('calendar', [
       'getEventsOnDateFilteredByCategory',
     ]),
   },

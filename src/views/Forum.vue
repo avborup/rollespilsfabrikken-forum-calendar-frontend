@@ -18,13 +18,13 @@ export default {
 
   beforeMount() {
     const { forum } = this.$route.params;
-    this.$store.dispatch('updateCurrentForumView', forum);
+    this.$store.dispatch('forum/updateCurrentForumView', forum);
   },
 
   watch: {
     $route(to) {
       const newForumView = to.params.forum;
-      this.$store.dispatch('updateCurrentForumView', newForumView);
+      this.$store.dispatch('forum/updateCurrentForumView', newForumView);
     },
   },
 };

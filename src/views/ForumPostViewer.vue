@@ -47,14 +47,14 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
+    ...mapGetters('forum', {
       post: 'getCurrentlyFocusedPost',
     }),
   },
 
   beforeMount() {
     const { postId } = this.$route.params;
-    this.$store.dispatch('updateCurrentlyFocusedPostId', postId);
+    this.$store.dispatch('forum/updateCurrentlyFocusedPostId', postId);
   },
 
   methods: {

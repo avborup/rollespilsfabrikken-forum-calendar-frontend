@@ -20,7 +20,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
+    ...mapGetters('forum', {
       comments: 'getCurrentPostComments',
     }),
   },

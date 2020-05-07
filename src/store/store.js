@@ -7,7 +7,13 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   modules: {
-    forum: forumModule,
-    calendar: calendarModule,
+    forum: {
+      namespaced: true,
+      ...forumModule,
+    },
+    calendar: {
+      namespaced: true,
+      ...calendarModule,
+    },
   },
 });

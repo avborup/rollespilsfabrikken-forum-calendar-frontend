@@ -32,13 +32,13 @@ export default {
   },
 
   methods: {
-    ...mapActions([
+    ...mapActions('calendar', [
       'updateCurrentlyFocusedEventId',
     ]),
   },
 
   computed: {
-    ...mapGetters([
+    ...mapGetters('calendar', [
       'getCategoryColour',
     ]),
   },

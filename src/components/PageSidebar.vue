@@ -58,17 +58,19 @@ export default {
   },
 
   computed: {
-    ...mapGetters({
+    ...mapGetters('calendar', {
       categories: 'getAllCategories',
       getCategoryColour: 'getCategoryColour',
+    }),
+    ...mapGetters('forum', {
       forums: 'getAllForums',
     }),
     checkedCategories: {
       get() {
-        return this.$store.getters.getCurrentCalendarCategories;
+        return this.$store.getters['calendar/getCurrentCalendarCategories'];
       },
       set(newCategories) {
-        this.$store.dispatch('updateCurrentCalendarCategories', newCategories);
+        this.$store.dispatch('calendar/updateCurrentCalendarCategories', newCategories);
       },
     },
   },
