@@ -5,6 +5,8 @@ import CalendarEventViewer from '@/views/CalendarEventViewer.vue';
 import Forum from '@/views/Forum.vue';
 import ForumPostViewer from '@/views/ForumPostViewer.vue';
 import MarkdownGuideView from '@/views/MarkdownGuideView.vue';
+// FIXME: Why does this break when using @?
+import LoginPage from './views/LoginPage.vue';
 
 Vue.use(Router);
 
@@ -15,6 +17,11 @@ export default new Router({
     //   name: 'home',
     //   component: Calendar,
     // },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginPage,
+    },
     {
       path: '/kalender',
       name: 'calendar',
