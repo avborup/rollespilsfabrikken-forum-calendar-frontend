@@ -1,7 +1,12 @@
 <template>
   <div id="app">
     <header class="header">
-      <button class="open-sidebar-button" @click="openSidebar" title="Åben sidebjælke">
+      <button
+        class="open-sidebar-button"
+        @click="openSidebar"
+        title="Åben sidebjælke"
+        :class="{ hidden: shouldHideSidebar }"
+      >
         <img src="assets/icons/sidebar.svg">
       </button>
       <div class="page-title">
@@ -14,7 +19,7 @@
       </div>
     </header>
     <PageSidebarWrapper class="sidebar-wrapper" ref="sidebar" />
-    <PageSidebar class="sidebar" />
+    <PageSidebar class="sidebar" :class="{ hidden: shouldHideSidebar }" />
     <transition name="fade" mode="out-in">
       <router-view class="main-content" />
     </transition>
@@ -32,9 +37,33 @@ export default {
     PageSidebarWrapper,
   },
 
+  data() {
+    return {
+      shouldHideSidebar: false,
+    };
+  },
+
   methods: {
     openSidebar() {
       this.$refs.sidebar.openSidebar();
+    },
+
+    decideSidebarStatus(route) {
+      const fullWidthPages = [
+        'login',
+      ];
+
+      this.shouldHideSidebar = fullWidthPages.includes(route.name);
+    },
+  },
+
+  mounted() {
+    this.decideSidebarStatus(this.$router.history.current);
+  },
+
+  watch: {
+    $route(to) {
+      this.decideSidebarStatus(to);
     },
   },
 };
@@ -108,6 +137,10 @@ export default {
 
 .sidebar {
   grid-area: sidebar;
+  display: none;
+}
+
+.sidebar.hidden, .open-sidebar-button.hidden {
   display: none;
 }
 
