@@ -1,5 +1,11 @@
 <template>
-  <router-link :to="{ name: 'post', params: { postId: id } }">
+  <router-link :to="{
+    name: 'post',
+    params: {
+      postId: id,
+      forum: forum.pathName,
+    },
+  }">
     <li>
       <div class="avatar">
         <img src="/assets/icons/person.svg" alt="Avatar icon">
