@@ -63,6 +63,19 @@ export default {
         }
       }
     },
+
+    redirect() {
+      const queries = this.$router.history.current.query;
+
+      if (queries.redirect) {
+        const { redirect } = queries;
+        this.$router.push(redirect);
+      } else {
+        this.$router.push({
+          name: 'home',
+        });
+      }
+    },
   },
 
   computed: {
@@ -74,18 +87,15 @@ export default {
   watch: {
     isAuthenticated(isAuth) {
       if (isAuth) {
-        const queries = this.$router.history.current.query;
-
-        if (queries.redirect) {
-          const { redirect } = queries;
-          this.$router.push(redirect);
-        } else {
-          this.$router.push({
-            name: 'home',
-          });
-        }
+        this.redirect();
       }
     },
+  },
+
+  created() {
+    if (this.$store.state.auth.isAuthenticated) {
+      this.redirect();
+    }
   },
 };
 </script>

@@ -8,12 +8,29 @@ export default {
       : await auth.tokenIsValid(authToken);
 
     context.commit('SET_AUTH_STATUS', isAuthenticated);
+
+    return isAuthenticated;
   },
 
   async login(context, { email, password }) {
     const authToken = await auth.login(email, password);
 
+    window.localStorage.setItem('authToken', authToken);
+
     context.commit('SET_AUTH_TOKEN', authToken);
     context.dispatch('updateAuthStatus');
+  },
+
+  async loadPreviousAuthTokenIfExists(context) {
+    const authToken = window.localStorage.getItem('authToken');
+
+    if (authToken) {
+      context.commit('SET_AUTH_TOKEN', authToken);
+      const isValidToken = await context.dispatch('updateAuthStatus');
+
+      if (!isValidToken) {
+        context.commit('SET_AUTH_TOKEN', null);
+      }
+    }
   },
 };

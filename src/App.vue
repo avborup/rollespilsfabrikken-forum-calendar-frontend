@@ -19,27 +19,33 @@
       </div>
     </header>
     <PageSidebarWrapper class="sidebar-wrapper" ref="sidebar" />
-    <PageSidebar class="sidebar" :class="{ hidden: shouldHideSidebar }" />
-    <transition name="fade" mode="out-in">
+    <PageSidebar class="sidebar" :class="{ hidden: shouldHideSidebar || isLoading }" />
+    <transition v-if="!isLoading" name="fade" mode="out-in">
       <router-view class="main-content" />
     </transition>
+    <div v-else class="loading">
+      <LoadingSpinner />
+    </div>
   </div>
 </template>
 
 <script>
 import PageSidebar from '@/components/PageSidebar.vue';
 import PageSidebarWrapper from '@/components/PageSidebarWrapper.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 
 export default {
   name: 'App',
   components: {
     PageSidebar,
     PageSidebarWrapper,
+    LoadingSpinner,
   },
 
   data() {
     return {
       shouldHideSidebar: false,
+      isLoading: true,
     };
   },
 
@@ -65,6 +71,12 @@ export default {
     $route(to) {
       this.decideSidebarStatus(to);
     },
+  },
+
+  async created() {
+    this.isLoading = true;
+    await this.$store.dispatch('auth/loadPreviousAuthTokenIfExists');
+    this.isLoading = false;
   },
 };
 </script>
@@ -147,6 +159,10 @@ export default {
 .main-content {
   grid-area: main;
   overflow-y: auto;
+}
+
+.loading {
+  grid-area: main;
 }
 
 .fade-enter-active,
