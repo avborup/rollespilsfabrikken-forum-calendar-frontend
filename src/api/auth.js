@@ -30,13 +30,15 @@ export async function login(email, password) {
     body: JSON.stringify(body),
   });
 
-  console.log(res);
-
-  if (res.status === 401) {
+  // The API returns 404 if the user doesn't exist and 401 if:
+  //   - The account hasnt been activated after signup
+  //   - The account is banned or deleted
+  //   - The credentials are incorrect
+  if (res.status === 401 || res.status === 404) {
     throw new UnauthorizedError('Invalid login credentials');
   }
 
-  if (res.status !== 200) {
+  if (!res.ok) {
     throw new ServerError('Bad login request');
   }
 
