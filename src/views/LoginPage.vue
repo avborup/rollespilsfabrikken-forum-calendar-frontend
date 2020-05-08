@@ -1,6 +1,6 @@
 <template>
   <div class="login-wrapper">
-    <h1>Log ind {{ isAuthenticated }}</h1>
+    <h1>Log ind</h1>
     <p v-if="isInvalidLogin" class="login-error">Ugyldigt brugernavn eller password!</p>
     <form @submit="handleSubmit" class="login-form">
       <div class="form-field" :class="{ 'is-error': emailHasError }">
