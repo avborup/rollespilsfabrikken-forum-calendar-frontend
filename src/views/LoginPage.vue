@@ -74,10 +74,6 @@ export default {
   watch: {
     isAuthenticated(isAuth) {
       if (isAuth) {
-        // For now, this is simply a console log. This will be used to redirect the user
-        // once they are authenticated, but this will be implemented at a later time.
-        console.log('User is now authenticated.');
-
         const queries = this.$router.history.current.query;
 
         if (queries.redirect) {
