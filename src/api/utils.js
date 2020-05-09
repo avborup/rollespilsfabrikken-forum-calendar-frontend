@@ -44,6 +44,8 @@ export function addPathNames(forums) {
         const newSuffix = Math.max(...suffixes) + 1;
 
         pathName = `${pathName}-${newSuffix}`;
+      } else {
+        pathName = `${pathName}-1`;
       }
     }
 
