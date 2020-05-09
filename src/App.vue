@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import PageSidebar from '@/components/PageSidebar.vue';
 import PageSidebarWrapper from '@/components/PageSidebarWrapper.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
@@ -59,8 +60,14 @@ export default {
         'login',
       ];
 
-      this.shouldHideSidebar = fullWidthPages.includes(route.name);
+      this.shouldHideSidebar = fullWidthPages.includes(route.name) || !this.isAuthenticated;
     },
+  },
+
+  computed: {
+    ...mapGetters('auth', [
+      'isAuthenticated',
+    ]),
   },
 
   mounted() {
@@ -70,6 +77,10 @@ export default {
   watch: {
     $route(to) {
       this.decideSidebarStatus(to);
+    },
+
+    isAuthenticated() {
+      this.decideSidebarStatus(this.$router.history.current);
     },
   },
 
