@@ -28,7 +28,7 @@ export function addPathNames(forums) {
   const pathNames = [];
 
   forums.forEach((forum) => {
-    let pathName = pathNameify(forum.title);
+    let pathName = pathNameify(forum.name);
 
     // eslint-disable-next-line no-confusing-arrow
     const numDuplicates = pathNames.reduce((acc, cur) => cur === pathName ? acc + 1 : acc, 0);
