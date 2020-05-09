@@ -1,11 +1,6 @@
-import { makeUrl, alwaysHeaders } from '@/api/api';
+import { alwaysHeaders } from '@/api/constants';
+import { makeUrl, makeAuthHeader } from '@/api/utils';
 import { ServerError, UnauthorizedError } from '@/api/errors';
-
-export function makeAuthHeader(token) {
-  return {
-    Authorization: `Bearer ${token}`,
-  };
-}
 
 /**
  * Gains access to the API by retrieving an access token (provided that the user
