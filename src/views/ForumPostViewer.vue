@@ -15,6 +15,35 @@
           :html="false"
         >{{ post.body }}</vue-markdown>
       </div>
+      <div v-else class="skeleton-post-wrapper">
+        <div class="post-header">
+          <div class="avatar"></div>
+          <span class="author skeleton-line"></span>
+          <span class="date skeleton-line"></span>
+          <h1 class="title">
+            <span class="skeleton-line"></span>
+            <span class="skeleton-line"></span>
+          </h1>
+        </div>
+        <div class="md-content post-content">
+          <div class="skeleton-section">
+            <span class="skeleton-line" style="width: 95%"></span>
+            <span class="skeleton-line" style="width: 100%"></span>
+            <span class="skeleton-line" style="width: 10rem"></span>
+          </div>
+          <div class="skeleton-section">
+            <span class="skeleton-line" style="width: 100%"></span>
+            <span class="skeleton-line" style="width: 93%"></span>
+            <span class="skeleton-line" style="width: 97%"></span>
+            <span class="skeleton-line" style="width: 95%"></span>
+            <span class="skeleton-line" style="width: 15%"></span>
+          </div>
+          <div class="skeleton-section">
+            <span class="skeleton-line" style="width: 100%"></span>
+            <span class="skeleton-line" style="width: 60%"></span>
+          </div>
+        </div>
+      </div>
       <div v-if="!isLoadingPost" class="post-info-and-buttons">
         <div class="icon-and-label">
           <img src="/assets/icons/comment.svg" alt="Comment icon">
@@ -25,9 +54,19 @@
           Del
         </button>
       </div>
-      <div v-if="!isLoadingComments" class="comments-wrapper">
+      <div v-else class="skeleton-post-info-and-buttons post-info-and-buttons">
+        <div class="icon-and-label">
+          <span class="skeleton-icon"></span>
+          <span class="skeleton-label skeleton-line"></span>
+        </div>
+        <div class="icon-and-label">
+          <span class="skeleton-icon"></span>
+          <span class="skeleton-label skeleton-line"></span>
+        </div>
+      </div>
+      <div class="comments-wrapper">
         <h2 class="comments-header">Kommentarer</h2>
-        <CommentSection />
+        <CommentSection :isLoading="isLoadingComments" />
       </div>
     </div>
   </div>
@@ -188,6 +227,102 @@ export default {
   }
 }
 
+.skeleton-post-wrapper {
+  .post-header {
+    .author, .date, .avatar, .title .skeleton-line {
+      background-color: $skeleton-colour;
+      border-radius: 10rem;
+    }
+
+    .author, .date {
+      height: 0.9rem;
+    }
+
+    .author {
+      width: 15rem;
+    }
+
+    .date {
+      width: 12rem;
+    }
+
+    .title .skeleton-line {
+      display: block;
+      height: 1.7rem;
+
+      &:not(:last-child) {
+        width: 100%;
+        margin-bottom: 0.75rem;
+      }
+
+      &:last-child {
+        width: 20rem;
+      }
+    }
+  }
+
+  .post-content .skeleton-section {
+    margin-bottom: 1rem;
+
+    .skeleton-line {
+      background-color: $skeleton-colour;
+      border-radius: 10rem;
+      display: block;
+      height: 0.9rem;
+
+      &:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  .skeleton-line {
+    background: linear-gradient(to right,#f3f3f3 1rem,#eee 4rem,#f3f3f3 7rem);
+    animation: skeleton-shimmer 2s linear 0s infinite normal forwards;
+  }
+}
+
+.skeleton-post-info-and-buttons {
+  .icon-and-label {
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.6);
+
+    .skeleton-label, .skeleton-icon {
+      display: block;
+      background-color: $skeleton-colour;
+      border-radius: 10rem;
+      height: 0.9rem;
+    }
+
+    .skeleton-label {
+      width: 4rem;
+    }
+
+    .skeleton-icon {
+      width: 0.9rem;
+      margin-right: 0.3rem;
+    }
+
+    .skeleton-line {
+      background: linear-gradient(to right,#f3f3f3 1rem,#eee 4rem,#f3f3f3 7rem);
+      animation: skeleton-shimmer 6s linear 0s infinite normal forwards;
+    }
+  }
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 100vw 0;
+  }
+}
+
 .comments-header {
   margin-top: 1.5rem;
 }
@@ -197,6 +332,16 @@ export default {
     width: 700px;
     margin-right: auto;
     margin-left: auto;
+  }
+
+  @keyframes skeleton-shimmer {
+    from {
+      background-position: 0 0;
+    }
+
+    to {
+      background-position: 700px 0;
+    }
   }
 }
 </style>
