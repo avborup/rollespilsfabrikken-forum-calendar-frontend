@@ -114,6 +114,7 @@ $listitem-padding: 0.5rem;
   padding: 1rem;
   font-size: 1rem;
   font-weight: 400;
+  overflow-y: auto;
 
   .close-sidebar-button {
     position: relative;
