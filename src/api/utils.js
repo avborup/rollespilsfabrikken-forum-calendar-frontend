@@ -58,3 +58,23 @@ export function addPathNames(forums) {
 
   return withPathNames;
 }
+
+/**
+ * Renames keys in an object.
+ * @param {Object} obj     The object whose keys will be renamed.
+ * @param {Object} renames New-old-name pairs as newKey: oldKey.
+ *
+ * @returns {Object} The key-renamed object.
+ */
+export function renameKeys(obj, renames) {
+  const copy = { ...obj };
+
+  Object.keys(renames).forEach((newKey) => {
+    const oldKey = renames[newKey];
+    const valueAtKey = copy[oldKey];
+    delete copy[oldKey];
+    copy[newKey] = valueAtKey;
+  });
+
+  return copy;
+}

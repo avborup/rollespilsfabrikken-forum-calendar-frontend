@@ -8,7 +8,7 @@
         </div>
       </div>
       <p class="author-date">
-        <span class="author">{{ user.name }}</span>
+        <span class="author">{{ user.username }}</span>
         <span class="date">
           <span class="sep"> &ndash;</span>
           For {{ toElapsedTimeStr(createdAt) }} siden
@@ -32,7 +32,7 @@
 import { toElapsedTimeStr } from '@/dateUtils';
 import { colourCycle } from '@/constants';
 
-const userObjKeys = ['id', 'name', 'avatarUrl'];
+const userObjKeys = ['id', 'username', 'avatarUrl'];
 
 export default {
   name: 'SingleComment',

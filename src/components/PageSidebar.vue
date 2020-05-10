@@ -57,6 +57,14 @@ export default {
     CalendarIcon,
   },
 
+  watch: {
+    isAuthenticated(isAuth) {
+      if (isAuth) {
+        this.$store.dispatch('forum/fetchAllForums');
+      }
+    },
+  },
+
   computed: {
     ...mapGetters('calendar', {
       categories: 'getAllCategories',
@@ -65,6 +73,9 @@ export default {
     ...mapGetters('forum', {
       forums: 'getAllForums',
     }),
+    ...mapGetters('auth', [
+      'isAuthenticated',
+    ]),
     checkedCategories: {
       get() {
         return this.$store.getters['calendar/getCurrentCalendarCategories'];
@@ -231,6 +242,8 @@ $listitem-padding: 0.5rem;
     }
 
     .sub-nav-item {
+      align-items: flex-start;
+
       &:not(:last-child) {
         margin-bottom: 0.2rem;
       }

@@ -2,7 +2,7 @@
   <div class="forum-content-wrapper">
     <div class="forum">
       <h1>Opslag</h1>
-      <PostsList />
+      <PostsList ref="postsList" />
     </div>
   </div>
 </template>
@@ -21,10 +21,18 @@ export default {
     this.$store.dispatch('forum/updateCurrentForumView', forum);
   },
 
+  mounted() {
+    this.$store.dispatch('forum/clearPosts');
+    this.$refs.postsList.fetchPosts();
+  },
+
   watch: {
     $route(to) {
       const newForumView = to.params.forum;
       this.$store.dispatch('forum/updateCurrentForumView', newForumView);
+
+      this.$store.dispatch('forum/clearPosts');
+      this.$refs.postsList.fetchPosts();
     },
   },
 };

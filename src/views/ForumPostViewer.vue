@@ -1,21 +1,21 @@
 <template>
   <div class="view-container">
     <div class="post-container">
-      <div class="post-wrapper">
+      <div v-if="!isLoadingPost" class="post-wrapper">
         <div class="post-header">
           <div class="avatar">
             <img src="/assets/icons/person.svg" alt="Avatar icon">
           </div>
-          <span class="author">{{ post.author }}</span>
-          <span class="date">Slået op for {{ toElapsedTimeStr(post.date) }} siden</span>
+          <span class="author">{{ post.user.username }}</span>
+          <span class="date">Slået op for {{ toElapsedTimeStr(post.createdAt) }} siden</span>
           <h1 class="title">{{ post.title }}</h1>
         </div>
         <vue-markdown
           class="md-content post-content"
           :html="false"
-        >{{ post.content }}</vue-markdown>
+        >{{ post.body }}</vue-markdown>
       </div>
-      <div class="post-info-and-buttons">
+      <div v-if="!isLoadingPost" class="post-info-and-buttons">
         <div class="icon-and-label">
           <img src="/assets/icons/comment.svg" alt="Comment icon">
           {{ post.commentCount }} kommentarer
@@ -25,7 +25,7 @@
           Del
         </button>
       </div>
-      <div class="comments-wrapper">
+      <div v-if="!isLoadingComments" class="comments-wrapper">
         <h2 class="comments-header">Kommentarer</h2>
         <CommentSection />
       </div>
@@ -46,19 +46,58 @@ export default {
     CommentSection,
   },
 
-  computed: {
-    ...mapGetters('forum', {
-      post: 'getCurrentlyFocusedPost',
-    }),
+  data() {
+    return {
+      isLoadingPost: true,
+      isLoadingComments: true,
+    };
   },
 
-  beforeMount() {
-    const { postId } = this.$route.params;
-    this.$store.dispatch('forum/updateCurrentlyFocusedPostId', postId);
+  computed: {
+    ...mapGetters('forum', {
+      forums: 'getAllForums',
+      post: 'getCurrentPost',
+    }),
   },
 
   methods: {
     toElapsedTimeStr,
+
+    fetchPost() {
+      this.isLoadingPost = true;
+      this.isLoadingComments = true;
+
+      if (this.forums.length === 0) {
+        return;
+      }
+
+      const { postId, forum } = this.$route.params;
+
+      this.$store.dispatch('forum/fetchPost', { postId, forumPathName: forum })
+        .then(() => {
+          this.isLoadingPost = false;
+        })
+        // TODO: Will be handled.
+        .catch(err => console.log(err));
+
+      this.$store.dispatch('forum/fetchComments', { postId, forumPathName: forum })
+        .then(() => {
+          this.isLoadingComments = false;
+        })
+        // TODO: Will be handled.
+        .catch(err => console.log(err));
+    },
+  },
+
+  watch: {
+    // This should only happen once (on page load).
+    forums() {
+      this.fetchPost();
+    },
+  },
+
+  created() {
+    this.fetchPost();
   },
 };
 </script>

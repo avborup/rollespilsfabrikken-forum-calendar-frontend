@@ -21,9 +21,42 @@ export default {
 
   computed: {
     ...mapGetters('forum', {
-      posts: 'getCurrentForumPosts',
+      posts: 'getPosts',
       getForumFromId: 'getForumFromId',
+      forums: 'getAllForums',
     }),
+  },
+
+  methods: {
+    async fetchPosts() {
+      if (this.forums.length === 0) {
+        return;
+      }
+
+      const pathName = this.$router.history.current.params.forum;
+
+      try {
+        await this.$store.dispatch('forum/fetchPosts', pathName);
+      } catch (err) {
+        // TODO: Will be handled.
+        console.log(err);
+      }
+    },
+  },
+
+  watch: {
+    // This should only happen once (on page load).
+    forums() {
+      this.fetchPosts();
+    },
+  },
+
+  created() {
+    // If the user goes to a specific post and goes back again, this component is
+    // recreated. Don't add duplicate posts when this happens.
+    if (this.posts.length === 0) {
+      this.fetchPosts();
+    }
   },
 };
 </script>

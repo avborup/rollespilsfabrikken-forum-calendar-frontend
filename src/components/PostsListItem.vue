@@ -12,10 +12,10 @@
       </div>
       <h4 :title="title">{{ title }}</h4>
       <p class="author-date">
-        <span class="author">{{ author }}</span>
+        <span class="author">{{ user.username }}</span>
         <span class="date">
           <span class="sep"> &ndash;</span>
-          {{ toElapsedTimeStr(date) }}
+          {{ toElapsedTimeStr(createdAt) }}
         </span>
       </p>
       <div class="post-info">
@@ -28,8 +28,8 @@
         class="post-forum"
         :title="forum.name"
         :style="{
-          borderColor: forum.color,
-          color: forum.color,
+          borderColor: forum.colour,
+          color: forum.colour,
         }"
       >
         {{ forum.name }}
@@ -49,11 +49,11 @@ export default {
       type: String,
       required: true,
     },
-    author: {
-      type: String,
+    user: {
+      type: Object,
       required: true,
     },
-    date: {
+    createdAt: {
       type: Date,
       required: true,
     },

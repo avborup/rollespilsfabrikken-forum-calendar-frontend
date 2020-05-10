@@ -1,44 +1,25 @@
-import testComments from '@/assets/testComments';
-
 export default {
   getAllPosts(state) {
     return state.forumPosts;
   },
 
-  getCurrentForumPosts(state) {
-    if (state.currentForumViewPathName === '') {
-      return state.forumPosts;
-    }
+  getPosts(state) {
+    return state.posts;
+  },
 
-    const { id } = state.forums
-      .find(({ pathName }) => pathName === state.currentForumViewPathName);
+  getCurrentPost(state) {
+    return state.currentPost;
+  },
 
-    return state.forumPosts.filter(({ forumId }) => forumId === id);
+  getCurrentPostComments(state) {
+    return state.currentPostComments;
   },
 
   getForumFromId: state => forumId => state.forums.find(({ id }) => id === forumId),
 
+  getForumFromPathName: state => pn => state.forums.find(({ pathName }) => pn === pathName),
+
   getAllForums(state) {
     return state.forums;
-  },
-
-  getCurrentlyFocusedPost(state) {
-    return state.forumFullPosts.find(({ id }) => id === state.currentlyFocusedPostId);
-  },
-
-  getCurrentPostComments() {
-    // Don't save the full-text comments. To be changed.
-    // In the future, this will be a request.
-    function recursivelyFixData(comments) {
-      return comments.map(comment => ({
-        ...comment,
-        childComments: recursivelyFixData(comment.childComments),
-        createdAt: new Date(comment.createdAt),
-        updatedAt: new Date(comment.updatedAt),
-        id: comment.id.toString(),
-      }));
-    }
-
-    return recursivelyFixData(testComments);
   },
 };
