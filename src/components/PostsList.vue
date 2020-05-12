@@ -1,11 +1,25 @@
 <template>
-  <ul class="posts">
+  <ul v-if="!isLoading" class="posts">
     <PostsListItem
       v-for="post in posts"
       :key="post.id"
       v-bind="post"
       :forum="getForumFromId(post.forumId)"
     />
+  </ul>
+  <ul v-else class="posts">
+    <li v-for="i in 4" :key="i" class="post-list-item skeleton-post-item">
+      <div class="avatar"></div>
+      <h4></h4>
+      <p class="author-date">
+        <span class="author shimmer"></span>
+        <span class="date shimmer"></span>
+      </p>
+      <div class="post-info">
+        <div class="post-comment-info shimmer"></div>
+      </div>
+      <div class="post-forum shimmer"></div>
+    </li>
   </ul>
 </template>
 
@@ -19,6 +33,12 @@ export default {
     PostsListItem,
   },
 
+  data() {
+    return {
+      isLoading: true,
+    };
+  },
+
   computed: {
     ...mapGetters('forum', {
       posts: 'getPosts',
@@ -29,6 +49,8 @@ export default {
 
   methods: {
     async fetchPosts() {
+      this.isLoading = true;
+
       if (this.forums.length === 0) {
         return;
       }
@@ -37,6 +59,7 @@ export default {
 
       try {
         await this.$store.dispatch('forum/fetchPosts', pathName);
+        this.isLoading = false;
       } catch (err) {
         // TODO: Will be handled.
         console.log(err);
@@ -62,7 +85,82 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/theme.scss';
+
 .posts {
   list-style-type: none;
+}
+
+.skeleton-post-item {
+  .author, .date, h4, .post-comment-info, .avatar {
+    background-color: $skeleton-colour;
+    border-radius: 10rem;
+  }
+
+  .author {
+    display: inline-block;
+    width: 8rem;
+    height: 0.8rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .date {
+    display: inline-block;
+    height: 0.8rem;
+    width: 7rem;
+  }
+
+  h4 {
+    height: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  .post-forum {
+    background-color: $skeleton-colour;
+    border-color: $skeleton-colour;
+    height: 1.85rem;
+  }
+
+  .post-comment-info {
+    width: 2.5rem;
+    height: 1.15rem;
+  }
+
+  &:hover {
+    background-color: #fff;
+  }
+
+  .shimmer {
+    background: linear-gradient(to right,#f3f3f3 1rem,#eee 4rem,#f3f3f3 7rem);
+    animation: skeleton-shimmer 4s linear 0s infinite normal forwards;
+  }
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 100vw 0;
+  }
+}
+
+@media (min-width: 600px) {
+  .skeleton-post-item {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+
+    .author {
+      height: 0.9rem;
+      margin-top: 0.3rem;
+      margin-bottom: none;
+      width: 10rem;
+    }
+
+    .date {
+      display: none;
+    }
+  }
 }
 </style>

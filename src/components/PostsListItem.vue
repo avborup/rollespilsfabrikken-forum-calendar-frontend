@@ -6,7 +6,7 @@
       forum: forum.pathName,
     },
   }">
-    <li>
+    <li class="post-list-item">
       <div class="avatar">
         <img src="/assets/icons/person.svg" alt="Avatar icon">
       </div>
@@ -78,14 +78,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/theme.scss';
-
 a {
   text-decoration: none;
   color: inherit;
 }
+</style>
 
-li {
+<style lang="scss">
+@import '@/assets/scss/theme.scss';
+
+.post-list-item {
   display: grid;
   grid-template-columns: 3rem 1fr 3rem 6rem;
   grid-template-rows: 1fr 1fr;
@@ -177,7 +179,7 @@ li {
 }
 
 @media (max-width: 600px) {
-  li {
+  .post-list-item {
     grid-template-rows: auto auto;
     grid-template-columns: 2rem 1fr 2.5rem 4rem;
     grid-template-areas:
