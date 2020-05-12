@@ -8,7 +8,7 @@
     />
   </ul>
   <ul v-else class="posts">
-    <li v-for="i in 4" :key="i" class="post-list-item skeleton-post-item">
+    <li v-for="i in 6" :key="i" class="post-list-item skeleton-post-item">
       <div class="avatar"></div>
       <h4></h4>
       <p class="author-date">
