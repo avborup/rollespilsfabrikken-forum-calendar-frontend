@@ -5,4 +5,5 @@ export default () => ({
   forums: [],
   currentForumViewPathName: '',
   latestPostsPromise: null,
+  hasMorePosts: false,
 });

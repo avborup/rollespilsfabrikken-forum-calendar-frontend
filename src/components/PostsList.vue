@@ -33,6 +33,13 @@ export default {
     PostsListItem,
   },
 
+  props: {
+    page: {
+      type: Number,
+      default: 1,
+    },
+  },
+
   data() {
     return {
       isLoading: true,
@@ -55,10 +62,13 @@ export default {
         return;
       }
 
-      const pathName = this.$router.history.current.params.forum;
+      this.$emit('scroll-to-top');
+
+      const forumPathName = this.$router.history.current.params.forum;
+      const { page } = this;
 
       try {
-        await this.$store.dispatch('forum/fetchPosts', pathName);
+        await this.$store.dispatch('forum/fetchPosts', { forumPathName, page });
         this.isLoading = false;
       } catch (err) {
         // TODO: Will be handled.
@@ -70,6 +80,11 @@ export default {
   watch: {
     // This should only happen once (on page load).
     forums() {
+      this.fetchPosts();
+    },
+
+    page() {
+      this.$store.dispatch('forum/clearPosts');
       this.fetchPosts();
     },
   },

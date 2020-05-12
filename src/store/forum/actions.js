@@ -8,11 +8,11 @@ export default {
     context.commit('SET_FORUMS', forums);
   },
 
-  async fetchPosts(context, forumPathName) {
+  async fetchPosts(context, { forumPathName, page }) {
     const { authToken } = context.rootState.auth;
 
     const params = {
-      page: 1,
+      page,
       extraQueries: {
         sort: 'created_at',
       },
@@ -29,7 +29,7 @@ export default {
     context.commit('SET_LATEST_POSTS_PROMISE', postsPromise);
 
     try {
-      const posts = await postsPromise;
+      const { posts, hasMorePosts } = await postsPromise;
 
       if (postsPromise === context.state.latestPostsPromise) {
         const withForumId = [];
@@ -48,6 +48,7 @@ export default {
 
         context.commit('APPEND_POSTS', withForumId);
         context.commit('SET_LATEST_POSTS_PROMISE', null);
+        context.commit('SET_HAS_MORE_POSTS', hasMorePosts);
       }
     } catch (err) {
       if (postsPromise === context.state.latestPostsPromise) {

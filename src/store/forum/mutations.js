@@ -32,4 +32,8 @@ export default {
   SET_CURRENT_FORUM_VIEW(state, newForumPathName) {
     state.currentForumViewPathName = newForumPathName;
   },
+
+  SET_HAS_MORE_POSTS(state, hasMorePosts) {
+    state.hasMorePosts = hasMorePosts;
+  },
 };

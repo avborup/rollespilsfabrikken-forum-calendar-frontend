@@ -106,9 +106,12 @@ export async function fetchPostsFromForum(token, forumId, {
   }
 
   const json = await res.json();
-  const { posts } = json.data;
+  const { posts, links } = json.data;
 
-  return posts.map(jsifyPostResponse);
+  return {
+    posts: posts.map(jsifyPostResponse),
+    hasMorePosts: links.next_page !== null,
+  };
 }
 
 /**
@@ -141,9 +144,12 @@ export async function fetchPostsFromAllForums(token, {
   }
 
   const json = await res.json();
-  const { posts } = json.data;
+  const { posts, links } = json.data;
 
-  return posts.map(jsifyPostResponse);
+  return {
+    posts: posts.map(jsifyPostResponse),
+    hasMorePosts: links.next_page !== null,
+  };
 }
 
 export async function fetchPost(token, forumId, postId) {
