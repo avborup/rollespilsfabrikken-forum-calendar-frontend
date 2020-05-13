@@ -87,7 +87,9 @@ export default {
     },
 
     scrollToTop() {
-      this.$el.scrollTo(0, 0);
+      if (this.$el) {
+        this.$el.scrollTo(0, 0);
+      }
     },
   },
 };
