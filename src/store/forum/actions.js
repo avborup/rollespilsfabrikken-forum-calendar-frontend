@@ -90,4 +90,18 @@ export default {
     const pathName = newForumPathName === undefined ? '' : newForumPathName;
     context.commit('SET_CURRENT_FORUM_VIEW', pathName);
   },
+
+  prevPage(context) {
+    const newPage = context.state.currentPage - 1;
+    context.commit('SET_CURRENT_PAGE', newPage);
+  },
+
+  nextPage(context) {
+    const newPage = context.state.currentPage + 1;
+    context.commit('SET_CURRENT_PAGE', newPage);
+  },
+
+  resetPage(context) {
+    context.commit('SET_CURRENT_PAGE', 1);
+  },
 };

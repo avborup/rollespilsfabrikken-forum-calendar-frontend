@@ -6,4 +6,5 @@ export default () => ({
   currentForumViewPathName: '',
   latestPostsPromise: null,
   hasMorePosts: false,
+  currentPage: 1,
 });

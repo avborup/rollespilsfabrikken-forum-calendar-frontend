@@ -4,18 +4,18 @@
       <h1>Opslag</h1>
       <PostsList
         ref="postsList"
-        :page="page"
+        :page="currentPage"
         @scroll-to-top="scrollToTop"
       />
       <div class="page-controls">
-        <button v-if="page > 1" class="pg-item" title="Forrige side">
+        <button v-if="currentPage > 1" class="pg-item" title="Forrige side">
           <img
             @click="prevPage"
             src="assets/icons/less-than.svg"
             alt="Forrige side"
           >
         </button>
-        <div class="pg-item cur-page" :title="`Side ${page}`">{{ page }}</div>
+        <div class="pg-item cur-page" :title="`Side ${currentPage}`">{{ currentPage }}</div>
         <button v-if="hasMorePosts" class="pg-item" title="Næste side">
           <img
             @click="nextPage"
@@ -39,15 +39,10 @@ export default {
     PostsList,
   },
 
-  data() {
-    return {
-      page: 1,
-    };
-  },
-
   computed: {
     ...mapState('forum', [
       'hasMorePosts',
+      'currentPage',
     ]),
   },
 
@@ -64,21 +59,26 @@ export default {
   watch: {
     $route(to) {
       const newForumView = to.params.forum;
+
+      if (newForumView !== this.$store.state.forum.currentForumView) {
+        this.$store.dispatch('forum/resetPage');
+        console.log('New forum!!');
+      }
+
       this.$store.dispatch('forum/updateCurrentForumView', newForumView);
 
       this.$store.dispatch('forum/clearPosts');
-      this.page = 1;
       this.$refs.postsList.fetchPosts();
     },
   },
 
   methods: {
     prevPage() {
-      this.page -= 1;
+      this.$store.dispatch('forum/prevPage');
     },
 
     nextPage() {
-      this.page += 1;
+      this.$store.dispatch('forum/nextPage');
     },
 
     scrollToTop() {

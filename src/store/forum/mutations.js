@@ -36,4 +36,8 @@ export default {
   SET_HAS_MORE_POSTS(state, hasMorePosts) {
     state.hasMorePosts = hasMorePosts;
   },
+
+  SET_CURRENT_PAGE(state, page) {
+    state.currentPage = page;
+  },
 };
