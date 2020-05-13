@@ -1,6 +1,6 @@
 <template>
   <div class="forum-content-wrapper">
-    <div class="forum">
+    <div v-if="forumExists" class="forum">
       <h1>Opslag</h1>
       <PostsList
         ref="postsList"
@@ -27,11 +27,17 @@
         </button>
       </div>
     </div>
+    <div v-else class="forum-not-found">
+      <h1>Dette forum findes ikke!</h1>
+      <p>I så fald det findes, har du ikke adgang til det.</p>
+      <p>Se sidebjælken for de fora, du har adgang til.</p>
+      <p class="attempted-forum">{{ $route.params.forum }}</p>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import PostsList from '@/components/PostsList.vue';
 
 export default {
@@ -40,11 +46,20 @@ export default {
     PostsList,
   },
 
+  data() {
+    return {
+      forumExists: true,
+    };
+  },
+
   computed: {
     ...mapState('forum', [
       'hasMorePosts',
       'currentPage',
     ]),
+    ...mapGetters('forum', {
+      forums: 'getAllForums',
+    }),
   },
 
   beforeMount() {
@@ -58,12 +73,24 @@ export default {
   },
 
   mounted() {
+    this.handleForumExistence();
+
+    if (!this.forumExists) {
+      return;
+    }
+
     this.$store.dispatch('forum/clearPosts');
     this.$refs.postsList.fetchPosts();
   },
 
   watch: {
     $route(to) {
+      this.handleForumExistence();
+
+      if (!this.forumExists || this.forums.length === 0) {
+        return;
+      }
+
       const newForumView = to.params.forum;
 
       if (newForumView !== this.$store.state.forum.currentForumView) {
@@ -73,7 +100,18 @@ export default {
       this.$store.dispatch('forum/updateCurrentForumView', newForumView);
 
       this.$store.dispatch('forum/clearPosts');
+
+      // The watcher is fired before the DOM update has been applied, so the ref
+      // will not always be defined when this is called.
+      if (!this.$refs.postsList) {
+        return;
+      }
+
       this.$refs.postsList.fetchPosts();
+    },
+
+    forums() {
+      this.handleForumExistence();
     },
   },
 
@@ -90,6 +128,19 @@ export default {
       if (this.$el) {
         this.$el.scrollTo(0, 0);
       }
+    },
+
+    handleForumExistence() {
+      if (this.forums.length === 0) {
+        return;
+      }
+
+      const forumPathName = this.$route.params.forum;
+
+      const isAllForums = forumPathName === undefined;
+      const exists = this.forums.find(forum => forum.pathName === forumPathName) !== undefined;
+
+      this.forumExists = isAllForums || exists;
     },
   },
 };
@@ -148,6 +199,24 @@ h1 {
   .cur-page {
     background-color: $primary-accent;
     color: #fff;
+  }
+}
+
+.forum-not-found {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+
+  p {
+    color: rgba(0, 0, 0, 0.75);
+    margin-bottom: 1rem;
+
+    &.attempted-forum {
+      font-family: monospace;
+    }
   }
 }
 
