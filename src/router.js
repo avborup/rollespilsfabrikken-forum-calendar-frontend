@@ -9,6 +9,7 @@ import MarkdownGuideView from '@/views/MarkdownGuideView.vue';
 // FIXME: Why does this break when using @?
 import LoginPage from './views/LoginPage.vue';
 import HomePage from './views/HomePage.vue';
+import PageNotFound from './views/PageNotFound.vue';
 
 Vue.use(Router);
 
@@ -53,6 +54,11 @@ const router = new Router({
       path: '/markdown-guide',
       name: 'markdown-guide',
       component: MarkdownGuideView,
+    },
+    {
+      path: '*',
+      name: 'not-found',
+      component: PageNotFound,
     },
   ],
 });
