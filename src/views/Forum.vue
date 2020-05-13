@@ -49,6 +49,11 @@ export default {
 
   beforeMount() {
     const { forum } = this.$route.params;
+
+    if (forum !== this.$store.state.forum.currentForumView) {
+      this.$store.dispatch('forum/resetPage');
+    }
+
     this.$store.dispatch('forum/updateCurrentForumView', forum);
   },
 
@@ -63,7 +68,6 @@ export default {
 
       if (newForumView !== this.$store.state.forum.currentForumView) {
         this.$store.dispatch('forum/resetPage');
-        console.log('New forum!!');
       }
 
       this.$store.dispatch('forum/updateCurrentForumView', newForumView);
