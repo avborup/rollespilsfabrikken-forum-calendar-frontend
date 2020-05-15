@@ -9,14 +9,14 @@
       >
         <img src="assets/icons/sidebar.svg">
       </button>
-      <div class="page-title">
+      <router-link :to="{ name: 'home' }" class="page-title">
         <img
           class="logo"
           src="/assets/icons/rollespilsfabrikken.svg"
           alt="Rollespilsfabrikkens logo"
         >
         Rollespilsfabrikken
-      </div>
+      </router-link>
     </header>
     <PageSidebarWrapper class="sidebar-wrapper" ref="sidebar" />
     <PageSidebar class="sidebar" :class="{ hidden: shouldHideSidebar || isLoading }" />
@@ -149,6 +149,8 @@ export default {
   .page-title {
     display: flex;
     align-items: center;
+    text-decoration: none;
+    color: #fff;
 
     .logo {
       width: 2rem;
