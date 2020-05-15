@@ -133,6 +133,10 @@ export default {
     forums() {
       this.fetchPost();
     },
+
+    $route() {
+      this.fetchPost();
+    },
   },
 
   created() {
