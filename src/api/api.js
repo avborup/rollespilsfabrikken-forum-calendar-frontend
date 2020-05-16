@@ -5,7 +5,7 @@ import {
   renameKeys,
 } from '@/api/utils';
 import { alwaysHeaders } from '@/api/constants';
-import { UnauthorizedError, ServerError } from '@/api/errors';
+import { UnauthorizedError, ServerError, ResourceNotFoundError } from '@/api/errors';
 
 export async function fetchAllForums(token) {
   const numForumsPerPage = 15;
@@ -163,6 +163,12 @@ export async function fetchPost(token, forumId, postId) {
       ...makeAuthHeader(token),
     },
   });
+
+  // 422: Invalid uuid format
+  // 404: Could not find post
+  if (res.status === 422 || res.status === 404) {
+    throw new ResourceNotFoundError(`Could not find post with id ${postId}`);
+  }
 
   if (!res.ok) {
     throw new ServerError(`Failed to fetch post with id ${postId}`);

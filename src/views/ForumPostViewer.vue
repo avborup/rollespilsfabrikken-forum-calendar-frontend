@@ -1,5 +1,5 @@
 <template>
-  <div class="view-container">
+  <div v-if="postExists && !otherErrorOccurred" class="view-container">
     <div class="post-container">
       <div v-if="!isLoadingPost" class="post-wrapper">
         <div class="post-header">
@@ -70,12 +70,23 @@
       </div>
     </div>
   </div>
+  <div v-else-if="!postExists" class="post-not-found">
+    <h1>Opslag findes ikke</h1>
+    <p>Opslaget, du leder efter, er ikke tilgængeligt.</p>
+    <p class="attempted-post">{{ $route.params.postId }}</p>
+  </div>
+  <div v-else class="error-occurred">
+    <h1>Der opstod en fejl</h1>
+    <p>Opslaget kunne ikke indlæses.</p>
+    <p class="attempted-post">{{ $route.params.postId }}</p>
+  </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
 import VueMarkdown from 'vue-markdown';
 import CommentSection from '@/components/CommentSection.vue';
+import { ResourceNotFoundError } from '@/api/errors';
 import { toElapsedTimeStr } from '@/dateUtils';
 
 export default {
@@ -89,6 +100,8 @@ export default {
     return {
       isLoadingPost: true,
       isLoadingComments: true,
+      postExists: true,
+      otherErrorOccurred: false,
     };
   },
 
@@ -105,6 +118,8 @@ export default {
     fetchPost() {
       this.isLoadingPost = true;
       this.isLoadingComments = true;
+      this.postExists = true;
+      this.otherErrorOccurred = false;
 
       if (this.forums.length === 0) {
         return;
@@ -116,15 +131,22 @@ export default {
         .then(() => {
           this.isLoadingPost = false;
         })
-        // TODO: Will be handled.
-        .catch(err => console.log(err));
+        .catch((err) => {
+          if (err instanceof ResourceNotFoundError) {
+            this.postExists = false;
+            return;
+          }
+
+          this.otherErrorOccurred = true;
+        });
 
       this.$store.dispatch('forum/fetchComments', { postId, forumPathName: forum })
         .then(() => {
           this.isLoadingComments = false;
         })
-        // TODO: Will be handled.
-        .catch(err => console.log(err));
+        .catch(() => {
+          this.otherErrorOccurred = true;
+        });
     },
   },
 
@@ -329,6 +351,29 @@ export default {
 
 .comments-header {
   margin-top: 1.5rem;
+}
+
+.post-not-found, .error-occurred {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+
+  h1 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: rgba(0, 0, 0, 0.75);
+    margin-bottom: 1rem;
+
+    &.attempted-post {
+      font-family: monospace;
+    }
+  }
 }
 
 @media (min-width: 700px) {
