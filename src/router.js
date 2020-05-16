@@ -10,6 +10,7 @@ import MarkdownGuideView from '@/views/MarkdownGuideView.vue';
 import LoginPage from './views/LoginPage.vue';
 import HomePage from './views/HomePage.vue';
 import PageNotFound from './views/PageNotFound.vue';
+import ForumPostCreator from './views/ForumPostCreator.vue';
 
 Vue.use(Router);
 
@@ -49,6 +50,11 @@ const router = new Router({
       path: '/forum/:forum/opslag/:postId',
       name: 'post',
       component: ForumPostViewer,
+    },
+    {
+      path: '/nyt-opslag',
+      name: 'create-post',
+      component: ForumPostCreator,
     },
     {
       path: '/markdown-guide',
