@@ -19,17 +19,23 @@
       <label for="post-title">Titel</label>
       <input v-model="postTitle" type="text" name="post-title">
     </div>
+    <div class="form-field">
+      <label>Indhold</label>
+      <MarkdownEditorWrapper />
+    </div>
   </div>
 </template>
 
 <script>
 import Multiselect from 'vue-multiselect';
 import { mapGetters } from 'vuex';
+import MarkdownEditorWrapper from '@/components/MarkdownEditorWrapper.vue';
 
 export default {
   name: 'ForumPostCreator',
   components: {
     Multiselect,
+    MarkdownEditorWrapper,
   },
 
   data() {

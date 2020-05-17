@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "v-markdown-editor": "^1.2.5",
     "vue": "^2.6.10",
     "vue-markdown": "^2.2.4",
     "vue-multiselect": "^2.1.6",

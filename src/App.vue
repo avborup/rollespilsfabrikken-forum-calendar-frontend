@@ -212,7 +212,9 @@ export default {
   overflow-y: auto;
 }
 
-*.md-content {
+*.md-content, *.v-md-preview {
+  color: #000;
+
   p, ul:not(:last-child), ol:not(:last-child), pre,
   h1, h2, h3, h4, h5, h6, table, hr {
     margin-bottom: 0.75rem;
