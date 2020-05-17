@@ -90,4 +90,12 @@ export default {
     }
   }
 }
+
+@media (min-width: 700px) {
+  .post-creator-wrapper {
+    width: 700px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
 </style>
