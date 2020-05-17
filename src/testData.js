@@ -57,3 +57,151 @@ export const testCategories = [
     colour: '#da4e52',
   },
 ];
+
+export const testPosts = [
+  {
+    title: 'Silence Speaks (feat. Oli Sykes)',
+    author: 'While She Sleeps',
+    commentCount: 10,
+    date: new Date(2020, 2, 10, 20, 13),
+    id: '5f549f64',
+    forumId: '1',
+  },
+  {
+    title: 'Equal Rights, Equal Lefts',
+    author: 'Otep',
+    commentCount: 5,
+    date: new Date(2020, 2, 11, 21, 54, 2),
+    id: '7304462c',
+    forumId: '123',
+  },
+  {
+    title: 'Echoes',
+    author: 'The Charm The Fury',
+    commentCount: 6,
+    date: new Date(2020, 2, 8, 11, 4),
+    id: '761ee024',
+    forumId: '1',
+  },
+  {
+    title: 'Now They See Me Now you Don\'t',
+    author: 'Above This',
+    commentCount: 2,
+    date: new Date(2019, 2, 10, 8, 59),
+    id: '794a05e4',
+    forumId: '12345',
+  },
+  {
+    title: 'Highway to Hell',
+    author: 'AC/DC',
+    commentCount: 8,
+    date: new Date(2020, 2, 11, 21, 1),
+    id: '7cea0546',
+    forumId: '12',
+  },
+  {
+    title: 'Eye of the Tiger',
+    author: 'Survivor',
+    commentCount: 23,
+    date: new Date(2020, 0, 9, 18, 41),
+    id: '802bad18',
+    forumId: '12',
+  },
+  {
+    title: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s.',
+    author: 'Sit Amet',
+    commentCount: 12,
+    date: new Date(2020, 2, 11, 22, 12),
+    id: '8043fad18',
+    forumId: '1234',
+  },
+];
+
+// In the future, this will be fetched from the backend, and only forums that
+// the user has access to will be loaded.
+export const testForums = [
+  {
+    name: 'Rude skov',
+    pathName: 'rude-skov',
+    color: '#4E0944',
+    id: '1'
+  },
+  {
+    name: 'Amager Fælled',
+    pathName: 'amager-faelled',
+    color: '#20639B',
+    id: '12'
+  },
+  {
+    name: 'Den Magiske Skole',
+    pathName: 'den-magiske-skole',
+    color: '#3CAEA3',
+    id: '123'
+  },
+  {
+    name: 'Nøglebærere',
+    pathName: 'noeglebaerere',
+    color: '#B84239',
+    id: '1234'
+  },
+  {
+    name: 'Andet',
+    pathName: 'andet',
+    color: '#ED553B',
+    id: '12345'
+  },
+];
+
+export const testFullPosts = [
+  {
+    title: 'Eye of the Tiger',
+    author: 'Survivor',
+    commentCount: 23,
+    date: new Date(2020, 0, 9, 18, 41),
+    id: '802bad18',
+    forumId: '12',
+    content: `Every great band needs a little luck. And for [Survivor](https://www.loudersound.com/features/buyer-s-guide-survivor) it came in 1981 when Sylvester Stallone commissioned them to write the theme song for the third movie in his blockbuster Rocky franchise. Stallone loved the Chicago rockers’ minor hit Poor Man’s Son, and wanted an anthem in a similar vein. “Something with a pulse!” he said.
+
+### Other albums released in June 1982
+- Private Audition - Heart
+- Battle Hymns - Manowar
+- Built for Speed - Stray Cats
+- Chicago 16 - Chicago
+- Screaming Blue Murder - Girlschool
+- Killers - Kiss
+- Beat - King Crimson
+- Mirage - Fleetwood Mac
+- Daylight Again - Crosby, Stills & Nash
+- Pictures At Eleven - Robert Plant
+- Animation - Jon Anderson
+- Eye In The Sky - The Alan Parsons Project
+- Good Trouble - REO Speedwagon
+- Nugent - Ted Nugent
+- Sunshine Dream - The Beach Boys
+
+Ovenstående er to uddrag fra https://www.loudersound.com/reviews/survivor-eye-of-the-tiger-album-of-the-week-club-review.
+
+### Lyrics
+> Risin' up, back on the street
+> Did my time, took my chances
+> Went the distance, now I'm back on my feet
+> Just a man and his will to survive
+> 
+> So many times, it happens too fast
+> You trade your passion for glory
+> Don't lose your grip on the dreams of the past
+> You must fight just to keep them alive
+>
+> ...
+`,
+  },
+  {
+    title: 'Equal Rights, Equal Lefts',
+    author: 'Otep',
+    commentCount: 5,
+    date: new Date(2020, 2, 11, 21, 54, 2),
+    id: '7304462c',
+    forumId: '123',
+    content: `Equal rights, Equal lefts, Fight for your right, To exist, Equal rights, Equal lefts, Fight for your right, To exist, Equal rights, Equal lefts, Fight for your right, To exist, Fight for your right, To exist`,
+  },
+]

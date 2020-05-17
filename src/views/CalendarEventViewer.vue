@@ -29,7 +29,7 @@ export default {
 
   // FIXME: Handle errors if event is invalid in some way
   computed: {
-    ...mapGetters({
+    ...mapGetters('calendar', {
       event: 'getCurrentlyFocusedEvent',
       getCategoryColour: 'getCategoryColour',
     }),

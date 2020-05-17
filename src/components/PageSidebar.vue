@@ -7,13 +7,23 @@
     </div>
     <h3 class="sidebar-section-header">Sider</h3>
     <nav class="sidebar-nav">
-      <router-link :to="{ name: 'calendar'}">
-        <CalendarIcon class="icon" />
-        <p>Kalender</p>
-      </router-link>
       <router-link :to="{ name: 'forum'}">
         <img class="icon" src="assets/icons/forum.svg" alt="Forumikon">
         <p>Forum</p>
+      </router-link>
+      <div class="sub-nav">
+        <router-link
+          v-for="forum in forums"
+          :key="forum.pathName"
+          :to="{ name: 'forum', params: { forum: forum.pathName } }"
+          class="sub-nav-item"
+        >
+          <p>{{ forum.name }}</p>
+        </router-link>
+      </div>
+      <router-link :to="{ name: 'calendar'}">
+        <CalendarIcon class="icon" />
+        <p>Kalender</p>
       </router-link>
     </nav>
     <h3 class="sidebar-section-header">Kalendervisning</h3>
@@ -47,17 +57,31 @@ export default {
     CalendarIcon,
   },
 
+  watch: {
+    isAuthenticated(isAuth) {
+      if (isAuth) {
+        this.$store.dispatch('forum/fetchAllForums');
+      }
+    },
+  },
+
   computed: {
-    ...mapGetters({
+    ...mapGetters('calendar', {
       categories: 'getAllCategories',
       getCategoryColour: 'getCategoryColour',
     }),
+    ...mapGetters('forum', {
+      forums: 'getAllForums',
+    }),
+    ...mapGetters('auth', [
+      'isAuthenticated',
+    ]),
     checkedCategories: {
       get() {
-        return this.$store.getters.getCurrentCalendarCategories;
+        return this.$store.getters['calendar/getCurrentCalendarCategories'];
       },
       set(newCategories) {
-        this.$store.dispatch('updateCurrentCalendarCategories', newCategories);
+        this.$store.dispatch('calendar/updateCurrentCalendarCategories', newCategories);
       },
     },
   },
@@ -90,6 +114,7 @@ $listitem-padding: 0.5rem;
   padding: 1rem;
   font-size: 1rem;
   font-weight: 400;
+  overflow-y: auto;
 
   .close-sidebar-button {
     position: relative;
@@ -193,7 +218,7 @@ $listitem-padding: 0.5rem;
     color: $primary-text;
 
     &:not(:last-child) {
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.4rem;
     }
 
     &:hover {
@@ -205,6 +230,30 @@ $listitem-padding: 0.5rem;
       width: 1.4rem;
       height: 1.4rem;
       margin-right: 0.6rem;
+    }
+  }
+
+  .sub-nav {
+    margin-left: 1.5rem;
+    margin-top: -0.4rem;
+    font-size: 0.9rem;
+
+    &:not(:last-child) {
+      margin-bottom: 0.4rem;
+    }
+
+    .sub-nav-item {
+      align-items: flex-start;
+
+      &:not(:last-child) {
+        margin-bottom: 0.2rem;
+      }
+
+      &::before {
+        // En-dash. Corresponds to the HTML entity &ndash;
+        content: '\2013';
+        margin-right: 0.2rem;
+      }
     }
   }
 }

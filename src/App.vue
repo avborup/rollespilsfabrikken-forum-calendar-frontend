@@ -1,34 +1,93 @@
 <template>
   <div id="app">
     <header class="header">
-      <button class="open-sidebar-button" @click="openSidebar" title="Åben sidebjælke">
+      <button
+        class="open-sidebar-button"
+        @click="openSidebar"
+        title="Åben sidebjælke"
+        :class="{ hidden: shouldHideSidebar }"
+      >
         <img src="assets/icons/sidebar.svg">
       </button>
-      Kalender
+      <router-link :to="{ name: 'home' }" class="page-title">
+        <img
+          class="logo"
+          src="/assets/icons/rollespilsfabrikken.svg"
+          alt="Rollespilsfabrikkens logo"
+        >
+        Rollespilsfabrikken
+      </router-link>
     </header>
     <PageSidebarWrapper class="sidebar-wrapper" ref="sidebar" />
-    <PageSidebar class="sidebar" />
-    <transition name="fade" mode="out-in">
+    <PageSidebar class="sidebar" :class="{ hidden: shouldHideSidebar || isLoading }" />
+    <transition v-if="!isLoading" name="fade" mode="out-in">
       <router-view class="main-content" />
     </transition>
+    <div v-else class="loading">
+      <LoadingSpinner />
+    </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import PageSidebar from '@/components/PageSidebar.vue';
 import PageSidebarWrapper from '@/components/PageSidebarWrapper.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 
 export default {
   name: 'App',
   components: {
     PageSidebar,
     PageSidebarWrapper,
+    LoadingSpinner,
+  },
+
+  data() {
+    return {
+      shouldHideSidebar: false,
+      isLoading: true,
+    };
   },
 
   methods: {
     openSidebar() {
       this.$refs.sidebar.openSidebar();
     },
+
+    decideSidebarStatus(route) {
+      const fullWidthPages = [
+        'login',
+      ];
+
+      this.shouldHideSidebar = fullWidthPages.includes(route.name) || !this.isAuthenticated;
+    },
+  },
+
+  computed: {
+    ...mapGetters('auth', [
+      'isAuthenticated',
+    ]),
+  },
+
+  mounted() {
+    this.decideSidebarStatus(this.$router.history.current);
+  },
+
+  watch: {
+    $route(to) {
+      this.decideSidebarStatus(to);
+    },
+
+    isAuthenticated() {
+      this.decideSidebarStatus(this.$router.history.current);
+    },
+  },
+
+  async created() {
+    this.isLoading = true;
+    await this.$store.dispatch('auth/loadPreviousAuthTokenIfExists');
+    this.isLoading = false;
   },
 };
 </script>
@@ -68,6 +127,7 @@ export default {
     padding: 0.1rem;
     width: 1.5rem;
     height: 1.5rem;
+    margin-right: 0.5rem;
 
     img {
       width: 100%;
@@ -85,6 +145,19 @@ export default {
   align-items: center;
   grid-template-columns: auto 1fr;
   grid-column-gap: 1rem;
+
+  .page-title {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+
+    .logo {
+      width: 2rem;
+      height: 2rem;
+      margin-right: 0.5rem;
+    }
+  }
 }
 
 .sidebar {
@@ -92,7 +165,16 @@ export default {
   display: none;
 }
 
+.sidebar.hidden, .open-sidebar-button.hidden {
+  display: none;
+}
+
 .main-content {
+  grid-area: main;
+  overflow-y: auto;
+}
+
+.loading {
   grid-area: main;
 }
 
@@ -119,6 +201,80 @@ export default {
 
   .sidebar-wrapper {
     display: none;
+  }
+}
+</style>
+
+<style lang="scss">
+@import '@/assets/scss/theme.scss';
+
+.md-content {
+  overflow-y: auto;
+}
+
+*.md-content {
+  p, ul:not(:last-child), ol:not(:last-child), pre,
+  h1, h2, h3, h4, h5, h6, table, hr {
+    margin-bottom: 0.75rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  code {
+    font-size: 0.8rem;
+    font-family: $fonts-monospace;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    &:not(:first-child) {
+      margin-top: 1rem;
+    }
+  }
+
+  ul p, ol p {
+    margin-bottom: 0.25rem;
+  }
+
+  pre, p > code {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-radius: 0.25rem;
+  }
+
+  pre {
+    padding: 0.75rem;
+  }
+
+  p > code {
+    padding: 0.15rem 0.2rem;
+  }
+
+  ul, ol {
+    padding-left: 2rem;
+  }
+
+  blockquote {
+    border-left: 0.2rem solid rgba(0, 0, 0, 0.1);
+    padding-left: 1rem;
+    font-style: italic;
+  }
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+
+    td, th {
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      padding: 0.3rem 0.5rem;
+    }
+  }
+
+  .katex-display {
+    display: flex;
+    justify-content: center;
   }
 }
 </style>

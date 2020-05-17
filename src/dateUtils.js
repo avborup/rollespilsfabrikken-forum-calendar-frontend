@@ -77,3 +77,44 @@ export function toFormattedString(date) {
 
   return `${weekday} ${dayDate}. ${month} ${year} kl. ${hour}:${minute}`;
 }
+
+export function toDoubleDigitHrMinStr(hrs, mins) {
+  return `${hrs >= 10 ? '' : '0'}${hrs}:${mins >= 10 ? '' : '0'}${mins}`;
+}
+
+export function toElapsedTimeStr(date) {
+  const nowStamp = now();
+
+  const msDiff = nowStamp.getTime() - date.getTime();
+  if (msDiff < 0) {
+    return 'Fra fremtiden..';
+  }
+
+  const secDiff = msDiff / 1000;
+  if (secDiff < 60) {
+    return `${Math.floor(secDiff)} sekund${secDiff >= 2 ? 'er' : ''}`;
+  }
+
+  const minDiff = secDiff / 60;
+  if (minDiff < 60) {
+    return `${Math.floor(minDiff)} minut${minDiff >= 2 ? 'ter' : ''}`;
+  }
+
+  const hrDiff = minDiff / 60;
+  if (hrDiff < 24) {
+    return `${Math.floor(hrDiff)} time${hrDiff >= 2 ? 'r' : ''}`;
+  }
+
+  const dayDiff = hrDiff / 24;
+  if (dayDiff < 31) {
+    return `${Math.floor(dayDiff)} dag${dayDiff >= 2 ? 'e' : ''}`;
+  }
+
+  const monthDiff = nowStamp.getMonth() - date.getMonth();
+  if (dayDiff < 365) {
+    return `${Math.floor(monthDiff)} måned${monthDiff >= 2 ? 'er' : ''}`;
+  }
+
+  const yearDiff = nowStamp.getFullYear() - date.getFullYear();
+  return `${Math.floor(yearDiff)} år`;
+}
