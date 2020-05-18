@@ -1,5 +1,5 @@
 <template>
-  <div class="post-creator-wrapper">
+  <div v-if="!isWaiting" class="post-creator-wrapper">
     <h1>Nyt opslag</h1>
     <form @submit="handleSubmit">
       <div class="form-field" :class="{ 'is-error': forumHasError }">
@@ -29,18 +29,24 @@
       <input class="form-submit" type="submit" value="Opret opslag!">
     </form>
   </div>
+  <div v-else class="waiting">
+    <p>Dit opslag oprettes...</p>
+    <LoadingSpinner />
+  </div>
 </template>
 
 <script>
 import Multiselect from 'vue-multiselect';
 import { mapGetters } from 'vuex';
 import MarkdownEditorWrapper from '@/components/MarkdownEditorWrapper.vue';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 
 export default {
   name: 'ForumPostCreator',
   components: {
     Multiselect,
     MarkdownEditorWrapper,
+    LoadingSpinner,
   },
 
   data() {
@@ -51,6 +57,7 @@ export default {
       titleErrorMsg: '',
       forumHasError: false,
       forumErrorMsg: '',
+      isWaiting: false,
     };
   },
 
@@ -95,6 +102,8 @@ export default {
         body: postContent,
       };
 
+      this.isWaiting = true;
+
       try {
         const createdPost = await this.$store.dispatch('forum/createPost', { forumId, post });
         this.$router.push({
@@ -107,6 +116,8 @@ export default {
       } catch (error) {
         alert('Der opstod en fejl!');
       }
+
+      this.isWaiting = false;
     },
   },
 };
@@ -184,6 +195,16 @@ export default {
     margin: 0 auto;
     display: block;
   }
+}
+
+.waiting {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-size: 1.5rem;
+  font-weight: 600;
+  row-gap: 2rem;
 }
 
 @media (min-width: 700px) {
