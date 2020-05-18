@@ -2,7 +2,9 @@
   <div class="markdown-editor-container">
     <!-- eslint-disable -->
     <markdown-editor
-      toolbar="redo undo | bold italic heading strikethrough | numlist bullist quote code | preview"
+      toolbar="redo undo | bold italic heading strikethrough | numlist bullist quote code | preview | help"
+      :extend="customButtons"
+      @command:help="help"
       height="auto"
       class="markdown-editor"
     ></markdown-editor>
@@ -15,6 +17,26 @@ import 'v-markdown-editor/dist/v-markdown-editor.css';
 
 export default {
   name: 'MarkdownEditorWrapper',
+
+  data() {
+    return {
+      customButtons: {
+        help: {
+          cmd: 'help',
+          ico: 'fas fa-question',
+          title: 'Få hjælp til Markdown',
+        },
+      },
+    };
+  },
+
+  methods: {
+    help() {
+      this.$router.push({
+        name: 'markdown-guide',
+      });
+    },
+  },
 };
 </script>
 
