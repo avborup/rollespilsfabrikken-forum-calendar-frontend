@@ -104,4 +104,12 @@ export default {
   resetPage(context) {
     context.commit('SET_CURRENT_PAGE', 1);
   },
+
+  async createPost(context, { forumId, post }) {
+    const { authToken } = context.rootState.auth;
+
+    const createdPost = await api.createPost(authToken, forumId, post);
+
+    return { ...createdPost, forumId };
+  },
 };

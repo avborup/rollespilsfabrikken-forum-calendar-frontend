@@ -61,7 +61,7 @@ export default {
   },
 
   methods: {
-    handleSubmit(event) {
+    async handleSubmit(event) {
       event.preventDefault();
 
       this.titleHasError = false;
@@ -69,8 +69,6 @@ export default {
 
       const { postTitle, selectedForum } = this;
       const postContent = this.$refs.markdownEditor.getValue();
-
-      console.log(postContent);
 
       if (selectedForum === null) {
         this.forumHasError = true;
@@ -87,11 +85,28 @@ export default {
         this.titleErrorMsg = `Titlen må ikke være længere end 255 tegn (${postTitle.length} tegn)`;
       }
 
-      // if (this.forumHasError || this.titleHasError) {
-      //   return;
-      // }
+      if (this.forumHasError || this.titleHasError) {
+        return;
+      }
 
-      // dispatch action here
+      const forumId = selectedForum.id;
+      const post = {
+        title: postTitle,
+        body: postContent,
+      };
+
+      try {
+        const createdPost = await this.$store.dispatch('forum/createPost', { forumId, post });
+        this.$router.push({
+          name: 'post',
+          params: {
+            forum: selectedForum.pathName,
+            postId: createdPost.id,
+          },
+        });
+      } catch (error) {
+        alert('Der opstod en fejl!');
+      }
     },
   },
 };
