@@ -7,6 +7,19 @@
       @command:help="help"
       height="auto"
       :shouldBreakOnNewline="false"
+      :titles="{
+        undo: 'Fortryd',
+        redo: 'Gentag',
+        bullist: 'Unummeret liste',
+        numlist: 'Nummeret liste',
+        bold: 'Fed',
+        italic: 'Kursiv',
+        strikethrough: 'Gennemstreget',
+        heading: 'Overskrift',
+        code: 'Monospace-blok',
+        quote: 'Citat',
+        preview: 'Forhåndsvisning',
+      }"
       class="markdown-editor"
       ref="markdownEditor"
     ></markdown-editor>
