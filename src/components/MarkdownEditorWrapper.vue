@@ -6,6 +6,7 @@
       :extend="customButtons"
       @command:help="help"
       height="auto"
+      :shouldBreakOnNewline="false"
       class="markdown-editor"
       ref="markdownEditor"
     ></markdown-editor>
