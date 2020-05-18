@@ -1,28 +1,33 @@
 <template>
   <div class="post-creator-wrapper">
     <h1>Nyt opslag</h1>
-    <div class="form-field">
-      <label for="forum-selection">Vælg et forum</label>
-      <multiselect
-        v-model="selectedForum"
-        :options="forums"
-        label="name"
-        track-by="id"
-        selectLabel="Tryk på 'enter' for at vælge"
-        selectedLabel="Valgt"
-        deselectLabel="Tryk på 'enter' for at fravælge"
-        name="forum-selection"
-        :placeholder="'Vælg forum'"
-      />
-    </div>
-    <div class="form-field">
-      <label for="post-title">Titel</label>
-      <input v-model="postTitle" type="text" name="post-title">
-    </div>
-    <div class="form-field">
-      <label>Indhold</label>
-      <MarkdownEditorWrapper />
-    </div>
+    <form @submit="handleSubmit">
+      <div class="form-field" :class="{ 'is-error': forumHasError }">
+        <label for="forum-selection">Vælg et forum</label>
+        <multiselect
+          v-model="selectedForum"
+          :options="forums"
+          label="name"
+          track-by="id"
+          selectLabel="Tryk på 'enter' for at vælge"
+          selectedLabel="Valgt"
+          deselectLabel="Tryk på 'enter' for at fravælge"
+          name="forum-selection"
+          :placeholder="'Vælg forum'"
+        />
+        <span v-if="forumHasError" class="field-error-msg">{{ forumErrorMsg }}</span>
+      </div>
+      <div class="form-field" :class="{ 'is-error': titleHasError }">
+        <label for="post-title">Titel</label>
+        <input v-model="postTitle" type="text" name="post-title">
+        <span v-if="titleHasError" class="field-error-msg">{{ titleErrorMsg }}</span>
+      </div>
+      <div class="form-field">
+        <label>Indhold</label>
+        <MarkdownEditorWrapper ref="markdownEditor" />
+      </div>
+      <input class="form-submit" type="submit" value="Opret opslag!">
+    </form>
   </div>
 </template>
 
@@ -42,6 +47,10 @@ export default {
     return {
       selectedForum: null,
       postTitle: '',
+      titleHasError: false,
+      titleErrorMsg: '',
+      forumHasError: false,
+      forumErrorMsg: '',
     };
   },
 
@@ -49,6 +58,41 @@ export default {
     ...mapGetters('forum', {
       forums: 'getAllForums',
     }),
+  },
+
+  methods: {
+    handleSubmit(event) {
+      event.preventDefault();
+
+      this.titleHasError = false;
+      this.forumHasError = false;
+
+      const { postTitle, selectedForum } = this;
+      const postContent = this.$refs.markdownEditor.getValue();
+
+      console.log(postContent);
+
+      if (selectedForum === null) {
+        this.forumHasError = true;
+        this.forumErrorMsg = 'Vælg venligst et forum';
+      }
+
+      if (postTitle.length === 0) {
+        this.titleHasError = true;
+        this.titleErrorMsg = 'Skriv venligst en titel til dit opslag';
+      }
+
+      if (postTitle.length > 255) {
+        this.titleHasError = true;
+        this.titleErrorMsg = `Titlen må ikke være længere end 255 tegn (${postTitle.length} tegn)`;
+      }
+
+      // if (this.forumHasError || this.titleHasError) {
+      //   return;
+      // }
+
+      // dispatch action here
+    },
   },
 };
 </script>
@@ -94,6 +138,36 @@ export default {
       color: #35495e;
       width: 100%;
     }
+
+    &.is-error > input[type='text'] {
+      border-color: $err-colour;
+    }
+
+    &.is-error > .multiselect {
+      border: 1px solid $err-colour;
+      border-radius: 5px;
+    }
+
+    .field-error-msg {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: $err-colour;
+    }
+  }
+
+  .form-submit {
+    width: 7rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.2rem;
+    border: none;
+    background-color: $primary-accent;
+    color: #fff;
+    cursor: pointer;
+    font-family: $fonts;
+    font-size: 0.9rem;
+    margin: 0 auto;
+    display: block;
   }
 }
 

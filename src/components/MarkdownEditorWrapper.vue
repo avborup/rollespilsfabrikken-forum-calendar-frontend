@@ -7,6 +7,7 @@
       @command:help="help"
       height="auto"
       class="markdown-editor"
+      ref="markdownEditor"
     ></markdown-editor>
     <!-- eslint-enable -->
   </div>
@@ -35,6 +36,10 @@ export default {
       this.$router.push({
         name: 'markdown-guide',
       });
+    },
+
+    getValue() {
+      return this.$refs.markdownEditor.editor.getValue();
     },
   },
 };
