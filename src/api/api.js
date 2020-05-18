@@ -224,3 +224,25 @@ export async function fetchComments(token, forumId, postId) {
 
   return recursivelyFixData(comments);
 }
+
+export async function createPost(token, forumId, post) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post`);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(post),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when creating a post in the forum ${forumId}`);
+  }
+
+  const json = await res.json();
+
+  return jsifyPostResponse(json.post);
+}
