@@ -103,8 +103,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
 
-$err-colour: #e90000;
-
 .login-wrapper {
   padding: 2rem 1rem;
   width: 100%;
