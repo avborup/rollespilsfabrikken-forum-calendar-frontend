@@ -112,4 +112,19 @@ export default {
 
     return { ...createdPost, forumId };
   },
+
+  async createComment(context, {
+    forumPathName,
+    postId,
+    body,
+    parentId,
+  }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.createComment(authToken, forumId, postId, {
+      body,
+      parentId,
+    });
+  },
 };

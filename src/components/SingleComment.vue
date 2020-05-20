@@ -1,5 +1,8 @@
 <template>
-    <li class="comment" :style="{
+    <li class="comment" :class="{
+      'editor-open': isWritingComment,
+    }"
+    :style="{
       borderLeftColor: colourCycle[depth % colourCycle.length],
     }">
       <div>
@@ -17,6 +20,18 @@
       <div class="comment-body">
         {{ body }}
       </div>
+      <div class="comment-buttons">
+        <button @click="toggleEditor" class="icon-and-label">
+          <span class="fas fa-pen icon"></span>
+          Skriv svar
+        </button>
+      </div>
+      <CommentCreator
+        v-if="isWritingComment"
+        :parentId="id"
+        @comment-created="reload"
+        class="comment-creator"
+      />
       <ul class="child-comments" v-if="childComments.length > 0">
         <SingleComment
           v-for="childComment in childComments"
@@ -29,6 +44,7 @@
 </template>
 
 <script>
+import CommentCreator from '@/components/CommentCreator.vue';
 import { toElapsedTimeStr } from '@/dateUtils';
 import { colourCycle } from '@/constants';
 
@@ -36,6 +52,9 @@ const userObjKeys = ['id', 'username', 'avatarUrl'];
 
 export default {
   name: 'SingleComment',
+  components: {
+    CommentCreator,
+  },
 
   props: {
     depth: {
@@ -72,11 +91,20 @@ export default {
   data() {
     return {
       colourCycle,
+      isWritingComment: false,
     };
   },
 
   methods: {
     toElapsedTimeStr,
+
+    toggleEditor() {
+      this.isWritingComment = !this.isWritingComment;
+    },
+
+    reload() {
+      this.$bubble('reload-post-view');
+    },
   },
 };
 </script>
@@ -87,10 +115,11 @@ export default {
 .comment {
   display: grid;
   grid-template-columns: 2rem 1fr;
-  grid-template-rows: 2rem 1fr auto;
+  grid-template-rows: 2rem 1fr 1rem auto;
   grid-template-areas:
     "avatar info"
     "body body"
+    "buttons buttons"
     "children children";
   column-gap: 0.5rem;
   row-gap: 0.5rem;
@@ -98,6 +127,15 @@ export default {
   border-left-width: 0.15rem;
   border-left-style: solid;
   padding: 0.25rem 0 0.25rem 0.75rem;
+
+  &.editor-open {
+    grid-template-areas:
+      "avatar info"
+      "body body"
+      "buttons buttons"
+      "editor editor"
+      "children children";
+  }
 
   .child-comments {
     grid-area: children;
@@ -145,6 +183,39 @@ export default {
       color: rgba(0, 0, 0, 0.6);
       font-size: 0.9rem;
     }
+  }
+
+  .comment-buttons {
+    grid-area: buttons;
+    display: flex;
+    margin-top: 0.5rem;
+
+    .icon-and-label {
+      margin-right: 1rem;
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+      color: rgba(0, 0, 0, 0.6);
+
+      img, .icon {
+        height: 1rem;
+        width: 1rem;
+        margin-right: 0.3rem;
+        font-size: 0.9rem;
+        color: rgba(0, 0, 0, 0.25);
+      }
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background-color: #fff;
+      font-family: inherit;
+    }
+  }
+
+  .comment-creator {
+    grid-area: editor;
   }
 }
 </style>

@@ -49,6 +49,10 @@
           <img src="/assets/icons/comment.svg" alt="Comment icon">
           {{ post.commentCount }} kommentarer
         </div>
+        <button @click="openCommentEditor" class="icon-and-label">
+          <span class="fas fa-pen icon"></span>
+          Skriv kommentar
+        </button>
         <button class="icon-and-label">
           <img src="/assets/icons/send.svg" alt="Comment icon">
           Del
@@ -63,10 +67,15 @@
           <span class="skeleton-icon"></span>
           <span class="skeleton-label skeleton-line"></span>
         </div>
+        <div class="icon-and-label">
+          <span class="skeleton-icon"></span>
+          <span class="skeleton-label skeleton-line"></span>
+        </div>
       </div>
       <div class="comments-wrapper">
         <h2 class="comments-header">Kommentarer</h2>
-        <CommentSection :isLoading="isLoadingComments" />
+        <CommentCreator v-if="isWritingComment" @comment-created="reload" class="comment-creator" />
+        <CommentSection :isLoading="isLoadingComments" @reload-post-view="reload" />
       </div>
     </div>
   </div>
@@ -86,6 +95,7 @@
 import { mapGetters } from 'vuex';
 import VueMarkdown from 'vue-markdown';
 import CommentSection from '@/components/CommentSection.vue';
+import CommentCreator from '@/components/CommentCreator.vue';
 import { ResourceNotFoundError } from '@/api/errors';
 import { toElapsedTimeStr } from '@/dateUtils';
 
@@ -94,6 +104,7 @@ export default {
   components: {
     VueMarkdown,
     CommentSection,
+    CommentCreator,
   },
 
   data() {
@@ -102,6 +113,7 @@ export default {
       isLoadingComments: true,
       postExists: true,
       otherErrorOccurred: false,
+      isWritingComment: false,
     };
   },
 
@@ -147,6 +159,15 @@ export default {
         .catch(() => {
           this.otherErrorOccurred = true;
         });
+    },
+
+    reload() {
+      this.isWritingComment = false;
+      this.fetchPost();
+    },
+
+    openCommentEditor() {
+      this.isWritingComment = true;
     },
   },
 
@@ -232,10 +253,12 @@ export default {
       font-size: 0.9rem;
       color: rgba(0, 0, 0, 0.6);
 
-      img {
+      img, .icon {
         height: 1rem;
         width: 1rem;
         margin-right: 0.3rem;
+        font-size: 0.9rem;
+        color: rgba(0, 0, 0, 0.25);
       }
     }
 
@@ -351,6 +374,10 @@ export default {
 
 .comments-header {
   margin-top: 1.5rem;
+}
+
+.comment-creator {
+  margin-top: 1rem;
 }
 
 .post-not-found, .error-occurred {
