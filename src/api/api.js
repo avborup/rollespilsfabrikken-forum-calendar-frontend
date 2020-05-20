@@ -183,21 +183,39 @@ export async function fetchPost(token, forumId, postId) {
 export async function fetchComments(token, forumId, postId) {
   const encodedForumId = encodeURIComponent(forumId);
   const encodedPostId = encodeURIComponent(postId);
-  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment`);
 
-  const res = await fetch(url, {
-    headers: {
-      ...alwaysHeaders,
-      ...makeAuthHeader(token),
-    },
-  });
+  const allComments = [];
+  const itemsPerPage = 100;
+  let curPage = 1;
+  let hasMoreComments = true;
 
-  if (!res.ok) {
-    throw new ServerError(`Failed to fetch comments for post with id ${postId}`);
+  /* eslint-disable no-await-in-loop */
+  while (hasMoreComments) {
+    const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment`, {
+      page: curPage,
+      items: itemsPerPage,
+    });
+
+    const res = await fetch(url, {
+      headers: {
+        ...alwaysHeaders,
+        ...makeAuthHeader(token),
+      },
+    });
+
+    if (!res.ok) {
+      throw new ServerError(`Failed to fetch comments for post with id ${postId}`);
+    }
+
+    const json = await res.json();
+    const { comments, links } = json.data;
+
+    allComments.push(...comments);
+
+    curPage += 1;
+    hasMoreComments = links.next_page !== null;
   }
-
-  const json = await res.json();
-  const { comments } = json.data;
+  /* eslint-enable no-await-in-loop */
 
   function recursivelyFixData(cmts) {
     return cmts.map((comment) => {
@@ -222,7 +240,7 @@ export async function fetchComments(token, forumId, postId) {
     });
   }
 
-  return recursivelyFixData(comments);
+  return recursivelyFixData(allComments);
 }
 
 export async function createPost(token, forumId, post) {
