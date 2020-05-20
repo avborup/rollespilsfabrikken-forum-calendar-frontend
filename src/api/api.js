@@ -264,3 +264,30 @@ export async function createPost(token, forumId, post) {
 
   return jsifyPostResponse(json.post);
 }
+
+export async function createComment(token, forumId, postId, comment) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment`);
+
+  const body = {
+    body: comment.body,
+  };
+
+  if (comment.parentId !== null) {
+    body.parent_id = comment.parentId;
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when creating a comment on the post with id ${postId} and parent id ${comment.parentId}`);
+  }
+}
