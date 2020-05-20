@@ -12,6 +12,7 @@
         </div>
         <vue-markdown
           class="md-content post-content"
+          :breaks="false"
           :html="false"
         >{{ post.body }}</vue-markdown>
       </div>
