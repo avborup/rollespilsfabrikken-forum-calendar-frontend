@@ -17,9 +17,11 @@
           For {{ toElapsedTimeStr(createdAt) }} siden
         </span>
       </p>
-      <div class="comment-body">
-        {{ body }}
-      </div>
+      <vue-markdown
+        class="md-content comment-body"
+        :breaks="false"
+        :html="false"
+      >{{ body }}</vue-markdown>
       <div class="comment-buttons">
         <button @click="toggleEditor" class="icon-and-label">
           <span class="fas fa-pen icon"></span>
@@ -44,6 +46,7 @@
 </template>
 
 <script>
+import VueMarkdown from 'vue-markdown';
 import CommentCreator from '@/components/CommentCreator.vue';
 import { toElapsedTimeStr } from '@/dateUtils';
 import { colourCycle } from '@/constants';
@@ -54,6 +57,7 @@ export default {
   name: 'SingleComment',
   components: {
     CommentCreator,
+    VueMarkdown,
   },
 
   props: {
