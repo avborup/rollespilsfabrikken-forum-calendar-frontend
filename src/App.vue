@@ -278,6 +278,13 @@ export default {
     }
   }
 
+  img {
+    max-width: 100%;
+    max-height: 20rem;
+    margin: 0 auto;
+    display: block;
+  }
+
   .katex-display {
     display: flex;
     justify-content: center;
