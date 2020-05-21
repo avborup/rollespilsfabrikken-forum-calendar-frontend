@@ -136,7 +136,7 @@ export default {
     },
 
     deleteComment() {
-      const msg = 'Er du sikker på, at du vil slette denne kommentar?';
+      const msg = 'Er du sikker på, at du vil slette denne kommentar? Alle underkommentarer vil også blive slettet.';
       const options = {
         loader: true,
       };
