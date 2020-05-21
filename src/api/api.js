@@ -355,3 +355,21 @@ export async function deleteComment(token, forumId, postId, commentId) {
     throw new ServerError(`An error occurred when deleting comment with id ${commentId}`);
   }
 }
+
+export async function deletePost(token, forumId, postId) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}`);
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when deleting post with id ${postId}`);
+  }
+}

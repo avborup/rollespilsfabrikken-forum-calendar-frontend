@@ -151,4 +151,11 @@ export default {
 
     await api.deleteComment(authToken, forumId, postId, commentId);
   },
+
+  async deletePost(context, { forumPathName, postId }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.deletePost(authToken, forumId, postId);
+  },
 };

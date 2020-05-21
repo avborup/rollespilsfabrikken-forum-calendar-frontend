@@ -58,6 +58,10 @@
           <img src="/assets/icons/send.svg" alt="Comment icon">
           Del
         </button>
+        <button v-if="post.permissions.canDelete" @click="deletePost" class="icon-and-label">
+          <span class="fas fa-trash icon"></span>
+          Slet opslag
+        </button>
       </div>
       <div v-else class="skeleton-post-info-and-buttons post-info-and-buttons">
         <div class="icon-and-label">
@@ -169,6 +173,32 @@ export default {
 
     openCommentEditor() {
       this.isWritingComment = true;
+    },
+
+    deletePost() {
+      const msg = 'Er du sikker på, at du vil slette dette opslag?';
+      const options = {
+        loader: true,
+      };
+
+      this.$dialog.confirm(msg, options)
+        .then(async (dialog) => {
+          const { forum, postId } = this.$route.params;
+
+          try {
+            await this.$store.dispatch('forum/deletePost', {
+              forumPathName: forum,
+              postId,
+            });
+
+            dialog.close();
+            this.fetchPost();
+          } catch (error) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
     },
   },
 
