@@ -55,16 +55,24 @@
           @click="openCommentEditor"
           class="icon-and-label"
         >
-          <span class="fas fa-pen icon"></span>
+          <span class="fas fa-reply icon"></span>
           Skriv kommentar
         </button>
-        <button class="icon-and-label">
-          <img src="/assets/icons/send.svg" alt="Comment icon">
-          Del
+        <button
+          v-if="post.permissions.canUpdate"
+          @click="togglePostUpdater"
+          class="icon-and-label"
+        >
+          <span class="fas fa-pen icon"></span>
+          Redigér opslag
         </button>
         <button v-if="post.permissions.canDelete" @click="deletePost" class="icon-and-label">
           <span class="fas fa-trash icon"></span>
           Slet opslag
+        </button>
+        <button class="icon-and-label">
+          <img src="/assets/icons/send.svg" alt="Comment icon">
+          Del
         </button>
       </div>
       <div v-else class="skeleton-post-info-and-buttons post-info-and-buttons">
@@ -81,6 +89,15 @@
           <span class="skeleton-label skeleton-line"></span>
         </div>
       </div>
+      <PostUpdater
+        v-if="isEditingPost"
+        :postId="post.id"
+        :originalBody="post.body"
+        :originalTitle="post.title"
+        ref="postUpdater"
+        @post-updated="reload"
+        class="post-updater"
+      />
       <div class="comments-wrapper">
         <h2 class="comments-header">Kommentarer</h2>
         <CommentCreator v-if="isWritingComment" @comment-created="reload" class="comment-creator" />
@@ -105,6 +122,7 @@ import { mapGetters } from 'vuex';
 import VueMarkdown from 'vue-markdown';
 import CommentSection from '@/components/CommentSection.vue';
 import CommentCreator from '@/components/CommentCreator.vue';
+import PostUpdater from '@/components/PostUpdater.vue';
 import { ResourceNotFoundError } from '@/api/errors';
 import { toElapsedTimeStr } from '@/dateUtils';
 
@@ -114,6 +132,7 @@ export default {
     VueMarkdown,
     CommentSection,
     CommentCreator,
+    PostUpdater,
   },
 
   data() {
@@ -123,6 +142,7 @@ export default {
       postExists: true,
       otherErrorOccurred: false,
       isWritingComment: false,
+      isEditingPost: false,
     };
   },
 
@@ -172,11 +192,24 @@ export default {
 
     reload() {
       this.isWritingComment = false;
+      this.isEditingPost = false;
       this.fetchPost();
     },
 
     openCommentEditor() {
       this.isWritingComment = true;
+    },
+
+    togglePostUpdater() {
+      if (this.isEditingPost && this.$refs.postUpdater.hasChanged()) {
+        this.$dialog.confirm('Dine ændringer vil gå tabt. Vil du fortsætte?')
+          .then(() => {
+            this.isEditingPost = !this.isEditingPost;
+          })
+          .catch(() => {});
+      } else {
+        this.isEditingPost = !this.isEditingPost;
+      }
     },
 
     deletePost() {
@@ -280,6 +313,8 @@ export default {
 
   .post-info-and-buttons {
     display: flex;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
 
     .icon-and-label {
       margin-right: 1rem;
@@ -412,6 +447,10 @@ export default {
 }
 
 .comment-creator {
+  margin-top: 1rem;
+}
+
+.post-updater {
   margin-top: 1rem;
 }
 

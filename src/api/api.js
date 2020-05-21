@@ -373,3 +373,30 @@ export async function deletePost(token, forumId, postId) {
     throw new ServerError(`An error occurred when deleting post with id ${postId}`);
   }
 }
+
+export async function updatePost(token, {
+  forumId,
+  postId,
+  newTitle,
+  newBody,
+}) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}`);
+
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify({
+      title: newTitle,
+      body: newBody,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when updating the post with id ${postId}`);
+  }
+}

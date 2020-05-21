@@ -158,4 +158,21 @@ export default {
 
     await api.deletePost(authToken, forumId, postId);
   },
+
+  async updatePost(context, {
+    forumPathName,
+    postId,
+    newTitle,
+    newBody,
+  }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.updatePost(authToken, {
+      forumId,
+      postId,
+      newTitle,
+      newBody,
+    });
+  },
 };
