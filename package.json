@@ -14,6 +14,7 @@
     "vue-markdown": "^2.2.4",
     "vue-multiselect": "^2.1.6",
     "vue-router": "^3.0.3",
+    "vuejs-dialog": "^1.4.1",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

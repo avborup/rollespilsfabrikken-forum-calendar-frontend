@@ -109,6 +109,46 @@ export default {
   grid-template-rows: auto 1fr;
   grid-template-columns: auto 1fr;
 }
+
+.dg-main-content > .dg-view-wrapper {
+  font-family: $fonts;
+  padding: 1rem;
+
+  .dg-content-footer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    column-gap: 1rem;
+    row-gap: 0.5rem;
+  }
+
+  .dg-btn {
+    font-family: $fonts;
+    font-size: 1rem;
+    font-weight: 600;
+
+    &.dg-btn--cancel {
+      background-color: rgb(221, 20, 20);
+    }
+
+    &.dg-btn--ok {
+      background-color: $primary-accent;
+      border-color: $primary-accent;
+      color: #fff;
+
+      .dg-btn-loader .dg-circle {
+        background-color: #fff;
+        width: 0.6rem;
+        height: 0.6rem;
+      }
+    }
+  }
+}
+
+.dg-container > .dg-content-cont.dg-content-cont--floating {
+  top: 50%;
+  transform: translateY(-50%);
+}
 </style>
 
 <style lang="scss" scoped>
