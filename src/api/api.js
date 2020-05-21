@@ -61,7 +61,17 @@ function jsifyPostResponse(post) {
 
   renamedUser.createdAt = new Date(renamedUser.createdAt);
 
-  const renamedPost = renameKeys({ ...post, user: renamedUser }, {
+  const renamedPermissions = renameKeys(post.permissions, {
+    canAddComments: 'can_add_comments',
+    canDelete: 'can_delete',
+    canUpdate: 'can_update',
+  });
+
+  const renamedPost = renameKeys({
+    ...post,
+    user: renamedUser,
+    permissions: renamedPermissions,
+  }, {
     createdAt: 'created_at',
     updatedAt: 'updated_at',
     commentCount: 'comments',
@@ -226,7 +236,16 @@ export async function fetchComments(token, forumId, postId) {
 
       renamedUser.createdAt = new Date(renamedUser.createdAt);
 
-      const renamedComment = renameKeys({ ...comment, user: renamedUser }, {
+      const renamedPermissions = renameKeys(comment.permissions, {
+        canDelete: 'can_delete',
+        canUpdate: 'can_update',
+      });
+
+      const renamedComment = renameKeys({
+        ...comment,
+        user: renamedUser,
+        permissions: renamedPermissions,
+      }, {
         childComments: 'child_comments',
         createdAt: 'created_at',
         updatedAt: 'updated_at',
