@@ -23,9 +23,13 @@
         :html="false"
       >{{ body }}</vue-markdown>
       <div class="comment-buttons">
-        <button @click="toggleEditor" class="icon-and-label">
+        <button v-if="permissions.canAddComments" @click="toggleEditor" class="icon-and-label">
           <span class="fas fa-pen icon"></span>
           Skriv svar
+        </button>
+        <button v-if="permissions.canDelete" @click="deleteComment" class="icon-and-label">
+          <span class="fas fa-trash icon"></span>
+          Slet
         </button>
       </div>
       <CommentCreator
@@ -90,6 +94,10 @@ export default {
       type: Date,
       required: false,
     },
+    permissions: {
+      type: Object,
+      required: true,
+    },
   },
 
   data() {
@@ -108,6 +116,33 @@ export default {
 
     reload() {
       this.$bubble('reload-post-view');
+    },
+
+    deleteComment() {
+      const msg = 'Er du sikker på, at du vil slette denne kommentar?';
+      const options = {
+        loader: true,
+      };
+
+      this.$dialog.confirm(msg, options)
+        .then(async (dialog) => {
+          const { forum, postId } = this.$route.params;
+
+          try {
+            await this.$store.dispatch('forum/deleteComment', {
+              forumPathName: forum,
+              postId,
+              commentId: this.id,
+            });
+
+            dialog.close();
+            this.reload();
+          } catch (error) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
     },
   },
 };
@@ -192,6 +227,7 @@ export default {
   .comment-buttons {
     grid-area: buttons;
     display: flex;
+    flex-wrap: wrap;
     margin-top: 0.5rem;
 
     .icon-and-label {
