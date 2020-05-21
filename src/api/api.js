@@ -239,6 +239,7 @@ export async function fetchComments(token, forumId, postId) {
       const renamedPermissions = renameKeys(comment.permissions, {
         canDelete: 'can_delete',
         canUpdate: 'can_update',
+        canAddComments: 'can_add_comments',
       });
 
       const renamedComment = renameKeys({
