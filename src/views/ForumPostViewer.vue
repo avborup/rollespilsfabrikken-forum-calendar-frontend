@@ -50,7 +50,11 @@
           <img src="/assets/icons/comment.svg" alt="Comment icon">
           {{ post.commentCount }} kommentarer
         </div>
-        <button @click="openCommentEditor" class="icon-and-label">
+        <button
+          v-if="post.permissions.canAddComments"
+          @click="openCommentEditor"
+          class="icon-and-label"
+        >
           <span class="fas fa-pen icon"></span>
           Skriv kommentar
         </button>
