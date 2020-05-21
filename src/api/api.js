@@ -312,6 +312,31 @@ export async function createComment(token, forumId, postId, comment) {
   }
 }
 
+export async function updateComment(token, {
+  forumId,
+  postId,
+  commentId,
+  newBody,
+}) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const encodedCommentId = encodeURIComponent(commentId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment/${encodedCommentId}`);
+
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify({ body: newBody }),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when updating the comment with id ${commentId}`);
+  }
+}
+
 export async function deleteComment(token, forumId, postId, commentId) {
   const encodedForumId = encodeURIComponent(forumId);
   const encodedPostId = encodeURIComponent(postId);
