@@ -310,3 +310,22 @@ export async function createComment(token, forumId, postId, comment) {
     throw new ServerError(`An error occurred when creating a comment on the post with id ${postId} and parent id ${comment.parentId}`);
   }
 }
+
+export async function deleteComment(token, forumId, postId, commentId) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const encodedCommentId = encodeURIComponent(commentId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment/${encodedCommentId}`);
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when deleting comment with id ${commentId}`);
+  }
+}
