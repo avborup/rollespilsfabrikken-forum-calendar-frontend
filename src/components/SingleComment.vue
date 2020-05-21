@@ -1,8 +1,5 @@
 <template>
-    <li class="comment" :class="{
-      'editor-open': isWritingComment || isEditingComment,
-    }"
-    :style="{
+    <li class="comment" :style="{
       borderLeftColor: colourCycle[depth % colourCycle.length],
     }">
       <div>
@@ -36,19 +33,19 @@
           Slet
         </button>
       </div>
-      <div class="comment-creator">
-        <CommentCreator
-          v-if="isWritingComment"
-          :parentId="id"
-          @comment-created="reload"
-        />
-        <CommentEditor
-          v-if="isEditingComment"
-          :id="id"
-          @comment-updated="reload"
-          ref="commentEditor"
-        />
-      </div>
+      <CommentCreator
+        v-if="isWritingComment"
+        :parentId="id"
+        @comment-created="reload"
+        class="comment-creator"
+      />
+      <CommentEditor
+        v-if="isEditingComment"
+        :id="id"
+        @comment-updated="reload"
+        ref="commentEditor"
+        class="comment-creator"
+      />
       <ul class="child-comments" v-if="childComments.length > 0">
         <SingleComment
           v-for="childComment in childComments"
@@ -180,27 +177,18 @@ export default {
 .comment {
   display: grid;
   grid-template-columns: 2rem 1fr;
-  grid-template-rows: 2rem 1fr 1rem auto;
+  grid-template-rows: 2rem 1fr 1.5rem auto;
   grid-template-areas:
     "avatar info"
     "body body"
     "buttons buttons"
+    "editor editor"
     "children children";
   column-gap: 0.5rem;
-  row-gap: 0.5rem;
   align-items: center;
   border-left-width: 0.15rem;
   border-left-style: solid;
   padding: 0.25rem 0 0.25rem 0.75rem;
-
-  &.editor-open {
-    grid-template-areas:
-      "avatar info"
-      "body body"
-      "buttons buttons"
-      "editor editor"
-      "children children";
-  }
 
   .child-comments {
     grid-area: children;
@@ -232,6 +220,7 @@ export default {
 
   .comment-body {
     grid-area: body;
+    margin-top: 0.5rem;
   }
 
   .author-date {
@@ -254,7 +243,7 @@ export default {
     grid-area: buttons;
     display: flex;
     flex-wrap: wrap;
-    margin-top: 0.5rem;
+    align-self: center;
 
     .icon-and-label {
       margin-right: 1rem;
@@ -282,6 +271,7 @@ export default {
 
   .comment-creator {
     grid-area: editor;
+    margin-top: 0.5rem;
   }
 }
 </style>
