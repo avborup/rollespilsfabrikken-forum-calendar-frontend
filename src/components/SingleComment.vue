@@ -1,6 +1,6 @@
 <template>
     <li class="comment" :class="{
-      'editor-open': isWritingComment,
+      'editor-open': isWritingComment || isEditingComment,
     }"
     :style="{
       borderLeftColor: colourCycle[depth % colourCycle.length],
@@ -23,21 +23,32 @@
         :html="false"
       >{{ body }}</vue-markdown>
       <div class="comment-buttons">
-        <button v-if="permissions.canAddComments" @click="toggleEditor" class="icon-and-label">
-          <span class="fas fa-pen icon"></span>
+        <button v-if="permissions.canAddComments" @click="toggleCreating" class="icon-and-label">
+          <span class="fas fa-reply icon"></span>
           Skriv svar
+        </button>
+        <button v-if="permissions.canUpdate" @click="toggleEditing" class="icon-and-label">
+          <span class="fas fa-pen icon"></span>
+          Redigér
         </button>
         <button v-if="permissions.canDelete" @click="deleteComment" class="icon-and-label">
           <span class="fas fa-trash icon"></span>
           Slet
         </button>
       </div>
-      <CommentCreator
-        v-if="isWritingComment"
-        :parentId="id"
-        @comment-created="reload"
-        class="comment-creator"
-      />
+      <div class="comment-creator">
+        <CommentCreator
+          v-if="isWritingComment"
+          :parentId="id"
+          @comment-created="reload"
+        />
+        <CommentEditor
+          v-if="isEditingComment"
+          :id="id"
+          @comment-updated="reload"
+          ref="commentEditor"
+        />
+      </div>
       <ul class="child-comments" v-if="childComments.length > 0">
         <SingleComment
           v-for="childComment in childComments"
@@ -52,6 +63,7 @@
 <script>
 import VueMarkdown from 'vue-markdown';
 import CommentCreator from '@/components/CommentCreator.vue';
+import CommentEditor from '@/components/CommentEditor.vue';
 import { toElapsedTimeStr } from '@/dateUtils';
 import { colourCycle } from '@/constants';
 
@@ -61,6 +73,7 @@ export default {
   name: 'SingleComment',
   components: {
     CommentCreator,
+    CommentEditor,
     VueMarkdown,
   },
 
@@ -104,14 +117,21 @@ export default {
     return {
       colourCycle,
       isWritingComment: false,
+      isEditingComment: false,
     };
   },
 
   methods: {
     toElapsedTimeStr,
 
-    toggleEditor() {
-      this.isWritingComment = !this.isWritingComment;
+    toggleCreating() {
+      this.isEditingComment = false;
+      this.isWritingComment = true;
+    },
+
+    toggleEditing() {
+      this.isWritingComment = false;
+      this.isEditingComment = true;
     },
 
     reload() {
@@ -144,6 +164,12 @@ export default {
         })
         .catch(() => {});
     },
+  },
+
+  updated() {
+    if (this.isEditingComment) {
+      this.$refs.commentEditor.setValue(this.body);
+    }
   },
 };
 </script>

@@ -128,6 +128,23 @@ export default {
     });
   },
 
+  async updateComment(context, {
+    forumPathName,
+    postId,
+    commentId,
+    newBody,
+  }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.updateComment(authToken, {
+      forumId,
+      postId,
+      commentId,
+      newBody,
+    });
+  },
+
   async deleteComment(context, { forumPathName, postId, commentId }) {
     const { authToken } = context.rootState.auth;
     const forumId = context.getters.getForumFromPathName(forumPathName).id;

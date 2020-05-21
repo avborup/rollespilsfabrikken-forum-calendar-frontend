@@ -55,6 +55,10 @@ export default {
     getValue() {
       return this.$refs.markdownEditor.editor.getValue();
     },
+
+    setValue(val) {
+      return this.$refs.markdownEditor.editor.setValue(val);
+    },
   },
 };
 </script>
