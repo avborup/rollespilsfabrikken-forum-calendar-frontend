@@ -194,6 +194,7 @@ export default {
     font-size: 0.9rem;
     margin: 0 auto;
     display: block;
+    margin-bottom: 1rem;
   }
 }
 
