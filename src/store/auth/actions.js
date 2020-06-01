@@ -33,4 +33,16 @@ export default {
       }
     }
   },
+
+  getSecurityQuestion() {
+    return auth.getSecurityQuestion();
+  },
+
+  async signUp(context, form) {
+    await auth.signUp(form);
+  },
+
+  async resendEmail(context, email) {
+    await auth.resendEmail(email);
+  },
 };

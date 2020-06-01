@@ -114,6 +114,11 @@ export default {
   font-family: $fonts;
   padding: 1rem;
 
+  #dg-input-elem {
+    font-family: $fonts;
+    font-size: 1rem;
+  }
+
   .dg-content-footer {
     display: flex;
     justify-content: center;

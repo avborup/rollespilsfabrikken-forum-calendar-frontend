@@ -11,6 +11,7 @@ import LoginPage from './views/LoginPage.vue';
 import HomePage from './views/HomePage.vue';
 import PageNotFound from './views/PageNotFound.vue';
 import ForumPostCreator from './views/ForumPostCreator.vue';
+import SignUpPage from './views/SignUpPage.vue';
 
 Vue.use(Router);
 
@@ -55,6 +56,14 @@ const router = new Router({
       path: '/nyt-opslag',
       name: 'create-post',
       component: ForumPostCreator,
+    },
+    {
+      path: '/opret-bruger',
+      name: 'signup',
+      component: SignUpPage,
+      meta: {
+        isPublic: true,
+      },
     },
     {
       path: '/markdown-guide',
