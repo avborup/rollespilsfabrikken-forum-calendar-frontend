@@ -70,8 +70,8 @@
           <span class="fas fa-trash icon"></span>
           Slet opslag
         </button>
-        <button class="icon-and-label">
-          <img src="/assets/icons/send.svg" alt="Comment icon">
+        <button @click="sharePost" class="icon-and-label">
+          <span class="fas fa-share-square icon"></span>
           Del
         </button>
       </div>
@@ -236,6 +236,19 @@ export default {
           }
         })
         .catch(() => {});
+    },
+
+    sharePost() {
+      this.$dialog.alert(`
+        <p class="share-prompt" style="text-align: center">Du kan dele dette URL:</p>
+        <a
+          class="share-prompt"
+          href="${window.location.href}"
+          style="text-align: center; margin-top: 0.5rem; display: block;"
+        >${window.location.href}</a>
+      `, {
+        html: true,
+      });
     },
   },
 
