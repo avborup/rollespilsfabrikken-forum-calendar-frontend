@@ -400,3 +400,63 @@ export async function updatePost(token, {
     throw new ServerError(`An error occurred when updating the post with id ${postId}`);
   }
 }
+
+export async function getUser(token) {
+  const url = makeUrl('/api/user');
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to fetch user.');
+  }
+
+  const json = await res.json();
+  const user = renameKeys(json.user, {
+    avatarUrl: 'avatar_url',
+    createdAt: 'created_at',
+    isSuperUser: 'super_user',
+  });
+
+  user.createdAt = new Date(user.createdAt);
+
+  return user;
+}
+
+export async function getAllUsers(token) {
+  const url = makeUrl('/api/user/index');
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to fetch users');
+  }
+
+  const json = await res.json();
+  const users = json.users.map((user) => {
+    const renamed = renameKeys(user, {
+      avatarUrl: 'avatar_url',
+      createdAt: 'created_at',
+      isSuperUser: 'super_user',
+    });
+
+    renamed.createdAt = new Date(renamed.createdAt);
+
+    return renamed;
+  });
+
+  users.sort((a, b) => a.username.localeCompare(b.username));
+
+  return users;
+}

@@ -133,3 +133,60 @@ export async function resendEmail(email) {
     body: JSON.stringify({ email }),
   });
 }
+
+export async function getAllRoles(token) {
+  const numPerPage = 25;
+  let page = 1;
+  let moreRolesToFetch = true;
+  const roles = [];
+
+  /* eslint-disable no-await-in-loop */
+  while (moreRolesToFetch) {
+    const url = makeUrl('/api/auth/role', {
+      items: numPerPage,
+      page,
+    });
+
+    const res = await fetch(url, {
+      headers: {
+        ...alwaysHeaders,
+        ...makeAuthHeader(token),
+      },
+    });
+
+    if (!res.ok) {
+      throw new ServerError('Failed to fetch all roles');
+    }
+
+    const json = await res.json();
+    const { data } = json;
+
+    roles.push(...data.roles);
+
+    page += 1;
+    moreRolesToFetch = data.links.next_page !== null;
+  }
+  /* eslint-enable no-await-in-loop */
+
+  return roles;
+}
+
+export async function modifyRoleOnUser(token, { userId, roleId }, action) {
+  const encodedUserId = encodeURIComponent(userId);
+  const encodedRoleId = encodeURIComponent(roleId);
+  const url = makeUrl(`/api/auth/user/${encodedUserId}/role/${encodedRoleId}`);
+
+  const method = action === 'delete' ? 'DELETE' : 'POST';
+
+  const res = await fetch(url, {
+    method,
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`Failed to perform action '${action}' on role`);
+  }
+}

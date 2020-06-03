@@ -3,6 +3,10 @@ import Vuex from 'vuex';
 import forumModule from './forum/forumModule';
 import calendarModule from './calendar/calendarModule';
 import authModule from './auth/authModule';
+import state from './state';
+import getters from './getters';
+import actions from './actions';
+import mutations from './mutations';
 
 Vue.use(Vuex);
 
@@ -21,4 +25,8 @@ export default new Vuex.Store({
       ...authModule,
     },
   },
+  state,
+  getters,
+  actions,
+  mutations,
 });

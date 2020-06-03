@@ -11,6 +11,7 @@ import LoginPage from './views/LoginPage.vue';
 import HomePage from './views/HomePage.vue';
 import PageNotFound from './views/PageNotFound.vue';
 import ForumPostCreator from './views/ForumPostCreator.vue';
+import UserAdministration from './views/UserAdministration.vue';
 import SignUpPage from './views/SignUpPage.vue';
 
 Vue.use(Router);
@@ -64,6 +65,11 @@ const router = new Router({
       meta: {
         isPublic: true,
       },
+    },
+    {
+      path: '/admin/brugere',
+      name: 'admin-users',
+      component: UserAdministration,
     },
     {
       path: '/markdown-guide',

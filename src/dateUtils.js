@@ -118,3 +118,7 @@ export function toElapsedTimeStr(date) {
   const yearDiff = nowStamp.getFullYear() - date.getFullYear();
   return `${Math.floor(yearDiff)} år`;
 }
+
+export function simpleStringFormat(date) {
+  return `${date.getDate()}/${date.getMonth() + 1}-${date.getFullYear()}`;
+}

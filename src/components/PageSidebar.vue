@@ -25,6 +25,16 @@
         <CalendarIcon class="icon" />
         <p>Kalender</p>
       </router-link>
+      <!-- Route to be added. -->
+      <router-link v-if="user !== null && user.isSuperUser" :to="{ name: 'not-found' }">
+        <span class="icon fas fa-tools"></span>
+        <p>Administration</p>
+      </router-link>
+      <div class="sub-nav" v-if="user !== null && user.isSuperUser">
+        <router-link :to="{ name: 'admin-users' }" class="sub-nav-item">
+          <p>Administrér brugere</p>
+        </router-link>
+      </div>
     </nav>
     <h3 class="sidebar-section-header">Kalendervisning</h3>
     <ul class="choose-category">
@@ -48,7 +58,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import CalendarIcon from '@/components/CalendarIcon.vue';
 
 export default {
@@ -61,6 +71,8 @@ export default {
     isAuthenticated(isAuth) {
       if (isAuth) {
         this.$store.dispatch('forum/fetchAllForums');
+
+        this.$store.dispatch('fetchUser');
       }
     },
   },
@@ -75,6 +87,9 @@ export default {
     }),
     ...mapGetters('auth', [
       'isAuthenticated',
+    ]),
+    ...mapState([
+      'user',
     ]),
     checkedCategories: {
       get() {
@@ -229,6 +244,10 @@ $listitem-padding: 0.5rem;
     .icon {
       width: 1.4rem;
       height: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgb(0, 0, 0, 0.6);
       margin-right: 0.6rem;
     }
   }
