@@ -59,7 +59,7 @@ export default {
         this.isInvalidLogin = err instanceof UnauthorizedError;
 
         if (!this.isInvalidLogin) {
-          alert('Der opstod en fejl!');
+          this.$dialog.alert('Vi beklager, men der opstod en fejl.');
         }
       }
     },

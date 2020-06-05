@@ -48,7 +48,7 @@ export default {
 
         this.$emit('comment-created');
       } catch (error) {
-        alert('Der opstod en fejl!');
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
       }
 
       this.isWaiting = false;
