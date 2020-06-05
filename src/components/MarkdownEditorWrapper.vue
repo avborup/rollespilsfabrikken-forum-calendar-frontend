@@ -47,9 +47,21 @@ export default {
 
   methods: {
     help() {
-      this.$router.push({
-        name: 'markdown-guide',
-      });
+      if (this.getValue().length > 0) {
+        const base = window.location.href.split('://')[1].split('/')[0];
+        const href = `${base}/markdown-guide`;
+        this.$dialog.confirm(`Er du sikker på, at du vil forlade siden? Dine ændringer gemmes ikke.<br><br>Du kan alternativt indsætte dette URL i en ny fane for at se guiden: <span style="font-family: monospace">${href}</span>`, {
+          html: true,
+        })
+          .then(() => this.$router.push({
+            name: 'markdown-guide',
+          }))
+          .catch(() => {});
+      } else {
+        this.$router.push({
+          name: 'markdown-guide',
+        });
+      }
     },
 
     getValue() {
