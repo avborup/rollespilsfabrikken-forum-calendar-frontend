@@ -39,24 +39,26 @@
         </router-link>
       </div>
     </nav>
-    <h3 class="sidebar-section-header">Kalendervisning</h3>
-    <ul class="choose-category">
-      <li v-for="category in categories" :key="category">
-        <input
-          type="checkbox"
-          checked
-          :value="category"
-          :id="'checkbox-' + category"
-          v-model="checkedCategories"
-        >
-        <label class="category-option" :for="'checkbox-' + category" tabindex="0">
-          <div class="checkbox" :style="{ backgroundColor: getCategoryColour(category) }">
-            <img src="assets/icons/checkmark.svg" alt="Flueben">
-          </div>
-          <span class="option-text">{{ category }}</span>
-        </label>
-      </li>
-    </ul>
+    <div v-if="shouldShowCalendarSection">
+      <h3 class="sidebar-section-header">Kalendervisning</h3>
+      <ul class="choose-category">
+        <li v-for="category in categories" :key="category">
+          <input
+            type="checkbox"
+            checked
+            :value="category"
+            :id="'checkbox-' + category"
+            v-model="checkedCategories"
+          >
+          <label class="category-option" :for="'checkbox-' + category" tabindex="0">
+            <div class="checkbox" :style="{ backgroundColor: getCategoryColour(category) }">
+              <img src="assets/icons/checkmark.svg" alt="Flueben">
+            </div>
+            <span class="option-text">{{ category }}</span>
+          </label>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -70,6 +72,12 @@ export default {
     CalendarIcon,
   },
 
+  data() {
+    return {
+      shouldShowCalendarSection: true,
+    };
+  },
+
   watch: {
     isAuthenticated(isAuth) {
       if (isAuth) {
@@ -78,6 +86,14 @@ export default {
         this.$store.dispatch('fetchUser');
       }
     },
+
+    $route() {
+      this.setShownSections();
+    },
+  },
+
+  mounted() {
+    this.setShownSections();
   },
 
   computed: {
@@ -101,6 +117,12 @@ export default {
       set(newCategories) {
         this.$store.dispatch('calendar/updateCurrentCalendarCategories', newCategories);
       },
+    },
+  },
+
+  methods: {
+    setShownSections() {
+      this.shouldShowCalendarSection = this.$route.fullPath.startsWith('/kalender');
     },
   },
 };
