@@ -37,7 +37,6 @@
 
 <script>
 import Multiselect from 'vue-multiselect';
-import { mapGetters } from 'vuex';
 import MarkdownEditorWrapper from '@/components/MarkdownEditorWrapper.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
 
@@ -62,9 +61,11 @@ export default {
   },
 
   computed: {
-    ...mapGetters('forum', {
-      forums: 'getAllForums',
-    }),
+    forums() {
+      const allForums = this.$store.getters['forum/getAllForums'];
+
+      return allForums.filter(forum => forum.permissions.canAddPosts);
+    },
   },
 
   methods: {

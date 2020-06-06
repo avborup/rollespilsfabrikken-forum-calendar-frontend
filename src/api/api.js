@@ -48,7 +48,15 @@ export async function fetchAllForums(token) {
 
   const withPathNames = addPathNames(forums);
 
-  return withPathNames;
+  return withPathNames.map(forum => ({
+    ...forum,
+    permissions: renameKeys(forum.permissions, {
+      canAddComments: 'can_add_comments',
+      canAddPosts: 'can_add_posts',
+      canDelete: 'can_delete',
+      canUpdate: 'can_update',
+    }),
+  }));
 }
 
 // Fix up the key names and data types to be more JavaScripty.
