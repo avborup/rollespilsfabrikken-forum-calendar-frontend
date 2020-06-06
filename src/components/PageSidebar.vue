@@ -134,6 +134,10 @@ $listitem-padding: 0.5rem;
   font-weight: 400;
   overflow-y: auto;
 
+  & > :last-child {
+    margin-bottom: 1rem;
+  }
+
   .close-sidebar-button {
     position: relative;
     margin: 0;
@@ -234,10 +238,7 @@ $listitem-padding: 0.5rem;
     padding: 0.2rem $listitem-padding;
     text-decoration: none;
     color: $primary-text;
-
-    &:not(:last-child) {
-      margin-bottom: 0.4rem;
-    }
+    margin-bottom: 0.4rem;
 
     &:hover {
       background-color: rgba(0, 0, 0, 0.03);
