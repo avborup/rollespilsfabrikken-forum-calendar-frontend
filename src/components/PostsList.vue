@@ -1,5 +1,5 @@
 <template>
-  <ul v-if="!isLoading" class="posts">
+  <ul v-if="!isLoading && posts.length > 0" class="posts">
     <PostsListItem
       v-for="post in posts"
       :key="post.id"
@@ -7,6 +7,7 @@
       :forum="getForumFromId(post.forumId)"
     />
   </ul>
+  <p v-else-if="!isLoading && posts.length === 0">Dette forum har ingen opslag.</p>
   <ul v-else class="posts">
     <li v-for="i in 6" :key="i" class="post-list-item skeleton-post-item">
       <div class="avatar"></div>
