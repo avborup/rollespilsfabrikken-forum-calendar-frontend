@@ -7,4 +7,8 @@ export default {
   SET_CURRENT_CALENDAR_CATEGORIES(state, newCategories) {
     state.currentCalendarCategories = newCategories;
   },
+
+  SET_CALENDARS(state, calendars) {
+    state.allCalendars = calendars;
+  },
 };
