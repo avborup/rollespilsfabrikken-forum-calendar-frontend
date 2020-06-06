@@ -126,7 +126,7 @@ export default {
 
     scrollToTop() {
       if (this.$el) {
-        this.$el.scrollTo(0, 0);
+        this.$el.scrollTop = 0;
       }
     },
 
