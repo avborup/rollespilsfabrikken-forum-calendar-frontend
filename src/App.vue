@@ -154,6 +154,12 @@ export default {
   top: 50%;
   transform: translateY(-50%);
 }
+
+.vc-chrome-controls {
+  .vc-alpha {
+    display: none;
+  }
+}
 </style>
 
 <style lang="scss" scoped>

@@ -12,6 +12,7 @@ import HomePage from './views/HomePage.vue';
 import PageNotFound from './views/PageNotFound.vue';
 import ForumPostCreator from './views/ForumPostCreator.vue';
 import UserAdministration from './views/UserAdministration.vue';
+import RolesAdministrator from './views/RolesAdministrator.vue';
 import SignUpPage from './views/SignUpPage.vue';
 
 Vue.use(Router);
@@ -70,6 +71,11 @@ const router = new Router({
       path: '/admin/brugere',
       name: 'admin-users',
       component: UserAdministration,
+    },
+    {
+      path: '/admin/roller',
+      name: 'admin-roles',
+      component: RolesAdministrator,
     },
     {
       path: '/markdown-guide',

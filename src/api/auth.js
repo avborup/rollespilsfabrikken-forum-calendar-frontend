@@ -168,7 +168,9 @@ export async function getAllRoles(token) {
   }
   /* eslint-enable no-await-in-loop */
 
-  return roles;
+  return roles.map(role => renameKeys(role, {
+    rolePermissions: 'role_permissions',
+  }));
 }
 
 export async function modifyRoleOnUser(token, { userId, roleId }, action) {
@@ -188,5 +190,114 @@ export async function modifyRoleOnUser(token, { userId, roleId }, action) {
 
   if (!res.ok) {
     throw new ServerError(`Failed to perform action '${action}' on role`);
+  }
+}
+
+export async function createRole(token, name, colour) {
+  const url = makeUrl('/api/auth/role');
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify({ title: name, color: colour }),
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to create role');
+  }
+}
+
+export async function editRole(token, roleId, name, colour) {
+  const encodedRoleId = encodeURIComponent(roleId);
+  const url = makeUrl(`/api/auth/role/${encodedRoleId}`);
+
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify({ title: name, color: colour }),
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to edit role');
+  }
+}
+
+export async function deleteRole(token, roleId) {
+  const encodedRoleId = encodeURIComponent(roleId);
+  const url = makeUrl(`/api/auth/role/${encodedRoleId}`);
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to delete role');
+  }
+}
+
+export async function getAllPermissions(token) {
+  const numPerPage = 500;
+  let page = 1;
+  let morePermsToFetch = true;
+  const perms = [];
+
+  /* eslint-disable no-await-in-loop */
+  while (morePermsToFetch) {
+    const url = makeUrl('/api/auth/permission', {
+      items: numPerPage,
+      page,
+    });
+
+    const res = await fetch(url, {
+      headers: {
+        ...alwaysHeaders,
+        ...makeAuthHeader(token),
+      },
+    });
+
+    if (!res.ok) {
+      throw new ServerError('Failed to fetch all permissions');
+    }
+
+    const json = await res.json();
+    const { data } = json;
+
+    perms.push(...data.permissions);
+
+    page += 1;
+    morePermsToFetch = data.links.next_page !== null;
+  }
+  /* eslint-enable no-await-in-loop */
+
+  return perms;
+}
+
+export async function modifyRolePermissions(token, roleId, permissionIds, action) {
+  const encodedRoleId = encodeURIComponent(roleId);
+  const url = makeUrl(`/api/auth/role/${encodedRoleId}/permissions`);
+
+  const method = action === 'delete' ? 'DELETE' : 'POST';
+
+  const res = await fetch(url, {
+    method,
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify({ permissions: permissionIds }),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`Failed to perform action '${action}' on role permissions`);
   }
 }

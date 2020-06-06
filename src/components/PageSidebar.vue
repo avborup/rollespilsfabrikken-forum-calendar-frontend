@@ -34,6 +34,9 @@
         <router-link :to="{ name: 'admin-users' }" class="sub-nav-item">
           <p>Administrér brugere</p>
         </router-link>
+        <router-link :to="{ name: 'admin-roles' }" class="sub-nav-item">
+          <p>Administrér roller</p>
+        </router-link>
       </div>
     </nav>
     <h3 class="sidebar-section-header">Kalendervisning</h3>

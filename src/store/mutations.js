@@ -12,4 +12,12 @@ export default {
   SET_ROLES(state, roles) {
     state.allRoles = roles;
   },
+
+  SET_PERMISSIONS(state, perms) {
+    state.allPermissions = perms;
+  },
+
+  SET_EDIT_ROLE_DETAILS(state, details) {
+    state.editRoleDetails = details;
+  },
 };
