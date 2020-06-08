@@ -7,7 +7,7 @@
       :forum="getForumFromId(post.forumId)"
     />
   </ul>
-  <p v-else-if="!isLoading && posts.length === 0">Dette forum har ingen opslag.</p>
+  <p v-else-if="!isLoading && posts.length === 0" class="no-posts">Dette forum har ingen opslag.</p>
   <ul v-else class="posts">
     <li v-for="i in 6" :key="i" class="post-list-item skeleton-post-item">
       <div class="avatar"></div>
@@ -150,6 +150,10 @@ export default {
     background: linear-gradient(to right,#f3f3f3 1rem,#eee 4rem,#f3f3f3 7rem);
     animation: skeleton-shimmer 4s linear 0s infinite normal forwards;
   }
+}
+
+.no-posts {
+  margin-bottom: 1rem;
 }
 
 @keyframes skeleton-shimmer {
