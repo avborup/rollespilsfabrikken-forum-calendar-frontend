@@ -72,8 +72,7 @@ export default {
         await this.$store.dispatch('forum/fetchPosts', { forumPathName, page });
         this.isLoading = false;
       } catch (err) {
-        // TODO: Will be handled.
-        console.log(err);
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
       }
     },
   },
