@@ -42,7 +42,7 @@ const router = new Router({
       component: Calendar,
     },
     {
-      path: '/kalender/begivenhed',
+      path: '/kalender/:calendarId/begivenhed/:eventId',
       component: CalendarEventViewer,
     },
     {

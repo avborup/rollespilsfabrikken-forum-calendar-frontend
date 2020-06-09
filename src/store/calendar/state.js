@@ -9,4 +9,5 @@ export default () => ({
   currentCalendarCategories: testCategories.map(({ name }) => name),
   currentlyFocusedEventId: testEvents[0].id, // FIXME: Better way in the end product
   allCalendars: null,
+  currentEvent: null,
 });

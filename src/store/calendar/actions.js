@@ -14,4 +14,11 @@ export default {
 
     context.commit('SET_CALENDARS', calendars);
   },
+
+  async fetchEvent(context, { calendarId, eventId, date }) {
+    const { authToken } = context.rootState.auth;
+    const event = await calendarApi.fetchEvent(authToken, calendarId, eventId, date);
+
+    context.commit('SET_EVENT', event);
+  },
 };

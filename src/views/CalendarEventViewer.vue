@@ -1,42 +1,83 @@
 <template>
   <div class="container">
-    <router-link to="/kalender" title="Luk begivenhed">
-      <button class="close-event-button">
-        <span>&times;</span>
-      </button>
-    </router-link>
-    <h4
-      class="category"
-      :style="{ backgroundColor: getCategoryColour(event.category) }"
-    >
-      {{ event.category }}
-    </h4>
-    <h1 class="title">{{ event.title }}</h1>
-    <p class="timeframe">{{ formatTimeframe(event.timeframe) }}</p>
-    <div class="fields">
-      <img class="icon" src="assets/icons/desc.svg" alt="Beskrivelse" title="Beskrivelse">
-      <p class="description">{{ event.desc }}</p>
+    <div v-if="eventExists && !errorOccurred">
+      <div v-if="!isLoading">
+        <router-link
+          :to="{
+            name: 'calendar',
+            query: {
+              month: event.start.getMonth() + 1,
+              year: event.start.getFullYear(),
+            },
+          }"
+          title="Luk begivenhed"
+        >
+          <button class="close-event-button">
+            <span>&times;</span>
+          </button>
+        </router-link>
+        <h4 class="category" :style="{ backgroundColor: calendar.colour }">{{ calendar.name }}</h4>
+        <h1 class="title">{{ event.title }}</h1>
+        <p class="timeframe">{{ formatTimeframe(event.start, event.end) }}</p>
+        <div class="fields">
+          <img class="icon" src="assets/icons/desc.svg" alt="Beskrivelse" title="Beskrivelse">
+          <p class="description">{{ event.description }}</p>
+        </div>
+      </div>
+      <div v-else class="loading">
+        <LoadingSpinner />
+      </div>
+    </div>
+    <div v-else-if="!eventExists" class="event-not-found">
+      <h1>Begivenhed findes ikke</h1>
+      <p>Begivenheden, du leder efter, er ikke tilgængelig.</p>
+      <p class="attempted-event">{{ $route.params.eventId }}</p>
+    </div>
+    <div v-else class="error-occurred">
+      <h1>Der opstod en fejl</h1>
+      <p>Begivenheden kunne ikke indlæses.</p>
+      <p class="attempted-event">{{ $route.params.eventId }}</p>
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import { isSameDay, toFormattedString } from '@/dateUtils';
+import { ResourceNotFoundError } from '@/api/errors';
+import LoadingSpinner from '@/components/LoadingSpinner.vue';
 
 export default {
   name: 'CalendarEventViewer',
 
-  // FIXME: Handle errors if event is invalid in some way
+  components: {
+    LoadingSpinner,
+  },
+
+  data() {
+    return {
+      eventExists: true,
+      isLoading: true,
+      errorOccurred: false,
+    };
+  },
+
   computed: {
-    ...mapGetters('calendar', {
-      event: 'getCurrentlyFocusedEvent',
-      getCategoryColour: 'getCategoryColour',
+    ...mapState('calendar', {
+      event: 'currentEvent',
+      // Anything using allCalendars is temporary. In the future, the belonging
+      // calendar will be returned in the REST call as well.
+      allCalendars: 'allCalendars',
     }),
+
+    calendar() {
+      const { calendarId } = this.$route.params;
+      return this.$store.getters['calendar/getCalendarFromId'](calendarId);
+    },
   },
 
   methods: {
-    formatTimeframe({ start, end }) {
+    formatTimeframe(start, end) {
       const startStr = toFormattedString(start);
 
       if (isSameDay(start, end)) {
@@ -47,6 +88,49 @@ export default {
       const endStr = toFormattedString(end);
       return `${startStr} – ${endStr}`;
     },
+
+    async fetchEvent() {
+      this.eventExists = true;
+      this.isLoading = true;
+      this.errorOccurred = false;
+
+      if (!this.allCalendars) {
+        return;
+      }
+
+      const { eventId, calendarId } = this.$route.params;
+      const date = new Date(this.$route.query.date);
+
+      try {
+        await this.$store.dispatch('calendar/fetchEvent', { calendarId, eventId, date });
+      } catch (err) {
+        if (err instanceof ResourceNotFoundError) {
+          this.eventExists = false;
+        }
+
+        this.errorOccurred = true;
+      }
+
+      this.isLoading = false;
+    },
+  },
+
+  watch: {
+    allCalendars() {
+      this.fetchEvent();
+    },
+
+    $route() {
+      this.fetchEvent();
+    },
+  },
+
+  created() {
+    if (!this.allCalendars) {
+      this.$store.dispatch('calendar/fetchAllCalendars');
+    }
+
+    this.fetchEvent();
   },
 };
 </script>
@@ -55,7 +139,7 @@ export default {
 @import '@/assets/scss/theme.scss';
 
 .container {
-  margin: 0.8rem;
+  margin: 0.8rem 1rem;
 }
 
 .close-event-button {
@@ -81,7 +165,6 @@ export default {
 }
 
 .category {
-  // FIXME: Change background colour according to category colour
   color: #fff;
   background-color: $primary-accent;
   border-radius: 0.25rem;
@@ -118,6 +201,36 @@ export default {
 .description {
   font-size: 0.95rem;
   color: $primary-text;
+}
+
+.loading {
+  height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.event-not-found, .error-occurred {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+
+  h1 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: rgba(0, 0, 0, 0.75);
+    margin-bottom: 1rem;
+
+    &.attempted-event {
+      font-family: monospace;
+    }
+  }
 }
 
 @media (min-width: 600px) {

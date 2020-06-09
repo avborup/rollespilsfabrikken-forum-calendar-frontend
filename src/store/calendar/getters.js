@@ -42,4 +42,6 @@ export default {
   getCurrentCalendarCategories(state) {
     return state.currentCalendarCategories;
   },
+
+  getCalendarFromId: state => id => state.allCalendars.find(cal => cal.id === id),
 };
