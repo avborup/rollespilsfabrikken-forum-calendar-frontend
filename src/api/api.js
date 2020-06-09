@@ -468,3 +468,89 @@ export async function getAllUsers(token) {
 
   return users;
 }
+
+export async function deleteForumOrCalendar(token, id, type) {
+  if (type !== 'calendar' && type !== 'forum') {
+    throw new Error('Argument "type" must be either forum or calendar');
+  }
+
+  const encodedId = encodeURIComponent(id);
+  const url = makeUrl(`/api/${type}/${encodedId}`);
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when deleting ${type} with id ${id}`);
+  }
+}
+
+export async function editForumOrCalendar(token, id, name, desc, colour, type) {
+  if (type !== 'calendar' && type !== 'forum') {
+    throw new Error('Argument "type" must be either forum or calendar');
+  }
+
+  const encodedId = encodeURIComponent(id);
+  const url = makeUrl(`/api/${type}/${encodedId}`);
+
+  const body = {
+    title: name,
+    colour,
+  };
+
+  // If an empty string is sent, the API returns an error. Either the description
+  // has to be non-empty or not exist.
+  if (desc.length > 0) {
+    body.description = desc;
+  }
+
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when editing ${type} with id ${id}`);
+  }
+}
+
+export async function createForumOrCalendar(token, name, desc, colour, type) {
+  if (type !== 'calendar' && type !== 'forum') {
+    throw new Error('Argument "type" must be either forum or calendar');
+  }
+
+  const url = makeUrl(`/api/${type}`);
+
+  const body = {
+    title: name,
+    colour,
+  };
+
+  // If an empty string is sent, the API returns an error. Either the description
+  // has to be non-empty or not exist.
+  if (desc.length > 0) {
+    body.description = desc;
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when creating new ${type}`);
+  }
+}
