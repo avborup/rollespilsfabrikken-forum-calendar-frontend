@@ -13,6 +13,7 @@ import PageNotFound from './views/PageNotFound.vue';
 import ForumPostCreator from './views/ForumPostCreator.vue';
 import UserAdministration from './views/UserAdministration.vue';
 import RolesAdministrator from './views/RolesAdministrator.vue';
+import CalendarForumAdministrator from './views/CalendarForumAdministrator.vue';
 import SignUpPage from './views/SignUpPage.vue';
 
 Vue.use(Router);
@@ -76,6 +77,11 @@ const router = new Router({
       path: '/admin/roller',
       name: 'admin-roles',
       component: RolesAdministrator,
+    },
+    {
+      path: '/admin/forum-kalender',
+      name: 'admin-forum-calendar',
+      component: CalendarForumAdministrator,
     },
     {
       path: '/markdown-guide',

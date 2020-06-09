@@ -69,7 +69,33 @@ export default {
     await auth.editRole(authToken, roleId, roleName, colour);
   },
 
+  async deleteForumOrCalendar(context, { id, type }) {
+    const { authToken } = context.rootState.auth;
+    await api.deleteForumOrCalendar(authToken, id, type);
+  },
+
   setEditForumCalendarDetails(context, details) {
     context.commit('SET_FORUM_CALENDAR_EDIT_DETAILS', details);
+  },
+
+  async editForumOrCalendar(context, {
+    id,
+    name,
+    desc,
+    colour,
+    type,
+  }) {
+    const { authToken } = context.rootState.auth;
+    await api.editForumOrCalendar(authToken, id, name, desc, colour, type);
+  },
+
+  async createForumOrCalendar(context, {
+    name,
+    desc,
+    colour,
+    type,
+  }) {
+    const { authToken } = context.rootState.auth;
+    await api.createForumOrCalendar(authToken, name, desc, colour, type);
   },
 };

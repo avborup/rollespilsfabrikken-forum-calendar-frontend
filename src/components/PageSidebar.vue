@@ -37,6 +37,9 @@
         <router-link :to="{ name: 'admin-roles' }" class="sub-nav-item">
           <p>Administrér roller</p>
         </router-link>
+        <router-link :to="{ name: 'admin-forum-calendar' }" class="sub-nav-item">
+          <p>Administrér kalendre og fora</p>
+        </router-link>
       </div>
     </nav>
     <div v-if="shouldShowCalendarSection">
