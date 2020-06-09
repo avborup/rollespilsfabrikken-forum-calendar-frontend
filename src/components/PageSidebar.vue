@@ -12,6 +12,9 @@
         <p>Forum</p>
       </router-link>
       <div class="sub-nav">
+        <router-link :to="{ name: 'create-post' }" class="sub-nav-item">
+          <p>Opret opslag</p>
+        </router-link>
         <router-link
           v-for="forum in forums"
           :key="forum.pathName"
