@@ -4,4 +4,5 @@ export default () => ({
   allRoles: null,
   allPermissions: null,
   editRoleDetails: null,
+  editForumCalendarDetails: null,
 });

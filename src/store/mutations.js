@@ -20,4 +20,8 @@ export default {
   SET_EDIT_ROLE_DETAILS(state, details) {
     state.editRoleDetails = details;
   },
+
+  SET_FORUM_CALENDAR_EDIT_DETAILS(state, details) {
+    state.editForumCalendarDetails = details;
+  },
 };

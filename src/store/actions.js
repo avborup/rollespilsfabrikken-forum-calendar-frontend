@@ -68,4 +68,8 @@ export default {
     const { authToken } = context.rootState.auth;
     await auth.editRole(authToken, roleId, roleName, colour);
   },
+
+  setEditForumCalendarDetails(context, details) {
+    context.commit('SET_FORUM_CALENDAR_EDIT_DETAILS', details);
+  },
 };
