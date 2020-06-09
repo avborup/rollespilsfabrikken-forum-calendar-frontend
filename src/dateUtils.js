@@ -66,6 +66,10 @@ export function dateRangesOverlap(aStart, aEnd, bStart, bEnd) {
   return overlaps;
 }
 
+export function toDoubleDigitHrMinStr(hrs, mins) {
+  return `${hrs >= 10 ? '' : '0'}${hrs}:${mins >= 10 ? '' : '0'}${mins}`;
+}
+
 export function toFormattedString(date) {
   const weekdayIndex = getWeekday(date.getFullYear(), date.getMonth(), date.getDate());
   const weekday = weekDayNames[weekdayIndex];
@@ -75,11 +79,7 @@ export function toFormattedString(date) {
   const hour = date.getHours();
   const minute = date.getMinutes();
 
-  return `${weekday} ${dayDate}. ${month} ${year} kl. ${hour}:${minute}`;
-}
-
-export function toDoubleDigitHrMinStr(hrs, mins) {
-  return `${hrs >= 10 ? '' : '0'}${hrs}:${mins >= 10 ? '' : '0'}${mins}`;
+  return `${weekday} ${dayDate}. ${month} ${year} kl. ${toDoubleDigitHrMinStr(hour, minute)}`;
 }
 
 export function toElapsedTimeStr(date) {
