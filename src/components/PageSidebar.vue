@@ -7,7 +7,7 @@
     </div>
     <h3 class="sidebar-section-header">Sider</h3>
     <nav class="sidebar-nav">
-      <router-link :to="{ name: 'forum'}">
+      <router-link :to="{ name: 'forum'}" class="main-nav">
         <img class="icon" src="assets/icons/forum.svg" alt="Forumikon">
         <p>Forum</p>
       </router-link>
@@ -24,15 +24,14 @@
           <p>{{ forum.name }}</p>
         </router-link>
       </div>
-      <router-link :to="{ name: 'calendar'}">
+      <router-link :to="{ name: 'calendar'}" class="main-nav">
         <CalendarIcon class="icon" />
         <p>Kalender</p>
       </router-link>
-      <!-- Route to be added. -->
-      <router-link v-if="user !== null && user.isSuperUser" :to="{ name: 'not-found' }">
+      <div v-if="user !== null && user.isSuperUser" class="main-nav">
         <span class="icon fas fa-tools"></span>
         <p>Administration</p>
-      </router-link>
+      </div>
       <div class="sub-nav" v-if="user !== null && user.isSuperUser">
         <router-link :to="{ name: 'admin-users' }" class="sub-nav-item">
           <p>Administrér brugere</p>
@@ -261,7 +260,7 @@ $listitem-padding: 0.5rem;
   display: flex;
   flex-direction: column;
 
-  a {
+  .main-nav, a {
     display: flex;
     align-items: center;
     padding: 0.2rem $listitem-padding;
