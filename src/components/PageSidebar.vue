@@ -51,6 +51,7 @@
         <li v-for="category in categories" :key="category">
           <input
             type="checkbox"
+            tabindex="-1"
             checked
             :value="category"
             :id="'checkbox-' + category"
