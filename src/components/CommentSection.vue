@@ -8,6 +8,7 @@
         :key="comment.id"
         v-bind="comment"
         :depth="0"
+        :maxDepth="maxDepth"
       />
     </ul>
     <ul v-else>
@@ -45,6 +46,21 @@ export default {
       type: Array,
       required: true,
     },
+  },
+
+  data() {
+    return {
+      maxDepth: 7,
+    };
+  },
+
+  mounted() {
+    const width = this.$el.offsetWidth;
+    const spaceLeftOfEachComment = 24;
+    const minimumCommentWidth = 200;
+    const maxDepth = Math.floor((width - minimumCommentWidth) / spaceLeftOfEachComment);
+
+    this.maxDepth = maxDepth;
   },
 };
 </script>

@@ -16,6 +16,7 @@ import RolesAdministrator from './views/RolesAdministrator.vue';
 import CalendarForumAdministrator from './views/CalendarForumAdministrator.vue';
 import SignUpPage from './views/SignUpPage.vue';
 import CalendarEventCreatorView from './views/CalendarEventCreatorView.vue';
+import ForumCommentViewer from './views/ForumCommentViewer.vue';
 
 Vue.use(Router);
 
@@ -61,6 +62,11 @@ const router = new Router({
       path: '/forum/:forum/opslag/:postId',
       name: 'post',
       component: ForumPostViewer,
+    },
+    {
+      path: '/forum/:forum/opslag/:postId/kommentar/:commentId',
+      name: 'comment',
+      component: ForumCommentViewer,
     },
     {
       path: '/nyt-opslag',

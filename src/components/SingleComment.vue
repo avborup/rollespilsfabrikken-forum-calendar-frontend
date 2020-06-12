@@ -46,14 +46,30 @@
         ref="commentEditor"
         class="comment-creator"
       />
-      <ul class="child-comments" v-if="childComments.length > 0">
+      <ul class="child-comments" v-if="childComments.length > 0 && depth < maxDepth">
         <SingleComment
           v-for="childComment in childComments"
           :key="childComment.id"
           v-bind="childComment"
           :depth="depth + 1"
+          :maxDepth="maxDepth"
         />
       </ul>
+      <router-link
+        v-else-if="childComments.length > 0"
+        :to="{
+          name: 'comment',
+          params: {
+            forum: $route.params.forum,
+            postId: $route.params.postId,
+            commentId: id,
+          },
+        }"
+        class="comment-link"
+      >
+        Se {{ numChildren }} kommentarer
+        <span class="fas fa-arrow-right icon"></span>
+      </router-link>
     </li>
 </template>
 
@@ -79,8 +95,16 @@ export default {
       type: Number,
       required: true,
     },
+    maxDepth: {
+      type: Number,
+      required: true,
+    },
     childComments: {
       type: Array,
+      required: true,
+    },
+    numChildren: {
+      type: Number,
       required: true,
     },
     user: {
@@ -272,6 +296,23 @@ export default {
   .comment-creator {
     grid-area: editor;
     margin-top: 0.5rem;
+  }
+
+  .comment-link {
+    margin-top: 1rem;
+    grid-area: children;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    text-decoration: none;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.6);
+    flex-wrap: wrap;
+
+    .icon {
+      margin-left: 0.5rem;
+      font-size: 0.7rem;
+    }
   }
 }
 </style>
