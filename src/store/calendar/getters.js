@@ -44,4 +44,12 @@ export default {
   },
 
   getCalendarFromId: state => id => state.allCalendars.find(cal => cal.id === id),
+
+  getCalendarsWhereCanAddEvents(state) {
+    if (state.allCalendars === null) {
+      return null;
+    }
+
+    return state.allCalendars.filter(cal => cal.permissions.canAddEvents);
+  },
 };

@@ -127,3 +127,18 @@ export function toElapsedTimeStr(date) {
 export function simpleStringFormat(date) {
   return `${date.getDate()}/${date.getMonth() + 1}-${date.getFullYear()}`;
 }
+
+export function formatYMD(date) {
+  const dd = date.getDate();
+  const mm = date.getMonth() + 1;
+  const yy = date.getFullYear();
+
+  return `${yy}-${mm < 10 ? 0 : ''}${mm}-${dd < 10 ? 0 : ''}${dd}`;
+}
+
+export function hourJump(date, hours) {
+  const ms = date.getTime();
+  const newMs = ms + (hours * 60 * 60 * 1000);
+
+  return new Date(newMs);
+}
