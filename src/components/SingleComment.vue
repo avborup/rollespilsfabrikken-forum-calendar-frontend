@@ -32,6 +32,10 @@
           <span class="fas fa-trash icon"></span>
           Slet
         </button>
+        <button @click="shareComment" class="icon-and-label">
+          <span class="fas fa-share-square icon"></span>
+          Del
+        </button>
       </div>
       <CommentCreator
         v-if="isWritingComment"
@@ -184,6 +188,21 @@ export default {
           }
         })
         .catch(() => {});
+    },
+
+    shareComment() {
+      const postUrl = window.location.href.replace(/\/kommentar(.*)/, '');
+      const commentUrl = `${postUrl}/kommentar/${this.id}`;
+
+      this.$dialog.alert(`
+        <p style="text-align: center">Du kan dele dette URL:</p>
+        <a
+          href="${commentUrl}"
+          style="text-align: center; margin-top: 0.5rem; display: block;"
+        >${commentUrl}</a>
+      `, {
+        html: true,
+      });
     },
   },
 
