@@ -101,7 +101,11 @@
       <div class="comments-wrapper">
         <h2 class="comments-header">Kommentarer</h2>
         <CommentCreator v-if="isWritingComment" @comment-created="reload" class="comment-creator" />
-        <CommentSection :isLoading="isLoadingComments" @reload-post-view="reload" />
+        <CommentSection
+          :isLoading="isLoadingComments"
+          @reload-post-view="reload"
+          :comments="comments"
+        />
       </div>
     </div>
   </div>
@@ -150,6 +154,7 @@ export default {
     ...mapGetters('forum', {
       forums: 'getAllForums',
       post: 'getCurrentPost',
+      comments: 'getCurrentPostComments',
     }),
   },
 

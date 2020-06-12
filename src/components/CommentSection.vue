@@ -27,7 +27,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import SingleComment from '@/components/SingleComment.vue';
 
 export default {
@@ -41,12 +40,11 @@ export default {
       type: Boolean,
       default: false,
     },
-  },
 
-  computed: {
-    ...mapGetters('forum', {
-      comments: 'getCurrentPostComments',
-    }),
+    comments: {
+      type: Array,
+      required: true,
+    },
   },
 };
 </script>
