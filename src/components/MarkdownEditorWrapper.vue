@@ -81,6 +81,7 @@ export default {
 .markdown-editor-container {
   border: 1px solid #e8e8e8;
   border-radius: 5px;
+  overflow-y: auto;
 
   .markdown-editor.v-md-container {
     border: none;
