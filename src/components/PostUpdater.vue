@@ -65,6 +65,12 @@ export default {
       }
 
       const postContent = this.getValue();
+
+      if (postContent.trim().length === 0) {
+        this.$dialog.alert('Indholdet må ikke være tomt!');
+        return;
+      }
+
       const { forum, postId } = this.$route.params;
 
       this.isWaiting = true;

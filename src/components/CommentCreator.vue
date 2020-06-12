@@ -34,6 +34,12 @@ export default {
       event.preventDefault();
 
       const commentContent = this.$refs.markdownEditor.getValue();
+
+      if (commentContent.trim().length === 0) {
+        this.$dialog.alert('Indholdet må ikke være tomt!');
+        return;
+      }
+
       const { forum, postId } = this.$route.params;
 
       this.isWaiting = true;
