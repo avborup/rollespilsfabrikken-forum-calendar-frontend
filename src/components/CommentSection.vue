@@ -1,5 +1,8 @@
 <template>
     <ul v-if="!isLoading" class="comment-section">
+      <p v-if="comments.length === 0" class="no-comments-msg">
+        Dette opslag har ingen kommentarer.
+      </p>
       <SingleComment
         v-for="comment in comments"
         :key="comment.id"
@@ -50,6 +53,12 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
+
+.comment-section {
+  .no-comments-msg {
+    margin: 1rem 0;
+  }
+}
 
 .skeleton-comment {
   display: grid;
