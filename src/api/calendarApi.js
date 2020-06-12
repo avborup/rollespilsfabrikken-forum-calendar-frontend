@@ -86,3 +86,53 @@ export async function fetchEvent(token, calendarId, eventId, date) {
 
   return event;
 }
+
+export async function editEvent(token, newEventInfo) {
+  const encodedCalendarId = encodeURIComponent(newEventInfo.calendarId);
+  const encodedEventId = encodeURIComponent(newEventInfo.eventId);
+  const url = makeUrl(`/api/calendar/${encodedCalendarId}/event/${encodedEventId}`);
+
+  const body = {
+    title: newEventInfo.title,
+    start: newEventInfo.start.toISOString(),
+    end: newEventInfo.end.toISOString(),
+    recurring: newEventInfo.isRecurring,
+    recurrence: {
+      series: newEventInfo.saveSettings.series,
+      apply_to_all: newEventInfo.saveSettings.applyToAll,
+      just_this_one: newEventInfo.saveSettings.justThisOne,
+    },
+  };
+
+  if (newEventInfo.description.length > 0) {
+    body.description = newEventInfo.description;
+  }
+
+  if (newEventInfo.isRecurring) {
+    body.recurrence.type = newEventInfo.recurringType;
+
+    if (newEventInfo.recurringEnd !== null) {
+      body.recurrence.end = newEventInfo.recurringEnd.toISOString();
+    }
+  }
+
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError('An error occurred when editing event');
+  }
+
+  const json = await res.json();
+  const newEvent = json.event;
+
+  newEvent.start = new Date(newEvent.start);
+
+  return newEvent;
+}

@@ -21,4 +21,11 @@ export default {
 
     context.commit('SET_EVENT', event);
   },
+
+  async editEvent(context, newEventInfo) {
+    const { authToken } = context.rootState.auth;
+    const newEvent = await calendarApi.editEvent(authToken, newEventInfo);
+
+    return newEvent;
+  },
 };
