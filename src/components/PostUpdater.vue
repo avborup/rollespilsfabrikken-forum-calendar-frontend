@@ -59,7 +59,7 @@ export default {
     async handleSubmit(event) {
       event.preventDefault();
 
-      if (this.newTitle.length === 0) {
+      if (this.newTitle.trim().length === 0) {
         this.$dialog.alert('Titlen må ikke være tom!');
         return;
       }

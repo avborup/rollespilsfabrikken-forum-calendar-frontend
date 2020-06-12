@@ -87,7 +87,7 @@ export default {
         this.forumErrorMsg = 'Vælg venligst et forum';
       }
 
-      if (postTitle.length === 0) {
+      if (postTitle.trim().length === 0) {
         this.titleHasError = true;
         this.titleErrorMsg = 'Skriv venligst en titel til dit opslag';
       }
