@@ -561,3 +561,31 @@ export async function createForumOrCalendar(token, name, desc, colour, type) {
     throw new ServerError(`An error occurred when creating new ${type}`);
   }
 }
+
+export async function getComment(token, forumId, postId, commentId) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const encodedCommentId = encodeURIComponent(commentId);
+
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment/${encodedCommentId}`);
+
+  const res = await fetch(url, {
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (res.status === 404) {
+    throw new ResourceNotFoundError('Could not find comment');
+  }
+
+  if (!res.ok) {
+    throw new ServerError('Failed to fetch comment');
+  }
+
+  const json = await res.json();
+  const { comment } = json;
+
+  return recursivelyFixComments([comment])[0];
+}
