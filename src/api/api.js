@@ -198,6 +198,11 @@ export async function fetchPost(token, forumId, postId) {
   return jsifyPostResponse(post);
 }
 
+function countCommentNodes(comment) {
+  return comment.childComments
+    .reduce((acc, cur) => acc + countCommentNodes(cur), 1);
+}
+
 function recursivelyFixComments(cmts) {
   return cmts.map((comment) => {
     const renamedUser = renameKeys(comment.user, {
@@ -226,6 +231,8 @@ function recursivelyFixComments(cmts) {
     renamedComment.createdAt = new Date(renamedComment.createdAt);
     renamedComment.updatedAt = new Date(renamedComment.updatedAt);
     renamedComment.childComments = recursivelyFixComments(renamedComment.childComments);
+
+    renamedComment.numChildren = countCommentNodes(renamedComment) - 1;
 
     return renamedComment;
   });
