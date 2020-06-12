@@ -7,4 +7,5 @@ export default () => ({
   latestPostsPromise: null,
   hasMorePosts: false,
   currentPage: 1,
+  currentComment: null,
 });

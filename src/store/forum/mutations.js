@@ -40,4 +40,8 @@ export default {
   SET_CURRENT_PAGE(state, page) {
     state.currentPage = page;
   },
+
+  SET_COMMENT(state, comment) {
+    state.currentComment = comment;
+  },
 };

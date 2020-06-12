@@ -175,4 +175,11 @@ export default {
       newBody,
     });
   },
+
+  async fetchComment(context, { forumId, postId, commentId }) {
+    const { authToken } = context.rootState.auth;
+    const comment = await api.getComment(authToken, forumId, postId, commentId);
+
+    context.commit('SET_COMMENT', comment);
+  },
 };
