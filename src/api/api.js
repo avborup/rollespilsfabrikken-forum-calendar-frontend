@@ -198,6 +198,39 @@ export async function fetchPost(token, forumId, postId) {
   return jsifyPostResponse(post);
 }
 
+function recursivelyFixComments(cmts) {
+  return cmts.map((comment) => {
+    const renamedUser = renameKeys(comment.user, {
+      avatarUrl: 'avatar_url',
+      createdAt: 'created_at',
+    });
+
+    renamedUser.createdAt = new Date(renamedUser.createdAt);
+
+    const renamedPermissions = renameKeys(comment.permissions, {
+      canDelete: 'can_delete',
+      canUpdate: 'can_update',
+      canAddComments: 'can_add_comments',
+    });
+
+    const renamedComment = renameKeys({
+      ...comment,
+      user: renamedUser,
+      permissions: renamedPermissions,
+    }, {
+      childComments: 'child_comments',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    });
+
+    renamedComment.createdAt = new Date(renamedComment.createdAt);
+    renamedComment.updatedAt = new Date(renamedComment.updatedAt);
+    renamedComment.childComments = recursivelyFixComments(renamedComment.childComments);
+
+    return renamedComment;
+  });
+}
+
 export async function fetchComments(token, forumId, postId) {
   const encodedForumId = encodeURIComponent(forumId);
   const encodedPostId = encodeURIComponent(postId);
@@ -235,40 +268,7 @@ export async function fetchComments(token, forumId, postId) {
   }
   /* eslint-enable no-await-in-loop */
 
-  function recursivelyFixData(cmts) {
-    return cmts.map((comment) => {
-      const renamedUser = renameKeys(comment.user, {
-        avatarUrl: 'avatar_url',
-        createdAt: 'created_at',
-      });
-
-      renamedUser.createdAt = new Date(renamedUser.createdAt);
-
-      const renamedPermissions = renameKeys(comment.permissions, {
-        canDelete: 'can_delete',
-        canUpdate: 'can_update',
-        canAddComments: 'can_add_comments',
-      });
-
-      const renamedComment = renameKeys({
-        ...comment,
-        user: renamedUser,
-        permissions: renamedPermissions,
-      }, {
-        childComments: 'child_comments',
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
-      });
-
-      renamedComment.createdAt = new Date(renamedComment.createdAt);
-      renamedComment.updatedAt = new Date(renamedComment.updatedAt);
-      renamedComment.childComments = recursivelyFixData(renamedComment.childComments);
-
-      return renamedComment;
-    });
-  }
-
-  return recursivelyFixData(allComments);
+  return recursivelyFixComments(allComments);
 }
 
 export async function createPost(token, forumId, post) {
