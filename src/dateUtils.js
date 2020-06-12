@@ -142,3 +142,17 @@ export function hourJump(date, hours) {
 
   return new Date(newMs);
 }
+
+export function getAllMonthsBetween(start, end) {
+  const months = [];
+
+  let d = new Date(start.getFullYear(), start.getMonth());
+  const f = new Date(end.getFullYear(), end.getMonth());
+
+  while (d.getTime() <= f.getTime()) {
+    months.push(d);
+    d = monthJump(d, 1);
+  }
+
+  return months;
+}

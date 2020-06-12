@@ -52,6 +52,34 @@ export async function fetchAllCalendars(token) {
   }));
 }
 
+export async function fetchAllEventsInRange(token, start, end) {
+  const url = makeUrl('/api/events', {
+    start: start.toISOString(),
+    end: end.toISOString(),
+  });
+
+  const res = await fetch(url, {
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to fetch events');
+  }
+
+  const json = await res.json();
+  const events = json.data
+    .map(event => ({
+      ...event,
+      start: new Date(event.start),
+      end: new Date(event.end),
+    }));
+
+  return events;
+}
+
 export async function fetchEvent(token, calendarId, eventId, date) {
   const encodedCalendarId = encodeURIComponent(calendarId);
   const encodedEventId = encodeURIComponent(eventId);
@@ -75,7 +103,13 @@ export async function fetchEvent(token, calendarId, eventId, date) {
   }
 
   const json = await res.json();
-  const event = json.post;
+  const event = {
+    ...json.post,
+    permissions: renameKeys(json.post.permissions, {
+      canDelete: 'can_delete',
+      canUpdate: 'can_update',
+    }),
+  };
 
   event.start = new Date(event.start);
   event.end = new Date(event.end);
@@ -85,6 +119,49 @@ export async function fetchEvent(token, calendarId, eventId, date) {
   }
 
   return event;
+}
+
+export async function createEvent(token, eventInfo) {
+  const encodedCalendarId = encodeURIComponent(eventInfo.calendarId);
+  const url = makeUrl(`/api/calendar/${encodedCalendarId}/event`);
+
+  const body = {
+    title: eventInfo.title,
+    start: eventInfo.start.toISOString(),
+    end: eventInfo.end.toISOString(),
+    recurring: eventInfo.isRecurring,
+  };
+
+  if (eventInfo.description.length > 0) {
+    body.description = eventInfo.description;
+  }
+
+  if (eventInfo.isRecurring) {
+    body.recurrence = {
+      type: eventInfo.recurringType,
+    };
+
+    if (eventInfo.recurringEnd !== null) {
+      body.recurrence.end = eventInfo.recurringEnd.toISOString();
+    }
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when creating a new event in the calendar ${eventInfo.calendarId}`);
+  }
+
+  const json = await res.json();
+
+  return json.event;
 }
 
 export async function editEvent(token, newEventInfo) {
@@ -135,4 +212,30 @@ export async function editEvent(token, newEventInfo) {
   newEvent.start = new Date(newEvent.start);
 
   return newEvent;
+}
+
+export async function deleteEvent(token, settings) {
+  const encodedCalendarId = encodeURIComponent(settings.calendarId);
+  const encodedEventId = encodeURIComponent(settings.eventId);
+  const url = makeUrl(`/api/calendar/${encodedCalendarId}/event/${encodedEventId}`);
+
+  const body = {
+    series: settings.series,
+    apply_to_all: settings.applyToAll,
+    just_this_one: settings.justThisOne,
+    date: settings.date.toISOString(),
+  };
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to delete event');
+  }
 }

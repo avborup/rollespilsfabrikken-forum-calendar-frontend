@@ -15,6 +15,7 @@ import UserAdministration from './views/UserAdministration.vue';
 import RolesAdministrator from './views/RolesAdministrator.vue';
 import CalendarForumAdministrator from './views/CalendarForumAdministrator.vue';
 import SignUpPage from './views/SignUpPage.vue';
+import CalendarEventCreatorView from './views/CalendarEventCreatorView.vue';
 
 Vue.use(Router);
 
@@ -43,7 +44,13 @@ const router = new Router({
     },
     {
       path: '/kalender/:calendarId/begivenhed/:eventId',
+      name: 'event-viewer',
       component: CalendarEventViewer,
+    },
+    {
+      path: '/kalender/ny-begivenhed',
+      name: 'create-event',
+      component: CalendarEventCreatorView,
     },
     {
       path: '/forum/:forum?',

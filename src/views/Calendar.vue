@@ -4,16 +4,14 @@
       <button title="Forrige måned" @click="decrementMonth">
         <img src="assets/icons/less-than.svg" alt="Forrige måned">
       </button>
-      <h2>{{ currentMonthName }} {{ currentTimestamp.getFullYear() }}</h2>
+      <h2>{{ monthName }} {{ viewTimestamp.getFullYear() }}</h2>
       <button title="Næste måned" @click="incrementMonth">
         <img src="assets/icons/less-than.svg" alt="Næste måned" class="next-month-icon">
       </button>
     </header>
     <transition name="slide" @before-enter="setSlidingClass">
       <CalendarGrid
-        :timestamp="currentTimestamp"
-        :activeDate="activeDate"
-        :key="currentTimestamp.toLocaleString()"
+        :timestamp="viewTimestamp"
         ref="calendarContent"
         :class="{
           'slide-next': slideDir === 1,
@@ -25,6 +23,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import CalendarGrid from '@/components/CalendarGrid.vue';
 import { monthNames } from '@/constants';
 import { today, monthJump } from '@/dateUtils';
@@ -35,48 +34,48 @@ export default {
     CalendarGrid,
   },
 
-  props: {
-    initialTimestamp: {
-      type: Date,
-      default: today,
-    },
-    activeDate: {
-      type: Date,
-      default: today,
-    },
-  },
-
   data() {
-    const { initialTimestamp } = this;
-    const initialMonth = initialTimestamp.getMonth();
-    const initialMonthName = monthNames[initialMonth];
-
     return {
-      currentTimestamp: initialTimestamp,
-      currentMonth: initialMonth,
-      currentMonthName: initialMonthName,
+      viewTimestamp: today(),
       slideDir: 1,
     };
+  },
+
+  computed: {
+    monthName() {
+      return monthNames[this.viewTimestamp.getMonth()];
+    },
+
+    ...mapState('calendar', [
+      'allCalendars',
+    ]),
   },
 
   methods: {
     incrementMonth() {
       this.slideDir = 1;
-      this.currentTimestamp = monthJump(this.currentTimestamp, 1);
-      this.updateCalendar();
+      const newTimestamp = monthJump(this.viewTimestamp, 1);
+
+      this.$router.push({
+        name: 'calendar',
+        query: {
+          year: newTimestamp.getFullYear(),
+          month: newTimestamp.getMonth() + 1,
+        },
+      });
     },
 
     decrementMonth() {
       this.slideDir = -1;
-      this.currentTimestamp = monthJump(this.currentTimestamp, 1, -1);
-      this.updateCalendar();
-    },
+      const newTimestamp = monthJump(this.viewTimestamp, 1, -1);
 
-    updateCalendar() {
-      this.currentMonth = this.currentTimestamp.getMonth();
-      this.currentMonthName = monthNames[this.currentMonth];
-
-      this.$refs.calendarContent.updateTimestamp(this.currentTimestamp);
+      this.$router.push({
+        name: 'calendar',
+        query: {
+          year: newTimestamp.getFullYear(),
+          month: newTimestamp.getMonth() + 1,
+        },
+      });
     },
 
     // Manually add and remove classes signifying which direction sliding should
@@ -95,6 +94,65 @@ export default {
       this.$refs.calendarContent.$el.classList.remove(classToRemove);
       this.$refs.calendarContent.$el.classList.add(classToAdd);
     },
+
+    setTimestampFromRoute() {
+      const route = this.$route;
+
+      if (route.query.month === undefined && route.query.year === undefined) {
+        return;
+      }
+
+      const month = Number.parseInt(route.query.month, 10);
+      const year = Number.parseInt(route.query.year, 10);
+
+      const monthIsValid = !Number.isNaN(month) && month <= 12 && month > 0;
+      const yearIsValid = !Number.isNaN(year);
+
+      if (!monthIsValid || !yearIsValid) {
+        return;
+      }
+
+      this.viewTimestamp = new Date(year, month - 1);
+    },
+
+    async fetchEvents() {
+      if (!this.allCalendars) {
+        return;
+      }
+
+      // This variable controls how many months before and after the current month
+      // will be loaded. A value of 3 would fetch 7 months in total: this month,
+      // the 3 months before and the 3 months after.
+      const monthRadius = 3;
+      const earliest = monthJump(this.viewTimestamp, monthRadius, -1);
+      const latest = monthJump(this.viewTimestamp, monthRadius);
+
+      try {
+        await this.$store.dispatch('calendar/fetchAllEventsBetweenMonths', { earliest, latest });
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl. Eventuelt kan du genindlæse siden og prøve igen.');
+      }
+    },
+  },
+
+  watch: {
+    $route() {
+      this.setTimestampFromRoute();
+      this.fetchEvents();
+    },
+
+    allCalendars() {
+      this.fetchEvents();
+    },
+  },
+
+  created() {
+    if (!this.allCalendars) {
+      this.$store.dispatch('calendar/fetchAllCalendars');
+    }
+
+    this.setTimestampFromRoute();
+    this.fetchEvents();
   },
 };
 </script>
@@ -145,20 +203,20 @@ export default {
   }
 }
 
-.slide-enter-active, .slide-leave-active {
-  transition: transform 0.3s ease-in-out;
-  /* FIXME: Is this a good solution? */
-  position: absolute;
-  padding-top: $header-height;
-  width: 100%;
-  height: 100%;
-}
+// .slide-enter-active, .slide-leave-active {
+//   transition: transform 0.3s ease-in-out;
+//   /* FIXME: Is this a good solution? */
+//   position: absolute;
+//   padding-top: $header-height;
+//   width: 100%;
+//   height: 100%;
+// }
 
-.slide-leave-to.slide-next, .slide-enter.slide-prev {
-  transform: translateX(-100%);
-}
+// .slide-leave-to.slide-next, .slide-enter.slide-prev {
+//   transform: translateX(-100%);
+// }
 
-.slide-enter.slide-next, .slide-leave-to.slide-prev {
-  transform: translateX(100%);
-}
+// .slide-enter.slide-next, .slide-leave-to.slide-prev {
+//   transform: translateX(100%);
+// }
 </style>

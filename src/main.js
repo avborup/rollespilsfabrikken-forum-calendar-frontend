@@ -9,6 +9,7 @@ import RolesPickerDialog from '@/components/RolesPickerDialog.vue';
 import RoleEditorDialog from '@/components/RoleEditorDialog.vue';
 import ForumCalendarEditorDialog from '@/components/ForumCalendarEditorDialog.vue';
 import CalendarEventEditorDialog from '@/components/CalendarEventEditorDialog.vue';
+import CalendarEventDeleteDialog from '@/components/CalendarEventDeleteDialog.vue';
 
 Vue.config.productionTip = false;
 
@@ -22,6 +23,7 @@ Vue.dialog.registerComponent('role-picker-dialog', RolesPickerDialog);
 Vue.dialog.registerComponent('role-editor-dialog', RoleEditorDialog);
 Vue.dialog.registerComponent('forum-calendar-editor-dialog', ForumCalendarEditorDialog);
 Vue.dialog.registerComponent('calendar-event-editor-dialog', CalendarEventEditorDialog);
+Vue.dialog.registerComponent('calendar-event-delete-dialog', CalendarEventDeleteDialog);
 
 // This provides a $bubble method that emits an event on ALL parent components.
 Vue.use((vue) => {

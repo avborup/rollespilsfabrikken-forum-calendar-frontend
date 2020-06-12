@@ -59,6 +59,7 @@ export default {
       this.$refs.eventCreator.setLoading(true);
       try {
         const newEvent = await store.dispatch('calendar/editEvent', newEventInfo);
+        store.dispatch('calendar/resetLoadedEvents');
         this.proceed(newEvent);
       } catch (err) {
         this.$dialog.alert('Vi beklager, men der opstod en fejl');

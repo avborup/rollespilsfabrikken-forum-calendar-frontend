@@ -16,12 +16,32 @@
             <span>&times;</span>
           </button>
         </router-link>
-        <h4 class="category" :style="{ backgroundColor: calendar.colour }">{{ calendar.name }}</h4>
+        <h4 class="category" :style="{ backgroundColor: event.parent.colour }">
+          {{ event.parent.name }}
+        </h4>
         <h1 class="title">{{ event.title }}</h1>
         <p class="timeframe">{{ formatTimeframe(event.start, event.end) }}</p>
         <div class="fields">
-          <img class="icon" src="assets/icons/desc.svg" alt="Beskrivelse" title="Beskrivelse">
-          <p class="description">{{ event.description }}</p>
+          <div class="field">
+            <img class="icon" src="assets/icons/desc.svg" alt="Beskrivelse" title="Beskrivelse">
+            <p class="description">
+              {{
+                event.description.trim().length > 0
+                ? event.description
+                : 'Denne begivenhed har ingen beskrivelse'
+              }}
+            </p>
+          </div>
+        </div>
+        <div class="action-buttons">
+          <button v-if="event.permissions.canUpdate" @click="handleEdit" class="icon-and-label">
+            <span class="fas fa-pen icon"></span>
+            Redigér
+          </button>
+          <button v-if="event.permissions.canDelete" @click="handleDelete" class="icon-and-label">
+            <span class="fas fa-trash icon"></span>
+            Slet
+          </button>
         </div>
       </div>
       <div v-else class="loading">
@@ -59,21 +79,14 @@ export default {
       eventExists: true,
       isLoading: true,
       errorOccurred: false,
+      redirectRoute: null,
     };
   },
 
   computed: {
     ...mapState('calendar', {
       event: 'currentEvent',
-      // Anything using allCalendars is temporary. In the future, the belonging
-      // calendar will be returned in the REST call as well.
-      allCalendars: 'allCalendars',
     }),
-
-    calendar() {
-      const { calendarId } = this.$route.params;
-      return this.$store.getters['calendar/getCalendarFromId'](calendarId);
-    },
   },
 
   methods: {
@@ -94,10 +107,6 @@ export default {
       this.isLoading = true;
       this.errorOccurred = false;
 
-      if (!this.allCalendars) {
-        return;
-      }
-
       const { eventId, calendarId } = this.$route.params;
       const date = new Date(this.$route.query.date);
 
@@ -113,13 +122,70 @@ export default {
 
       this.isLoading = false;
     },
+
+    handleEdit() {
+      this.$dialog.confirm(null, {
+        view: 'calendar-event-editor-dialog',
+        loader: true,
+      })
+        .then((dialog) => {
+          dialog.close();
+
+          const newEvent = dialog.data;
+
+          // When messing with recurring events, edits often result in new events
+          // with new ids. If that happens, we simply redirect to the new event.
+          if (newEvent.id === this.event.id) {
+            this.fetchEvent();
+          } else {
+            this.$router.push({
+              name: 'event-viewer',
+              params: {
+                calendarId: newEvent.parent.id,
+                eventId: newEvent.id,
+              },
+              query: {
+                date: newEvent.start.toISOString(),
+              },
+            });
+          }
+        })
+        .catch(() => {});
+    },
+
+    handleDelete() {
+      this.$dialog.confirm(null, {
+        view: 'calendar-event-delete-dialog',
+        loader: true,
+      })
+        .then(async (dialog) => {
+          const settings = {
+            ...dialog.data,
+            ...this.$route.params,
+            date: new Date(this.$route.query.date),
+          };
+
+          try {
+            await this.$store.dispatch('calendar/deleteEvent', settings);
+            dialog.close();
+            this.$store.dispatch('calendar/resetLoadedEvents');
+            this.$router.push({
+              name: 'calendar',
+              query: {
+                month: this.event.start.getMonth() + 1,
+                year: this.event.start.getFullYear(),
+              },
+            });
+          } catch (err) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
+    },
   },
 
   watch: {
-    allCalendars() {
-      this.fetchEvent();
-    },
-
     $route() {
       this.fetchEvent();
     },
@@ -186,7 +252,7 @@ export default {
   color: $primary-text;
 }
 
-.fields {
+.fields .field {
   margin-top: 1rem;
   display: grid;
   grid-template-columns: 1.5rem 1fr;
@@ -201,6 +267,35 @@ export default {
 .description {
   font-size: 0.95rem;
   color: $primary-text;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+
+  .icon-and-label {
+    margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: rgba(0, 0, 0, 0.6);
+
+    .icon {
+      height: 1rem;
+      width: 1rem;
+      margin-right: 0.3rem;
+      font-size: 0.9rem;
+      color: rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  button {
+    cursor: pointer;
+    border: none;
+    background-color: #fff;
+    font-family: inherit;
+  }
 }
 
 .loading {

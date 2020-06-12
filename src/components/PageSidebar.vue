@@ -28,6 +28,11 @@
         <CalendarIcon class="icon" />
         <p>Kalender</p>
       </router-link>
+      <div class="sub-nav">
+        <router-link :to="{ name: 'create-event' }" class="sub-nav-item">
+          <p>Opret begivenhed</p>
+        </router-link>
+      </div>
       <div v-if="user !== null && user.isSuperUser" class="main-nav">
         <span class="icon fas fa-tools"></span>
         <p>Administration</p>
@@ -47,20 +52,20 @@
     <div v-if="shouldShowCalendarSection">
       <h3 class="sidebar-section-header">Kalendervisning</h3>
       <ul class="choose-category">
-        <li v-for="category in categories" :key="category">
+        <li v-for="calendar in allCalendars" :key="calendar.id">
           <input
             type="checkbox"
             tabindex="-1"
             checked
-            :value="category"
-            :id="'checkbox-' + category"
-            v-model="checkedCategories"
+            :value="calendar"
+            :id="`checkbox-${calendar.id}`"
+            v-model="checkedCalendars"
           >
-          <label class="category-option" :for="'checkbox-' + category" tabindex="0">
-            <div class="checkbox" :style="{ backgroundColor: getCategoryColour(category) }">
+          <label class="category-option" :for="`checkbox-${calendar.id}`" tabindex="0">
+            <div class="checkbox" :style="{ backgroundColor: calendar.colour }">
               <img src="assets/icons/checkmark.svg" alt="Flueben">
             </div>
-            <span class="option-text">{{ category }}</span>
+            <span class="option-text">{{ calendar.name }}</span>
           </label>
         </li>
       </ul>
@@ -107,6 +112,9 @@ export default {
       categories: 'getAllCategories',
       getCategoryColour: 'getCategoryColour',
     }),
+    ...mapState('calendar', [
+      'allCalendars',
+    ]),
     ...mapGetters('forum', {
       forums: 'getAllForums',
     }),
@@ -116,12 +124,12 @@ export default {
     ...mapState([
       'user',
     ]),
-    checkedCategories: {
+    checkedCalendars: {
       get() {
-        return this.$store.getters['calendar/getCurrentCalendarCategories'];
+        return this.$store.getters['calendar/getCurrentlyShownCalendars'];
       },
-      set(newCategories) {
-        this.$store.dispatch('calendar/updateCurrentCalendarCategories', newCategories);
+      set(newShownCalendars) {
+        this.$store.dispatch('calendar/updateCurrentlyShownCalendars', newShownCalendars);
       },
     },
   },
