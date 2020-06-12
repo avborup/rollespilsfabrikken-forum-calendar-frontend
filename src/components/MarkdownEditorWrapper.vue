@@ -83,6 +83,10 @@ export default {
   border-radius: 5px;
   overflow-y: auto;
 
+  .is-error & {
+    border-color: $err-colour;
+  }
+
   .markdown-editor.v-md-container {
     border: none;
 

@@ -22,9 +22,10 @@
         <input v-model="postTitle" type="text" name="post-title">
         <span v-if="titleHasError" class="field-error-msg">{{ titleErrorMsg }}</span>
       </div>
-      <div class="form-field">
+      <div class="form-field" :class="{ 'is-error': contentHasError }">
         <label>Indhold</label>
         <MarkdownEditorWrapper ref="markdownEditor" />
+        <span v-if="contentHasError" class="field-error-msg">{{ contentErrMsg }}</span>
       </div>
       <input class="form-submit" type="submit" value="Opret opslag!">
     </form>
@@ -56,6 +57,8 @@ export default {
       titleErrorMsg: '',
       forumHasError: false,
       forumErrorMsg: '',
+      contentHasError: false,
+      contentErrMsg: '',
       isWaiting: false,
     };
   },
@@ -74,6 +77,7 @@ export default {
 
       this.titleHasError = false;
       this.forumHasError = false;
+      this.contentHasError = false;
 
       const { postTitle, selectedForum } = this;
       const postContent = this.$refs.markdownEditor.getValue();
@@ -93,7 +97,12 @@ export default {
         this.titleErrorMsg = `Titlen må ikke være længere end 255 tegn (${postTitle.length} tegn)`;
       }
 
-      if (this.forumHasError || this.titleHasError) {
+      if (postContent.trim().length === 0) {
+        this.contentHasError = true;
+        this.contentErrMsg = 'Opslagets indhold må ikke være tomt';
+      }
+
+      if (this.forumHasError || this.titleHasError || this.contentHasError) {
         return;
       }
 
