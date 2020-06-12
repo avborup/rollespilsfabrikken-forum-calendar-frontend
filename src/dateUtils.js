@@ -85,9 +85,14 @@ export function toFormattedString(date) {
 export function toElapsedTimeStr(date) {
   const nowStamp = now();
 
+  // It is not optimal that we return "0 seconds" when the time difference is
+  // negative, but it is an easy fix for a bug that arises when the server's local
+  // system time does not match the user's system time. Here it would happen that
+  // the server returned a timestamp that was ~2 seconds into the future compared
+  // to local system time.
   const msDiff = nowStamp.getTime() - date.getTime();
   if (msDiff < 0) {
-    return 'Fra fremtiden..';
+    return '0 sekunder';
   }
 
   const secDiff = msDiff / 1000;
