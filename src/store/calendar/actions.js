@@ -1,5 +1,5 @@
 import * as calendarApi from '@/api/calendarApi';
-import { getAllMonthsBetween } from '@/dateUtils';
+import { getAllMonthsBetween, hourJump } from '@/dateUtils';
 
 export default {
   updateCurrentlyFocusedEventId(context, eventId) {
@@ -27,7 +27,7 @@ export default {
 
     const { start, end } = rangeToLoad;
 
-    const loadedMonths = getAllMonthsBetween(start, end);
+    const loadedMonths = getAllMonthsBetween(start, hourJump(end, -1));
     context.commit('REGISTER_LOADED_MONTHS', loadedMonths);
 
     const { authToken } = context.rootState.auth;

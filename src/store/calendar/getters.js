@@ -1,4 +1,8 @@
-import { dateRangesOverlap, getAllMonthsBetween } from '@/dateUtils';
+import {
+  dateRangesOverlap,
+  getAllMonthsBetween,
+  monthJump,
+} from '@/dateUtils';
 
 export default {
   getEventsOnDate: state => (date) => {
@@ -55,7 +59,10 @@ export default {
 
     return {
       start: new Date(minNotLoaded),
-      end: new Date(maxNotLoaded),
+      // We want to load the entire month, so by jumping forward to the first date
+      // of the next month at midnight and then back 1 second we get the last second
+      // of the current month.
+      end: monthJump(new Date(maxNotLoaded), 1),
     };
   },
 
