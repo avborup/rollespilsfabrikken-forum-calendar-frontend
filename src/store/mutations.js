@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import initialState from './state';
 
 export default {
   SET_USER(state, user) {
@@ -23,5 +24,9 @@ export default {
 
   SET_FORUM_CALENDAR_EDIT_DETAILS(state, details) {
     state.editForumCalendarDetails = details;
+  },
+
+  RESET_STATE(state) {
+    Object.assign(state, initialState());
   },
 };

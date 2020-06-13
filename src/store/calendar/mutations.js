@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import initialState from './state';
 
 export default {
   SET_CURRENTLY_FOCUSED_EVENT_ID(state, newEventId) {
@@ -36,5 +37,9 @@ export default {
 
   SET_EVENT(state, event) {
     state.currentEvent = event;
+  },
+
+  RESET_STATE(state) {
+    Object.assign(state, initialState());
   },
 };

@@ -98,4 +98,11 @@ export default {
     const { authToken } = context.rootState.auth;
     await api.createForumOrCalendar(authToken, name, desc, colour, type);
   },
+
+  resetAllState(context) {
+    context.commit('RESET_STATE');
+    context.commit('auth/RESET_STATE');
+    context.commit('calendar/RESET_STATE');
+    context.commit('forum/RESET_STATE');
+  },
 };

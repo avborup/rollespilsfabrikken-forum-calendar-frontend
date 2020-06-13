@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import initialState from './state';
 
 export default {
   SET_FORUMS(state, forums) {
@@ -43,5 +44,9 @@ export default {
 
   SET_COMMENT(state, comment) {
     state.currentComment = comment;
+  },
+
+  RESET_STATE(state) {
+    Object.assign(state, initialState());
   },
 };
