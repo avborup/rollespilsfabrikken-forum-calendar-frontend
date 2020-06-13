@@ -301,3 +301,18 @@ export async function modifyRolePermissions(token, roleId, permissionIds, action
     throw new ServerError(`Failed to perform action '${action}' on role permissions`);
   }
 }
+
+export async function logout(token) {
+  const url = makeUrl('/api/auth/logout');
+
+  const res = await fetch(url, {
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Logout request failed');
+  }
+}

@@ -47,6 +47,8 @@ export default {
   },
 
   logout(context) {
+    const { authToken } = context.state;
+    auth.logout(authToken).catch(() => {});
     window.localStorage.removeItem('authToken');
     context.dispatch('resetAllState', null, { root: true });
   },
