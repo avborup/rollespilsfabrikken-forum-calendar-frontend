@@ -2,11 +2,7 @@
     <li class="comment" :style="{
       borderLeftColor: colourCycle[depth % colourCycle.length],
     }">
-      <div>
-        <div class="avatar">
-          <img src="/assets/icons/person.svg" alt="Avatar icon">
-        </div>
-      </div>
+      <UserAvatar :url="user.avatarUrl" class="avatar" />
       <p class="author-date">
         <span class="author">{{ user.username }}</span>
         <span class="date">
@@ -81,6 +77,7 @@
 import VueMarkdown from 'vue-markdown';
 import CommentCreator from '@/components/CommentCreator.vue';
 import CommentEditor from '@/components/CommentEditor.vue';
+import UserAvatar from '@/components/UserAvatar.vue';
 import { toElapsedTimeStr } from '@/dateUtils';
 import { colourCycle } from '@/constants';
 
@@ -92,6 +89,7 @@ export default {
     CommentCreator,
     CommentEditor,
     VueMarkdown,
+    UserAvatar,
   },
 
   props: {
@@ -249,16 +247,6 @@ export default {
     width: 2rem;
     height: 2rem;
     grid-area: avatar;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: $primary-accent;
-    border-radius: 100%;
-
-    img {
-      width: 1rem;
-      height: 1rem;
-    }
   }
 
   .comment-body {

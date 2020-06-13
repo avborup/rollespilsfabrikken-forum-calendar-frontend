@@ -1,8 +1,6 @@
 <template>
   <li class="user">
-    <div class="avatar">
-      <img src="/assets/icons/person.svg" alt="Avatar icon">
-    </div>
+    <UserAvatar :url="user.avatarUrl" class="avatar" />
     <p class="username">{{ user.username }}</p>
     <p class="date" title="Dato for brugeroprettelse">{{ simpleStringFormat(user.createdAt) }}</p>
     <ul class="roles-list">
@@ -31,10 +29,15 @@
 </template>
 
 <script>
+import UserAvatar from '@/components/UserAvatar.vue';
 import { simpleStringFormat } from '@/dateUtils';
 
 export default {
   name: 'UserAdminListItem',
+
+  components: {
+    UserAvatar,
+  },
 
   props: {
     user: {
@@ -122,16 +125,6 @@ export default {
     width: 2.5rem;
     height: 2.5rem;
     grid-area: avatar;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: $primary-accent;
-    border-radius: 100%;
-
-    img {
-      width: 1.25rem;
-      height: 1.25rem;
-    }
   }
 
   .username {

@@ -3,9 +3,7 @@
     <div class="post-container">
       <div v-if="!isLoadingPost" class="post-wrapper">
         <div class="post-header">
-          <div class="avatar">
-            <img src="/assets/icons/person.svg" alt="Avatar icon">
-          </div>
+          <UserAvatar :url="post.user.avatarUrl" class="avatar" />
           <span class="author">{{ post.user.username }}</span>
           <span class="date">Slået op for {{ toElapsedTimeStr(post.createdAt) }} siden</span>
           <h1 class="title">{{ post.title }}</h1>
@@ -127,6 +125,7 @@ import VueMarkdown from 'vue-markdown';
 import CommentSection from '@/components/CommentSection.vue';
 import CommentCreator from '@/components/CommentCreator.vue';
 import PostUpdater from '@/components/PostUpdater.vue';
+import UserAvatar from '@/components/UserAvatar.vue';
 import { ResourceNotFoundError } from '@/api/errors';
 import { toElapsedTimeStr } from '@/dateUtils';
 
@@ -137,6 +136,7 @@ export default {
     CommentSection,
     CommentCreator,
     PostUpdater,
+    UserAvatar,
   },
 
   data() {
@@ -297,16 +297,6 @@ export default {
       width: 3rem;
       height: 3rem;
       grid-area: avatar;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: $primary-accent;
-      border-radius: 100%;
-
-      img {
-        width: 1.5rem;
-        height: 1.5rem;
-      }
     }
 
     .author {
