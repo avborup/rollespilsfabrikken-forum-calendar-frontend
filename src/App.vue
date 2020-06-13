@@ -235,6 +235,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
+  border-top: 0.1rem solid rgba(0, 0, 0, 0.1);
 }
 
 .sidebar {
