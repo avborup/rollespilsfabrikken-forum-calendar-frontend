@@ -108,8 +108,6 @@ export default {
 
 <style lang="scss" scoped>
 .comments-container {
-  padding: 1rem;
-
   .post-link {
     display: flex;
     align-items: center;
@@ -125,7 +123,6 @@ export default {
 }
 
 .comment-not-found, .error-occurred {
-  padding: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -144,13 +141,6 @@ export default {
     &.attempted-comment {
       font-family: monospace;
     }
-  }
-}
-
-@media (min-width: 700px) {
-  .comments-container {
-    width: 700px;
-    margin: 0 auto;
   }
 }
 </style>

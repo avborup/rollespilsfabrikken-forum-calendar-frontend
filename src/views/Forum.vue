@@ -160,14 +160,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
 
-.forum-content-wrapper {
-  overflow: auto;
-}
-
-.forum {
-  padding: 2rem 1rem;
-}
-
 h1 {
   font-size: 1.6rem;
   margin-bottom: 1rem;
@@ -238,18 +230,6 @@ h2 {
     &.attempted-forum {
       font-family: monospace;
     }
-  }
-}
-
-@media (min-width: 900px) {
-  .forum {
-    max-width: 900px;
-  }
-}
-
-@media (min-width: 1000px) {
-  .forum {
-    margin-left: 2rem;
   }
 }
 </style>

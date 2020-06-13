@@ -121,8 +121,6 @@ export default {
 @import '@/assets/scss/theme.scss';
 
 .cf-admin-wrapper {
-  padding: 2rem 1rem;
-
   .top-controls {
     margin-top: 1rem;
     display: flex;
@@ -162,17 +160,5 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-@media (min-width: 700px) {
-  .cf-admin-wrapper {
-    max-width: 700px;
-  }
-}
-
-@media (min-width: 1000px) {
-  .cf-admin-wrapper {
-    margin-left: 2rem;
-  }
 }
 </style>

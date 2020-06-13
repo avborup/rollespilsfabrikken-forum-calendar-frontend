@@ -56,8 +56,6 @@ export default {
 
 <style lang="scss" scoped>
 .event-creator-view-wrapper {
-  padding: 1rem;
-
   h1 {
     font-size: 1.6rem;
     margin-bottom: 1rem;
@@ -67,8 +65,6 @@ export default {
 @media (min-width: 600px) {
   .event-creator-view-wrapper {
     width: 600px;
-    margin-right: auto;
-    margin-left: auto;
   }
 }
 </style>

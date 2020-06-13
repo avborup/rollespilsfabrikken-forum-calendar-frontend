@@ -38,7 +38,7 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar, .darkened-bg {
-  position: absolute;
+  position: fixed;
   z-index: 100;
   height: 100vh;
   top: 0;

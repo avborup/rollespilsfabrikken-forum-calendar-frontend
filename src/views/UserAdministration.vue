@@ -95,8 +95,6 @@ export default {
 @import '@/assets/scss/theme.scss';
 
 .user-admin-wrapper {
-  padding: 2rem 1rem;
-
   .num-users {
     font-size: 1.2rem;
     color: rgba(0, 0, 0, 0.75);
@@ -113,17 +111,5 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-@media (min-width: 700px) {
-  .user-admin-wrapper {
-    max-width: 700px;
-  }
-}
-
-@media (min-width: 1000px) {
-  .user-admin-wrapper {
-    margin-left: 2rem;
-  }
 }
 </style>

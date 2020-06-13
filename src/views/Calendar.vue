@@ -161,17 +161,19 @@ export default {
 @import '@/assets/scss/theme.scss';
 @import '@/assets/scss/consts.scss';
 
-.calendar {
+main > .main-content.calendar {
   display: grid;
   grid-template-rows: $header-height 1fr;
-  height: 100%;
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
+  width: 100%;
+  height: calc(100vh - #{$header-height} - 1rem);
+  padding: 0;
 
   header {
     display: grid;
     grid-template-columns: auto 1fr auto;
-    padding: 0.5rem 2rem;
+    padding: 0 2rem;
     align-items: center;
     justify-content: center;
     height: $header-height;

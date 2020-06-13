@@ -93,8 +93,6 @@ export default {
 @import '@/assets/scss/theme.scss';
 
 .role-admin-wrapper {
-  padding: 2rem 1rem;
-
   .top-controls {
     margin-top: 1rem;
 
@@ -124,17 +122,5 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-@media (min-width: 700px) {
-  .role-admin-wrapper {
-    max-width: 700px;
-  }
-}
-
-@media (min-width: 1000px) {
-  .role-admin-wrapper {
-    margin-left: 2rem;
-  }
 }
 </style>

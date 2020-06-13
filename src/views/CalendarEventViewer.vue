@@ -204,10 +204,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
 
-.container {
-  margin: 0.8rem 1rem;
-}
-
 .close-event-button {
   float: right;
   border: none;
@@ -329,10 +325,8 @@ export default {
 }
 
 @media (min-width: 600px) {
-  .container {
+  .container > div {
     width: 600px;
-    margin-right: auto;
-    margin-left: auto;
   }
 }
 </style>

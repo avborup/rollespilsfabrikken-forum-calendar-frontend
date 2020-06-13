@@ -1,34 +1,36 @@
 <template>
   <div v-if="!isWaiting" class="post-creator-wrapper">
-    <h1>Nyt opslag</h1>
-    <form @submit="handleSubmit">
-      <div class="form-field" :class="{ 'is-error': forumHasError }">
-        <label for="forum-selection">Vælg et forum</label>
-        <multiselect
-          v-model="selectedForum"
-          :options="forums"
-          label="name"
-          track-by="id"
-          selectLabel="Tryk på 'enter' for at vælge"
-          selectedLabel="Valgt"
-          deselectLabel="Tryk på 'enter' for at fravælge"
-          name="forum-selection"
-          :placeholder="'Vælg forum'"
-        />
-        <span v-if="forumHasError" class="field-error-msg">{{ forumErrorMsg }}</span>
-      </div>
-      <div class="form-field" :class="{ 'is-error': titleHasError }">
-        <label for="post-title">Titel</label>
-        <input v-model="postTitle" type="text" name="post-title">
-        <span v-if="titleHasError" class="field-error-msg">{{ titleErrorMsg }}</span>
-      </div>
-      <div class="form-field" :class="{ 'is-error': contentHasError }">
-        <label>Indhold</label>
-        <MarkdownEditorWrapper ref="markdownEditor" />
-        <span v-if="contentHasError" class="field-error-msg">{{ contentErrMsg }}</span>
-      </div>
-      <input class="form-submit" type="submit" value="Opret opslag!">
-    </form>
+    <div>
+      <h1>Nyt opslag</h1>
+      <form @submit="handleSubmit">
+        <div class="form-field" :class="{ 'is-error': forumHasError }">
+          <label for="forum-selection">Vælg et forum</label>
+          <multiselect
+            v-model="selectedForum"
+            :options="forums"
+            label="name"
+            track-by="id"
+            selectLabel="Tryk på 'enter' for at vælge"
+            selectedLabel="Valgt"
+            deselectLabel="Tryk på 'enter' for at fravælge"
+            name="forum-selection"
+            :placeholder="'Vælg forum'"
+          />
+          <span v-if="forumHasError" class="field-error-msg">{{ forumErrorMsg }}</span>
+        </div>
+        <div class="form-field" :class="{ 'is-error': titleHasError }">
+          <label for="post-title">Titel</label>
+          <input v-model="postTitle" type="text" name="post-title">
+          <span v-if="titleHasError" class="field-error-msg">{{ titleErrorMsg }}</span>
+        </div>
+        <div class="form-field" :class="{ 'is-error': contentHasError }">
+          <label>Indhold</label>
+          <MarkdownEditorWrapper ref="markdownEditor" />
+          <span v-if="contentHasError" class="field-error-msg">{{ contentErrMsg }}</span>
+        </div>
+        <input class="form-submit" type="submit" value="Opret opslag!">
+      </form>
+    </div>
   </div>
   <div v-else class="waiting">
     <p>Dit opslag oprettes...</p>
@@ -146,8 +148,6 @@ export default {
 @import '@/assets/scss/theme.scss';
 
 .post-creator-wrapper {
-  padding: 1rem;
-
   h1 {
     font-size: 1.6rem;
     margin-bottom: 1rem;
@@ -219,10 +219,8 @@ export default {
 }
 
 @media (min-width: 700px) {
-  .post-creator-wrapper {
+  .post-creator-wrapper > div {
     width: 700px;
-    margin-right: auto;
-    margin-left: auto;
   }
 }
 </style>

@@ -276,11 +276,9 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
+@import '@/assets/scss/consts.scss';
 
 .post-container {
-  margin: 0.8rem;
-  padding: 1rem 0;
-
   .post-header {
     display: grid;
     grid-template-columns: 3rem 1fr;
@@ -495,20 +493,14 @@ export default {
   }
 }
 
-@media (min-width: 700px) {
-  .post-container {
-    width: 700px;
-    margin-right: auto;
-    margin-left: auto;
-  }
-
+@media (min-width: $content-width) {
   @keyframes skeleton-shimmer {
     from {
       background-position: 0 0;
     }
 
     to {
-      background-position: 700px 0;
+      background-position: $content-width 0;
     }
   }
 }

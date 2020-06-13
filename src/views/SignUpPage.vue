@@ -195,7 +195,6 @@ export default {
 @import '@/assets/scss/theme.scss';
 
 .signup-wrapper {
-  padding: 2rem 1rem;
   width: 100%;
 
   .signup-form {
@@ -270,10 +269,8 @@ h1 {
 }
 
 @media (min-width: 400px) {
-  .signup-wrapper {
+  main > .signup-wrapper {
     width: 400px;
-    margin-right: auto;
-    margin-left: auto;
   }
 }
 </style>

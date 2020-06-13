@@ -104,7 +104,6 @@ export default {
 @import '@/assets/scss/theme.scss';
 
 .login-wrapper {
-  padding: 2rem 1rem;
   width: 100%;
 
   .login-form {
@@ -172,10 +171,8 @@ h1 {
 }
 
 @media (min-width: 300px) {
-  .login-wrapper {
+  main > .login-wrapper {
     width: 300px;
-    margin-right: auto;
-    margin-left: auto;
   }
 }
 </style>

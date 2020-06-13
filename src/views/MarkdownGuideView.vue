@@ -29,18 +29,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.content-container {
-  margin: 0.8rem;
-  padding: 1rem 0;
-}
-
-@media (min-width: 700px) {
-  .content-container {
-    width: 700px;
-    margin-right: auto;
-    margin-left: auto;
-  }
-}
-</style>

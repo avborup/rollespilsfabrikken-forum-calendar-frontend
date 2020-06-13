@@ -144,6 +144,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
+@import '@/assets/scss/consts.scss';
 
 $listitem-padding: 0.5rem;
 
@@ -164,11 +165,12 @@ $listitem-padding: 0.5rem;
 .content {
   background-color: #fff;
   color: $primary-text;
-  width: 15rem;
+  width: $sidebar-width;
   padding: 1rem;
   font-size: 1rem;
   font-weight: 400;
   overflow-y: auto;
+  border-right: 0.1rem solid rgba(0, 0, 0, 0.15);
 
   & > :last-child {
     margin-bottom: 1rem;

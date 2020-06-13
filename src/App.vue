@@ -19,13 +19,18 @@
       </router-link>
     </header>
     <PageSidebarWrapper class="sidebar-wrapper" ref="sidebar" />
-    <PageSidebar class="sidebar" :class="{ hidden: shouldHideSidebar || isLoading }" />
-    <transition v-if="!isLoading" name="fade" mode="out-in">
-      <router-view class="main-content" />
-    </transition>
-    <div v-else class="loading">
-      <LoadingSpinner />
-    </div>
+    <main>
+      <PageSidebar class="sidebar" :class="{ hidden: shouldHideSidebar || isLoading }" />
+      <transition v-if="!isLoading" name="fade" mode="out-in">
+        <router-view class="main-content" />
+      </transition>
+      <div v-else class="loading">
+        <LoadingSpinner />
+      </div>
+    </main>
+    <footer>
+      <p>Footer content TBA.</p>
+    </footer>
   </div>
 </template>
 
@@ -99,15 +104,7 @@ export default {
   font-family: $fonts;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
   height: 100%;
-
-  display: grid;
-  grid-template-areas:
-    "header header"
-    "sidebar main";
-  grid-template-rows: auto 1fr;
-  grid-template-columns: auto 1fr;
 }
 
 .dg-main-content > .dg-view-wrapper {
@@ -164,10 +161,9 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
+@import '@/assets/scss/consts.scss';
 
 .header {
-  grid-area: header;
-
   .open-sidebar-button {
     border: none;
     background: none;
@@ -186,7 +182,7 @@ export default {
     }
   }
 
-  height: 3rem;
+  height: $header-height;
   background-color: $primary-accent;
   color: #fff;
   padding: 0 1rem;
@@ -196,6 +192,11 @@ export default {
   align-items: center;
   grid-template-columns: auto 1fr;
   grid-column-gap: 1rem;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 99;
 
   .page-title {
     display: flex;
@@ -211,22 +212,44 @@ export default {
   }
 }
 
+main {
+  margin-top: $header-height;
+  padding-top: 1rem;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  min-height: calc(100% - #{$header-height} - 1rem);
+
+  .main-content {
+    width: $content-width;
+    padding: 1rem;
+  }
+}
+
+footer {
+  background-color: rgba(0, 0, 0, 0.05);
+  clear: both;
+  position: relative;
+  height: $footer-height;
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .sidebar {
-  grid-area: sidebar;
   display: none;
+  position: sticky;
+  top: $header-height + 1rem;
+  left: 0;
+  height: calc(100vh - #{$header-height} - 2rem);
 }
 
 .sidebar.hidden, .open-sidebar-button.hidden {
   display: none;
 }
 
-.main-content {
-  grid-area: main;
-  overflow-y: auto;
-}
-
 .loading {
-  grid-area: main;
   height: 100%;
   display: flex;
   align-items: center;
