@@ -177,7 +177,7 @@ export async function editEvent(token, newEventInfo) {
     recurrence: {
       series: newEventInfo.saveSettings.series,
       apply_to_all: newEventInfo.saveSettings.applyToAll,
-      just_this_one: newEventInfo.saveSettings.justThisOne,
+      only_this: newEventInfo.saveSettings.justThisOne,
     },
   };
 
@@ -222,7 +222,7 @@ export async function deleteEvent(token, settings) {
   const body = {
     series: settings.series,
     apply_to_all: settings.applyToAll,
-    just_this_one: settings.justThisOne,
+    only_this: settings.justThisOne,
     date: settings.date.toISOString(),
   };
 
