@@ -45,4 +45,9 @@ export default {
   async resendEmail(context, email) {
     await auth.resendEmail(email);
   },
+
+  logout(context) {
+    window.localStorage.removeItem('authToken');
+    context.dispatch('resetAllState', null, { root: true });
+  },
 };

@@ -48,6 +48,10 @@
           <p>Administrér kalendre og fora</p>
         </router-link>
       </div>
+      <div @click="logout" class="main-nav clickable">
+        <span class="icon fas fa-sign-out-alt"></span>
+        <p>Log ud</p>
+      </div>
     </nav>
     <div v-if="shouldShowCalendarSection">
       <h3 class="sidebar-section-header">Kalendervisning</h3>
@@ -137,6 +141,13 @@ export default {
   methods: {
     setShownSections() {
       this.shouldShowCalendarSection = this.$route.fullPath.startsWith('/kalender');
+    },
+
+    logout() {
+      this.$store.dispatch('auth/logout');
+      this.$router.push({
+        name: 'login',
+      });
     },
   },
 };
@@ -277,6 +288,10 @@ $listitem-padding: 0.5rem;
     text-decoration: none;
     color: $primary-text;
     margin-bottom: 0.4rem;
+
+    &.clickable {
+      cursor: pointer;
+    }
 
     &:hover {
       background-color: rgba(0, 0, 0, 0.03);
