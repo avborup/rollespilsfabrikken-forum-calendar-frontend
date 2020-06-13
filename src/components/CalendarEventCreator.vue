@@ -265,6 +265,7 @@ export default {
         saveSettings: {
           series: this.saveFor.series,
           applyToAll: this.saveFor.applyToAll,
+          justThisOne: this.saveFor.justThisOne,
         },
         eventId: this.eventId,
       });
