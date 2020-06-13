@@ -98,7 +98,7 @@ a {
   align-items: center;
   padding: 0.75rem 0.5rem;
   border-radius: 0.5rem;
-  border: 0.1rem solid rgba(0, 0, 0, 0.05);
+  border: 0.1rem solid rgba(0, 0, 0, 0.15);
   margin-bottom: 1rem;
 
   &:hover {
