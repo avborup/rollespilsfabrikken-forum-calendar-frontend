@@ -119,8 +119,19 @@ export default {
       }
 
       this.isLoadingQuestion = true;
-      const securityQuestion = await this.$store.dispatch('auth/getSecurityQuestion');
+      let securityQuestion = null;
+      let securityQuestionErrored = false;
+      try {
+        securityQuestion = await this.$store.dispatch('auth/getSecurityQuestion');
+      } catch (err) {
+        securityQuestionErrored = true;
+        this.$dialog.alert('Vi beklager, men der opstod en fejl, da vi forsøgte at hente et sikkerhedsspørgsmål.');
+      }
       this.isLoadingQuestion = false;
+
+      if (securityQuestionErrored) {
+        return;
+      }
 
       this.$dialog.prompt({
         title: 'Sikkerhedsspørgsmål',

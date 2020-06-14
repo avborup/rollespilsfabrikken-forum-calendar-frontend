@@ -79,7 +79,7 @@ export async function getSecurityQuestion() {
   });
 
   if (!res.ok) {
-    throw ServerError('Failed to get security question');
+    throw new ServerError('Failed to get security question');
   }
 
   const json = await res.json();
