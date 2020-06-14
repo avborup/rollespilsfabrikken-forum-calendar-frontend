@@ -14,6 +14,7 @@
         class="md-content comment-body"
         :breaks="true"
         :html="false"
+        :emoji="false"
       >{{ body }}</vue-markdown>
       <div class="comment-buttons">
         <button v-if="permissions.canAddComments" @click="toggleCreating" class="icon-and-label">

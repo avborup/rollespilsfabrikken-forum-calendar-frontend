@@ -5,6 +5,7 @@
           class="md-content"
           :breaks="true"
           :html="false"
+          :emoji="false"
       >{{ guideMd }}</vue-markdown>
     </div>
   </div>

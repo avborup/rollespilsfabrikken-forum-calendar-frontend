@@ -12,6 +12,7 @@
           class="md-content post-content"
           :breaks="true"
           :html="false"
+          :emoji="false"
         >{{ post.body }}</vue-markdown>
       </div>
       <div v-else class="skeleton-post-wrapper">
