@@ -18,7 +18,7 @@ export function makeAuthHeader(token) {
 
 export function pathNameify(name) {
   const hyphenated = name.replace(/\s/g, '-');
-  const pathName = encodeURIComponent(hyphenated.toLowerCase());
+  const pathName = hyphenated.toLowerCase();
 
   return pathName;
 }
