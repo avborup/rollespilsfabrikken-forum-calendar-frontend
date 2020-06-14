@@ -12,7 +12,7 @@
         <p>Forum</p>
       </router-link>
       <div class="sub-nav">
-        <router-link :to="{ name: 'create-post' }" class="sub-nav-item">
+        <router-link v-if="canPostInAForum" :to="{ name: 'create-post' }" class="sub-nav-item">
           <p>Opret opslag</p>
         </router-link>
         <router-link
@@ -29,7 +29,11 @@
         <p>Kalender</p>
       </router-link>
       <div class="sub-nav">
-        <router-link :to="{ name: 'create-event' }" class="sub-nav-item">
+        <router-link
+          v-if="canCreateEventsInACalendar"
+          :to="{ name: 'create-event' }"
+          class="sub-nav-item"
+        >
           <p>Opret begivenhed</p>
         </router-link>
       </div>
@@ -97,6 +101,7 @@ export default {
     isAuthenticated(isAuth) {
       if (isAuth) {
         this.$store.dispatch('forum/fetchAllForums');
+        this.$store.dispatch('calendar/fetchAllCalendars');
 
         this.$store.dispatch('fetchUser');
       }
@@ -135,6 +140,22 @@ export default {
       set(newShownCalendars) {
         this.$store.dispatch('calendar/updateCurrentlyShownCalendars', newShownCalendars);
       },
+    },
+
+    canPostInAForum() {
+      if (this.forums.length === 0) {
+        return false;
+      }
+
+      return this.forums.filter(f => f.permissions.canAddPosts).length > 0;
+    },
+
+    canCreateEventsInACalendar() {
+      if (!this.allCalendars) {
+        return false;
+      }
+
+      return this.allCalendars.filter(c => c.permissions.canAddEvents).length > 0;
     },
   },
 
