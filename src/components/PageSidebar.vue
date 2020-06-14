@@ -5,6 +5,11 @@
         <span>&times;</span>
       </button>
     </div>
+    <a v-if="user !== null" class="user-section">
+      <UserAvatar :url="user.avatarUrl" class="avatar" />
+      <p class="username">{{ user.username }}</p>
+      <p class="profile-link">Gå til profil</p>
+    </a>
     <h3 class="sidebar-section-header">Sider</h3>
     <nav class="sidebar-nav">
       <router-link :to="{ name: 'forum'}" class="main-nav">
@@ -84,11 +89,13 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
 import CalendarIcon from '@/components/CalendarIcon.vue';
+import UserAvatar from '@/components/UserAvatar.vue';
 
 export default {
   name: 'PageSidebar',
   components: {
     CalendarIcon,
+    UserAvatar,
   },
 
   data() {
@@ -352,6 +359,41 @@ $listitem-padding: 0.5rem;
         margin-right: 0.2rem;
       }
     }
+  }
+}
+
+.user-section {
+  display: grid;
+  grid-template-areas:
+    "avatar username"
+    "avatar profile-link";
+  grid-template-columns: 2rem 1fr;
+  column-gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  .avatar {
+    grid-area: avatar;
+    width: 2rem;
+    height: 2rem;
+    align-self: center;
+  }
+
+  .username {
+    grid-area: username;
+    text-transform: uppercase;
+    color: $primary-accent;
+    font-weight: bold;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .profile-link {
+    grid-area: profile-link;
+    font-size: 0.8rem;
+    align-self: end;
+    color: rgba(0, 0, 0, 0.6);
   }
 }
 
