@@ -12,7 +12,7 @@
       </p>
       <vue-markdown
         class="md-content comment-body"
-        :breaks="false"
+        :breaks="true"
         :html="false"
       >{{ body }}</vue-markdown>
       <div class="comment-buttons">

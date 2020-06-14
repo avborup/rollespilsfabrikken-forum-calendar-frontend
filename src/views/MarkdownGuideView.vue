@@ -3,7 +3,7 @@
     <div class="content-container">
       <vue-markdown
           class="md-content"
-          :breaks="false"
+          :breaks="true"
           :html="false"
       >{{ guideMd }}</vue-markdown>
     </div>

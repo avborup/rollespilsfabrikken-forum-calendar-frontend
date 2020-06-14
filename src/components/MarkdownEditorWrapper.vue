@@ -6,7 +6,7 @@
       :extend="customButtons"
       @command:help="help"
       height="auto"
-      :shouldBreakOnNewline="false"
+      :shouldBreakOnNewline="true"
       :titles="{
         undo: 'Fortryd',
         redo: 'Gentag',
