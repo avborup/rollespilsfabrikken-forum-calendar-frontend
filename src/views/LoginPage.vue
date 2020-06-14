@@ -15,6 +15,9 @@
       </div>
       <input class="form-submit" type="submit" value="Log ind">
     </form>
+    <router-link :to="{ name: 'signup' }" class="signup-link" title="Opret bruger">
+      Har du ikke en bruger endnu? Opret en her!
+    </router-link>
   </div>
 </template>
 
@@ -162,6 +165,14 @@ export default {
   .login-error {
     color: $err-colour;
     padding-bottom: 1rem;
+  }
+
+  .signup-link {
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    display: block;
+    text-align: center;
   }
 }
 
