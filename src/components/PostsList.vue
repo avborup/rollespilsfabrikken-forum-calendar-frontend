@@ -9,7 +9,7 @@
   </ul>
   <p v-else-if="!isLoading && posts.length === 0" class="no-posts">Dette forum har ingen opslag.</p>
   <ul v-else class="posts">
-    <li v-for="i in 6" :key="i" class="post-list-item skeleton-post-item">
+    <li v-for="i in 10" :key="i" class="post-list-item skeleton-post-item">
       <div class="avatar"></div>
       <h4></h4>
       <p class="author-date">
