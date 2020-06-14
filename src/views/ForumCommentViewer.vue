@@ -107,6 +107,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import '@/assets/scss/theme.scss';
+
 .comments-container {
   .post-link {
     display: flex;
@@ -139,7 +141,8 @@ export default {
     margin-bottom: 1rem;
 
     &.attempted-comment {
-      font-family: monospace;
+      font-family: $fonts-monospace;
+      font-size: 0.8rem;
     }
   }
 }

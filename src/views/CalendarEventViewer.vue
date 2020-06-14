@@ -319,7 +319,8 @@ export default {
     margin-bottom: 1rem;
 
     &.attempted-event {
-      font-family: monospace;
+      font-family: $fonts-monospace;
+      font-size: 0.8rem;
     }
   }
 }

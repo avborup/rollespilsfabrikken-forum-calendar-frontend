@@ -228,7 +228,8 @@ h2 {
     margin-bottom: 1rem;
 
     &.attempted-forum {
-      font-family: monospace;
+      font-family: $fonts-monospace;
+      font-size: 0.8rem;
     }
   }
 }
