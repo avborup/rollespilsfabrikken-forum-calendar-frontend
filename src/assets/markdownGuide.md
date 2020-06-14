@@ -3,6 +3,8 @@ Rollespilsfabrikkens kalender og forum benytter *Markdown* som et værktøj til 
 
 Markdown er blot et opmærkningssprog, der formateres ved hjælp af ren tekst. Hvordan man bruger det, er hvad denne side vil belyse. På siden vil du se eksempler på Markdown-inputtet efterfulgt af hvordan det formateres.
 
+Hvis du bruger Reddit, kender du sandsynligvis allerede til denne måde at formatere tekst.
+
 ---
 
 ## Tekststil
@@ -205,7 +207,9 @@ Tabeller kan dog være irriterende at skrive i hånden, og det kan derfor være 
 ## Blokcitater
 ```
 > Blokcitater kan være praktiske til flere formål. De starter med `>` og kan
-> have flere linjer, men vil altid vises som sammenhængende tekst.
+> have flere linjer.
+>
+> De kan også have flere afsnit.
 
 Citat stop.
 
@@ -213,7 +217,9 @@ Citat stop.
 ```
 
 > Blokcitater kan være praktiske til flere formål. De starter med `>` og kan
-> have flere linjer, men vil altid vises som sammenhængende tekst.
+> have flere linjer.
+>
+> De kan også have flere afsnit.
 
 Citat stop.
 
@@ -258,10 +264,11 @@ ___
 ```
 En linje kan fortsætte i en lang køre.
 
-En linje kan bestå af
-flere linjer i det
-samme afsnit, hvis der
-bare er ét linjeskift.
+Et afsnit kan
+brydes op i flere
+linjer uden mellemrum
+mellem, hvis der bare
+er ét linjeskift.
 
 Hvis der skal være et nyt afsnit,
 
@@ -270,10 +277,11 @@ skal der være to linjeskift.
 
 En linje kan fortsætte i en lang køre.
 
-En linje kan bestå af
-flere linjer i det
-samme afsnit, hvis der
-bare er ét linjeskift.
+Et afsnit kan
+brydes op i flere
+linjer uden mellemrum
+mellem, hvis der bare
+er ét linjeskift.
 
 Hvis der skal være et nyt afsnit,
 
