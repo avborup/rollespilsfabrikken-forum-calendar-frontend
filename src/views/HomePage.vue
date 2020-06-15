@@ -101,7 +101,7 @@ main > .home-page-wrapper {
     background-repeat: no-repeat;
     background-position: -10rem 0;
     z-index: -1;
-    opacity: 0.05;
+    opacity: 0.03;
     top: 0;
     left: 0;
     bottom: 0;
