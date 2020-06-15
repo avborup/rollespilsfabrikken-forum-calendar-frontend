@@ -143,6 +143,13 @@ export function hourJump(date, hours) {
   return new Date(newMs);
 }
 
+export function dayJump(date, days) {
+  const ms = date.getTime();
+  const newMs = ms + (days * 24 * 60 * 60 * 1000);
+
+  return new Date(newMs);
+}
+
 export function getAllMonthsBetween(start, end) {
   const months = [];
 
