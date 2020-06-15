@@ -29,21 +29,23 @@
       </div>
     </main>
     <footer>
-      <div class="footer-column">
-        <h5 class="footer-header">Info</h5>
-        <p>Rollespilsfabrikkens kalender og forum</p>
-        <p>v{{ VERSION }}</p>
-      </div>
-      <div class="footer-column">
-        <h5 class="footer-header">Kontakt</h5>
-        <p>forum@rollespilsfabrikken.dk</p>
-        <p>Brønshøjvej 17, 2700 Brønshøj</p>
-      </div>
-      <div class="footer-column">
-        <h5 class="footer-header">Sider</h5>
-        <p><router-link :to="{ name: 'forum' }">Forum</router-link></p>
-        <p><router-link :to="{ name: 'calendar' }">Kalender</router-link></p>
-        <p><router-link :to="{ name: 'profile' }">Profil</router-link></p>
+      <div class="footer-content">
+        <div class="footer-column">
+          <h5 class="footer-header">Info</h5>
+          <p>Rollespilsfabrikkens kalender og forum</p>
+          <p>v{{ VERSION }}</p>
+        </div>
+        <div class="footer-column">
+          <h5 class="footer-header">Kontakt</h5>
+          <p>forum@rollespilsfabrikken.dk</p>
+          <p>Brønshøjvej 17, 2700 Brønshøj</p>
+        </div>
+        <div class="footer-column">
+          <h5 class="footer-header">Sider</h5>
+          <p><router-link :to="{ name: 'forum' }">Forum</router-link></p>
+          <p><router-link :to="{ name: 'calendar' }">Kalender</router-link></p>
+          <p><router-link :to="{ name: 'profile' }">Profil</router-link></p>
+        </div>
       </div>
     </footer>
   </div>
@@ -248,17 +250,21 @@ footer {
   clear: both;
   position: relative;
   height: $footer-height;
-  display: flex;
-  align-items: flex-start;
   padding: 2rem;
-  justify-content: center;
   border-top: 0.1rem solid rgba(0, 0, 0, 0.03);
   font-size: 0.9rem;
+  overflow-x: auto;
+  display: flex;
+
+  .footer-content {
+    margin: 0 auto;
+    display: flex;
+    align-self: flex-start;
+  }
 
   .footer-column {
-    &:not(:last-child) {
-      margin-right: 2rem;
-    }
+    max-width: 15rem;
+    padding-right: 2rem;
 
     .footer-header {
       font-weight: 600;
