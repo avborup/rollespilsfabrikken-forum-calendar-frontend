@@ -227,15 +227,14 @@ main {
 }
 
 footer {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: #fafafa;
   clear: both;
   position: relative;
   height: $footer-height;
-  margin-top: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-top: 0.1rem solid rgba(0, 0, 0, 0.1);
+  border-top: 0.1rem solid rgba(0, 0, 0, 0.03);
 }
 
 .sidebar {
