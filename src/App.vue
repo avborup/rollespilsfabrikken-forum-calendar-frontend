@@ -29,7 +29,20 @@
       </div>
     </main>
     <footer>
-      <p>Footer content TBA.</p>
+      <div class="footer-column">
+        <h5 class="footer-header">Info</h5>
+        <p>Rollespilsfabrikkens kalender og forum</p>
+        <p>v{{ VERSION }}</p>
+      </div>
+      <div class="footer-column">
+        <h5 class="footer-header">Kontakt</h5>
+        <p>Contact info TBA.</p>
+      </div>
+      <div class="footer-column">
+        <h5 class="footer-header">Sider</h5>
+        <p><router-link :to="{ name: 'forum' }">Forum</router-link></p>
+        <p><router-link :to="{ name: 'calendar' }">Kalender</router-link></p>
+      </div>
     </footer>
   </div>
 </template>
@@ -39,6 +52,7 @@ import { mapGetters } from 'vuex';
 import PageSidebar from '@/components/PageSidebar.vue';
 import PageSidebarWrapper from '@/components/PageSidebarWrapper.vue';
 import LoadingSpinner from '@/components/LoadingSpinner.vue';
+import { VERSION } from '@/constants';
 
 export default {
   name: 'App',
@@ -52,6 +66,7 @@ export default {
     return {
       shouldHideSidebar: false,
       isLoading: true,
+      VERSION,
     };
   },
 
@@ -232,9 +247,26 @@ footer {
   position: relative;
   height: $footer-height;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  padding: 2rem;
   justify-content: center;
   border-top: 0.1rem solid rgba(0, 0, 0, 0.03);
+  font-size: 0.9rem;
+
+  .footer-column {
+    &:not(:last-child) {
+      margin-right: 2rem;
+    }
+
+    .footer-header {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    p, a {
+      color: #4e4e4e;
+    }
+  }
 }
 
 .sidebar {
