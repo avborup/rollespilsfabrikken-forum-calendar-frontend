@@ -36,7 +36,8 @@
       </div>
       <div class="footer-column">
         <h5 class="footer-header">Kontakt</h5>
-        <p>Contact info TBA.</p>
+        <p>forum@rollespilsfabrikken.dk</p>
+        <p>Brønshøjvej 17, 2700 Brønshøj</p>
       </div>
       <div class="footer-column">
         <h5 class="footer-header">Sider</h5>
