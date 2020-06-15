@@ -42,4 +42,8 @@ export default {
   RESET_STATE(state) {
     Object.assign(state, initialState());
   },
+
+  SET_PREVIEW_EVENTS(state, events) {
+    state.previewEvents = events;
+  },
 };

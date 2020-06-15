@@ -1,5 +1,10 @@
 import * as calendarApi from '@/api/calendarApi';
-import { getAllMonthsBetween, hourJump } from '@/dateUtils';
+import {
+  getAllMonthsBetween,
+  hourJump,
+  dayJump,
+  now,
+} from '@/dateUtils';
 
 export default {
   updateCurrentlyFocusedEventId(context, eventId) {
@@ -64,5 +69,16 @@ export default {
   async deleteEvent(context, settings) {
     const { authToken } = context.rootState.auth;
     await calendarApi.deleteEvent(authToken, settings);
+  },
+
+  async fetchPreviewEvents(context) {
+    const nowStamp = now();
+    const weekLaterStamp = dayJump(nowStamp, 7);
+
+    const { authToken } = context.rootState.auth;
+    const events = await calendarApi.fetchAllEventsInRange(authToken, nowStamp, weekLaterStamp);
+    const eventsToShow = events.slice(0, 5);
+
+    context.commit('SET_PREVIEW_EVENTS', eventsToShow);
   },
 };

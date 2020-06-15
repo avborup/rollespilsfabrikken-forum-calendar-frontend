@@ -19,4 +19,5 @@ export default () => ({
   // make a potential future bug where events are duplicated easier to find.
   allEvents: [],
   currentEvent: null,
+  previewEvents: [],
 });
