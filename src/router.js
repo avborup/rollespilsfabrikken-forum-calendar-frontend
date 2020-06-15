@@ -17,6 +17,7 @@ import CalendarForumAdministrator from './views/CalendarForumAdministrator.vue';
 import SignUpPage from './views/SignUpPage.vue';
 import CalendarEventCreatorView from './views/CalendarEventCreatorView.vue';
 import ForumCommentViewer from './views/ForumCommentViewer.vue';
+import UserProfileView from './views/UserProfileView.vue';
 
 Vue.use(Router);
 
@@ -95,6 +96,11 @@ const router = new Router({
       path: '/admin/forum-kalender',
       name: 'admin-forum-calendar',
       component: CalendarForumAdministrator,
+    },
+    {
+      path: '/profil',
+      name: 'profile',
+      component: UserProfileView,
     },
     {
       path: '/markdown-guide',

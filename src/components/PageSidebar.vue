@@ -5,11 +5,11 @@
         <span>&times;</span>
       </button>
     </div>
-    <a v-if="user !== null" class="user-section">
+    <router-link v-if="user !== null" :to="{ name: 'profile' }" class="user-section">
       <UserAvatar :url="user.avatarUrl" class="avatar" />
       <p class="username">{{ user.username }}</p>
       <p class="profile-link">Gå til profil</p>
-    </a>
+    </router-link>
     <h3 class="sidebar-section-header">Sider</h3>
     <nav class="sidebar-nav">
       <router-link :to="{ name: 'forum'}" class="main-nav">
@@ -370,6 +370,7 @@ $listitem-padding: 0.5rem;
   grid-template-columns: 2rem 1fr;
   column-gap: 0.5rem;
   margin-bottom: 1rem;
+  text-decoration: none;
 
   .avatar {
     grid-area: avatar;

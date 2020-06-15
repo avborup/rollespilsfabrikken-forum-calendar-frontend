@@ -42,6 +42,7 @@
         <h5 class="footer-header">Sider</h5>
         <p><router-link :to="{ name: 'forum' }">Forum</router-link></p>
         <p><router-link :to="{ name: 'calendar' }">Kalender</router-link></p>
+        <p><router-link :to="{ name: 'profile' }">Profil</router-link></p>
       </div>
     </footer>
   </div>
