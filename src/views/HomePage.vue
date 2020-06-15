@@ -30,8 +30,18 @@
       </div>
     </div>
   </div>
-  <div v-else>
-    <h1>Home page when not logged in TBA.</h1>
+  <div v-else class="home-page-wrapper-unauth">
+    <h1 class="title">Velkommen til Rollespilsfabrikken!</h1>
+    <p class="subtitle">Forum og kalender</p>
+    <p>Kom og bliv en del af fællesskabet!</p>
+    <div class="link-btns">
+      <router-link :to="{ name: 'signup' }" class="link-btn">
+        Bliv medlem
+      </router-link>
+      <router-link :to="{ name: 'login' }" class="link-btn">
+        Log ind
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -118,27 +128,6 @@ main > .home-page-wrapper {
     margin-bottom: 1rem;
   }
 
-  .link-btns {
-    display: flex;
-
-    .link-btn {
-      margin-right: 1rem;
-      padding: 0.4rem 0.75rem;
-      background-color: $primary-accent;
-      font-size: 0.9rem;
-      border-radius: 0.2rem;
-      color: #fff;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-
-      .link-btn-icon {
-        font-size: 0.8rem;
-        margin-left: 0.4rem;
-      }
-    }
-  }
-
   .events-posts-viewer {
     margin-top: 2rem;
     display: flex;
@@ -156,6 +145,67 @@ main > .home-page-wrapper {
       min-width: 15rem;
       max-width: 23rem;
     }
+  }
+}
+
+.link-btns {
+  display: flex;
+
+  .link-btn {
+    margin-right: 1rem;
+    padding: 0.4rem 0.75rem;
+    background-color: $primary-accent;
+    font-size: 0.9rem;
+    border-radius: 0.2rem;
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+
+    .link-btn-icon {
+      font-size: 0.8rem;
+      margin-left: 0.4rem;
+    }
+  }
+}
+
+.home-page-wrapper-unauth {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 1rem;
+  position: relative;
+  color: $primary-text;
+
+  &::after {
+    content: "";
+    background-size: cover;
+    background-position: 50% 0;
+    background-image: url('/assets/icons/rollespilsfabrikken-black.svg');
+    z-index: -1;
+    opacity: 0.05;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+  }
+
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+    opacity: 0.75;
+  }
+
+  p {
+    margin-bottom: 1rem;
   }
 }
 </style>
