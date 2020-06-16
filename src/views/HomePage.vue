@@ -195,6 +195,7 @@ main > .home-page-wrapper {
   .title {
     font-size: 2rem;
     font-weight: 700;
+    text-align: center;
   }
 
   .subtitle {
