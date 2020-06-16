@@ -4,3 +4,4 @@ export class ResourceNotFoundError extends Error {}
 export class EmailAlreadyTakenError extends Error {}
 export class InvalidEmailError extends Error {}
 export class WrongAnswerError extends Error {}
+export class InvalidTokenError extends Error {}

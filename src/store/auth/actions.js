@@ -52,4 +52,8 @@ export default {
     window.localStorage.removeItem('authToken');
     context.dispatch('resetAllState', null, { root: true });
   },
+
+  async confirmEmail(context, { confirmationToken }) {
+    await auth.confirmEmail(confirmationToken);
+  },
 };

@@ -6,6 +6,7 @@ import {
   EmailAlreadyTakenError,
   InvalidEmailError,
   WrongAnswerError,
+  InvalidTokenError,
 } from '@/api/errors';
 
 /**
@@ -314,5 +315,22 @@ export async function logout(token) {
 
   if (!res.ok) {
     throw new ServerError('Logout request failed');
+  }
+}
+
+export async function confirmEmail(confirmationToken) {
+  const encodedConfirmationToken = encodeURIComponent(confirmationToken);
+  const url = makeUrl(`/api/auth/activate/${encodedConfirmationToken}`);
+
+  const res = await fetch(url, {
+    headers: alwaysHeaders,
+  });
+
+  if (res.status === 404) {
+    throw new InvalidTokenError('Confirmation token is invalid');
+  }
+
+  if (!res.ok) {
+    throw new ServerError('Email confirmation failed');
   }
 }

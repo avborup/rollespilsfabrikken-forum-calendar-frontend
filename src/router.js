@@ -18,6 +18,7 @@ import SignUpPage from './views/SignUpPage.vue';
 import CalendarEventCreatorView from './views/CalendarEventCreatorView.vue';
 import ForumCommentViewer from './views/ForumCommentViewer.vue';
 import UserProfileView from './views/UserProfileView.vue';
+import EmailConfirmationPage from './views/EmailConfirmationPage.vue';
 
 Vue.use(Router);
 
@@ -106,6 +107,13 @@ const router = new Router({
       path: '/markdown-guide',
       name: 'markdown-guide',
       component: MarkdownGuideView,
+    },
+    {
+      path: '/bekraeft-email',
+      component: EmailConfirmationPage,
+      meta: {
+        isPublic: true,
+      },
     },
     {
       path: '*',
