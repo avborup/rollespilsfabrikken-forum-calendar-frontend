@@ -19,13 +19,14 @@
       </div>
       <div class="events-col">
         <h2>Kommende begivenheder</h2>
-        <div v-if="!eventFetchFailed" class="events">
+        <div v-if="!eventFetchFailed && upcomingEvents" class="events">
           <CalendarEvent
             v-for="event in previewEvents"
             :key="`${event.id}-${event.start.toISOString()}`"
             :event="event"
           />
         </div>
+        <p v-else-if="!upcomingEvents">Du har ingen kommende begivenheder.</p>
         <p v-else>Der opstod en fejl.</p>
       </div>
     </div>
@@ -74,6 +75,14 @@ export default {
     ...mapState('calendar', [
       'previewEvents',
     ]),
+
+    upcomingEvents() {
+      if (!this.previewEvents) {
+        return false;
+      }
+
+      return this.previewEvents.length > 0;
+    },
   },
 
   mounted() {
