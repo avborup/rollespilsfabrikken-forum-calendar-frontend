@@ -64,7 +64,7 @@
     </nav>
     <div v-if="shouldShowCalendarSection">
       <h3 class="sidebar-section-header">Kalendervisning</h3>
-      <ul class="choose-category">
+      <ul v-if="allCalendars !== null && allCalendars.length > 0" class="choose-category">
         <li v-for="calendar in allCalendars" :key="calendar.id">
           <input
             type="checkbox"
@@ -82,6 +82,7 @@
           </label>
         </li>
       </ul>
+      <p v-else-if="allCalendars !== null">Du kan ikke se nogle kalendre.</p>
     </div>
   </div>
 </template>
