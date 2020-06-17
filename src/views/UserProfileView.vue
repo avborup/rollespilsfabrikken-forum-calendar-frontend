@@ -12,10 +12,13 @@
         <p>Profil oprettet d. {{ simpleStringFormat(user.createdAt) }}</p>
       </div>
       <div class="editable-info">
-        <div class="form-field">
+        <div class="form-field" :class="{ 'is-error': form.errs.username.has }">
           <label>Brugernavn</label>
           <input type="text" v-model="form.username">
-          <button type="button">Ændr brugernavn</button>
+          <span v-if="form.errs.username.has" class="field-error-msg">
+            {{ form.errs.username.msg }}
+          </span>
+          <button @click="handleChangeUsername" type="button">Ændr brugernavn</button>
         </div>
         <div class="form-field">
           <label>Password</label>
@@ -53,6 +56,12 @@ export default {
         username: '',
         password: '',
         passwordRepeated: '',
+        errs: {
+          username: {
+            has: false,
+            msg: '',
+          },
+        },
       },
     };
   },
@@ -65,6 +74,27 @@ export default {
 
   methods: {
     simpleStringFormat,
+
+    async handleChangeUsername() {
+      this.form.errs.username.has = false;
+
+      const { username } = this.form;
+
+      if (username.length === 0) {
+        this.form.errs.username.has = true;
+        this.form.errs.username.msg = 'Brugernavnet må ikke være tomt';
+        return;
+      }
+
+      try {
+        await this.$store.dispatch('updateUsername', username);
+        await this.$store.dispatch('fetchUser');
+
+        this.$dialog.alert(`Dit brugernavn er ændret til ${username}`);
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl, da vi forsøgte at opdatere dit brugernavn.');
+      }
+    },
   },
 
   watch: {

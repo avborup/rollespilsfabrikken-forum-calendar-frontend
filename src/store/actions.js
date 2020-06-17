@@ -105,4 +105,9 @@ export default {
     context.commit('calendar/RESET_STATE');
     context.commit('forum/RESET_STATE');
   },
+
+  async updateUsername(context, newUsername) {
+    const { authToken } = context.rootState.auth;
+    await api.updateUsername(authToken, newUsername);
+  },
 };
