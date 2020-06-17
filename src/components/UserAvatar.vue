@@ -1,7 +1,7 @@
 <template>
-  <div class="avatar">
-    <img :src="url" alt="Profilbillede">
-  </div>
+  <div class="avatar" :style="{
+    backgroundImage: `url(${url})`,
+  }"></div>
 </template>
 
 <script>
@@ -19,11 +19,11 @@ export default {
 
 <style lang="scss" scoped>
 .avatar {
-  img {
-    border-radius: 100%;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-  }
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center center;
 }
 </style>
