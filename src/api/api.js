@@ -589,3 +589,25 @@ export async function getComment(token, forumId, postId, commentId) {
 
   return recursivelyFixComments([comment])[0];
 }
+
+export async function updateUsername(token, newUsername) {
+  const url = makeUrl('/api/user/username');
+
+  const body = {
+    username: newUsername,
+    username_confirmation: newUsername,
+  };
+
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to update username');
+  }
+}
