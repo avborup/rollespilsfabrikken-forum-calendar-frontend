@@ -3,10 +3,19 @@
     <div>
       <div class="profile-picture">
         <UserAvatar :url="user.avatarUrl" class="avatar" />
-        <button type="button">
+        <input
+          type="file"
+          name="avatar"
+          accept="image/jpeg, image/png, image/gif"
+          @change="updateAvatarValue"
+        >
+        <button @click="handleChangeAvatar" type="button">
           Upload profilbillede
           <span class="fas fa-upload icon"></span>
         </button>
+        <span v-if="form.errs.avatar.has" class="field-error-msg">
+          {{ form.errs.avatar.msg }}
+        </span>
       </div>
       <div class="misc-info">
         <p>Profil oprettet d. {{ simpleStringFormat(user.createdAt) }}</p>
@@ -61,7 +70,12 @@ export default {
             has: false,
             msg: '',
           },
+          avatar: {
+            has: false,
+            msg: '',
+          },
         },
+        avatarFile: null,
       },
     };
   },
@@ -93,6 +107,29 @@ export default {
         this.$dialog.alert(`Dit brugernavn er ændret til ${username}`);
       } catch (err) {
         this.$dialog.alert('Vi beklager, men der opstod en fejl, da vi forsøgte at opdatere dit brugernavn.');
+      }
+    },
+
+    updateAvatarValue(event) {
+      const file = event.target.files[0];
+      this.form.avatarFile = file;
+    },
+
+    async handleChangeAvatar() {
+      this.form.errs.avatar.has = false;
+      const { avatarFile } = this.form;
+
+      if (!avatarFile) {
+        this.form.errs.avatar.has = true;
+        this.form.errs.avatar.msg = 'Vælg venligst et billede først';
+        return;
+      }
+
+      try {
+        await this.$store.dispatch('updateUserAvatar', avatarFile);
+        this.$store.dispatch('fetchUser');
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl, da vi forsøgte at opdatere dit profilbillede.');
       }
     },
   },
@@ -129,8 +166,13 @@ export default {
       height: 8rem;
     }
 
+    input[type='file'] {
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      width: 100%;
+    }
+
     button {
-      margin-top: 2rem;
       width: 100%;
       padding: 0.5rem 0.75rem;
       background-color: $primary-accent;
@@ -144,6 +186,12 @@ export default {
       .icon {
         margin-left: 0.5rem;
       }
+    }
+
+    .field-error-msg {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: $err-colour;
     }
   }
 

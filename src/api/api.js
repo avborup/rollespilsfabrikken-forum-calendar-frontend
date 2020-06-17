@@ -611,3 +611,24 @@ export async function updateUsername(token, newUsername) {
     throw new ServerError('Failed to update username');
   }
 }
+
+export async function updateAvatar(token, newAvatar) {
+  const url = makeUrl('/api/user/avatar');
+
+  const formData = new FormData();
+  formData.append('avatar', newAvatar);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      ...makeAuthHeader(token),
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to update avatar');
+  }
+}

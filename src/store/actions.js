@@ -110,4 +110,9 @@ export default {
     const { authToken } = context.rootState.auth;
     await api.updateUsername(authToken, newUsername);
   },
+
+  async updateUserAvatar(context, newAvatar) {
+    const { authToken } = context.rootState.auth;
+    await api.updateAvatar(authToken, newAvatar);
+  },
 };
