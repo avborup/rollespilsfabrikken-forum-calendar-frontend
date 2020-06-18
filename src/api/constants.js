@@ -1,5 +1,6 @@
-// This is a temporary testing URL
-export const baseUrl = 'http://forum.studiogoose.dk';
+export const baseUrl = process.env.NODE_ENV === 'development'
+  ? 'http://forum.studiogoose.dk'
+  : 'http://forum.rollespilsfabrikken.dk';
 
 export const alwaysHeaders = {
   'Content-Type': 'application/json',
