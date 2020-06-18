@@ -33,7 +33,7 @@
         <div class="footer-column">
           <h5 class="footer-header">Info</h5>
           <p>Rollespilsfabrikkens kalender og forum</p>
-          <p>v{{ VERSION }}</p>
+          <p>{{ VERSION }}</p>
         </div>
         <div class="footer-column">
           <h5 class="footer-header">Kontakt</h5>
