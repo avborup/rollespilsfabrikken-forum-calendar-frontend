@@ -7,6 +7,8 @@ import {
   InvalidEmailError,
   WrongAnswerError,
   InvalidTokenError,
+  ExpiredTokenError,
+  ResourceNotFoundError,
 } from '@/api/errors';
 
 /**
@@ -332,5 +334,65 @@ export async function confirmEmail(confirmationToken) {
 
   if (!res.ok) {
     throw new ServerError('Email confirmation failed');
+  }
+}
+
+export async function sendPasswordResetMail(email) {
+  const url = makeUrl('/api/auth/password/forgot');
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: alwaysHeaders,
+    body: JSON.stringify({ email }),
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to send password reset email');
+  }
+}
+
+export async function getResetTokenDetails(resetToken) {
+  const encodedToken = encodeURIComponent(resetToken);
+  const url = makeUrl(`/api/auth/password/find/${encodedToken}`);
+
+  const res = await fetch(url, {
+    headers: alwaysHeaders,
+  });
+
+  if (res.status === 404) {
+    throw new ResourceNotFoundError('Could not find reset token');
+  }
+
+  if (res.status === 498) {
+    throw new ExpiredTokenError('Reset token has expired');
+  }
+
+  if (!res.ok) {
+    throw new ServerError('Failed to get reset token details');
+  }
+
+  const tokenDetails = await res.json();
+
+  return tokenDetails;
+}
+
+export async function changePassword(resetToken, email, newPassword, passwordRepeated) {
+  const url = makeUrl('/api/auth/password/reset');
+
+  const body = {
+    email,
+    token: resetToken,
+    password: newPassword,
+    password_confirmation: passwordRepeated,
+  };
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: alwaysHeaders,
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to change password');
   }
 }
