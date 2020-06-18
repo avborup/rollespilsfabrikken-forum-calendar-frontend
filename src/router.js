@@ -24,7 +24,6 @@ import PasswordResetPage from './views/PasswordResetPage.vue';
 Vue.use(Router);
 
 const router = new Router({
-  mode: 'history',
   routes: [
     {
       path: '/',
