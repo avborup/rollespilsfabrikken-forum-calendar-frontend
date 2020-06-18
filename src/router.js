@@ -19,6 +19,7 @@ import CalendarEventCreatorView from './views/CalendarEventCreatorView.vue';
 import ForumCommentViewer from './views/ForumCommentViewer.vue';
 import UserProfileView from './views/UserProfileView.vue';
 import EmailConfirmationPage from './views/EmailConfirmationPage.vue';
+import PasswordResetPage from './views/PasswordResetPage.vue';
 
 Vue.use(Router);
 
@@ -111,6 +112,13 @@ const router = new Router({
     {
       path: '/bekraeft-email',
       component: EmailConfirmationPage,
+      meta: {
+        isPublic: true,
+      },
+    },
+    {
+      path: '/nulstil-password',
+      component: PasswordResetPage,
       meta: {
         isPublic: true,
       },
