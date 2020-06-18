@@ -56,4 +56,22 @@ export default {
   async confirmEmail(context, { confirmationToken }) {
     await auth.confirmEmail(confirmationToken);
   },
+
+  async sendPasswordResetMail(context, email) {
+    await auth.sendPasswordResetMail(email);
+  },
+
+  async getResetTokenDetails(context, resetToken) {
+    const resetTokenDetails = await auth.getResetTokenDetails(resetToken);
+    return resetTokenDetails;
+  },
+
+  async changePassword(context, {
+    resetToken,
+    email,
+    newPassword,
+    passwordRepeated,
+  }) {
+    await auth.changePassword(resetToken, email, newPassword, passwordRepeated);
+  },
 };
