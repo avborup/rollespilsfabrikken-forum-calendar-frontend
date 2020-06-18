@@ -31,11 +31,7 @@
         </div>
         <div class="form-field">
           <label>Password</label>
-          <p>Indtast et nyt password</p>
-          <input type="password" v-model="form.password">
-          <p>Gentag password</p>
-          <input type="password" v-model="form.passwordRepeated">
-          <button type="button">Ændr password</button>
+          <button type="button" @click="handleChangePassword">Ændr password</button>
         </div>
       </div>
     </div>
@@ -131,6 +127,25 @@ export default {
       } catch (err) {
         this.$dialog.alert('Vi beklager, men der opstod en fejl, da vi forsøgte at opdatere dit profilbillede.');
       }
+    },
+
+    handleChangePassword() {
+      this.$dialog.confirm('Er du sikker på, at du vil ændre dit password? Hvis du fortsætter, vil en email blive sendt til dig, hvor du kan nulstille og oprette et nyt password.', {
+        loader: true,
+      })
+        .then(async (dialog) => {
+          const { email } = this.user;
+
+          try {
+            await this.$store.dispatch('auth/sendPasswordResetMail', email);
+            dialog.close();
+            this.$dialog.alert(`En mail er blevet sendt til ${email}, hvor du kan nulstille dit password.`);
+          } catch (err) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
     },
   },
 
