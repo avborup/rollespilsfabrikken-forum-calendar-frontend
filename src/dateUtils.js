@@ -66,6 +66,10 @@ export function dateRangesOverlap(aStart, aEnd, bStart, bEnd) {
   return overlaps;
 }
 
+export function toDoubleDigitHrMinStr(hrs, mins) {
+  return `${hrs >= 10 ? '' : '0'}${hrs}:${mins >= 10 ? '' : '0'}${mins}`;
+}
+
 export function toFormattedString(date) {
   const weekdayIndex = getWeekday(date.getFullYear(), date.getMonth(), date.getDate());
   const weekday = weekDayNames[weekdayIndex];
@@ -75,19 +79,20 @@ export function toFormattedString(date) {
   const hour = date.getHours();
   const minute = date.getMinutes();
 
-  return `${weekday} ${dayDate}. ${month} ${year} kl. ${hour}:${minute}`;
-}
-
-export function toDoubleDigitHrMinStr(hrs, mins) {
-  return `${hrs >= 10 ? '' : '0'}${hrs}:${mins >= 10 ? '' : '0'}${mins}`;
+  return `${weekday} ${dayDate}. ${month} ${year} kl. ${toDoubleDigitHrMinStr(hour, minute)}`;
 }
 
 export function toElapsedTimeStr(date) {
   const nowStamp = now();
 
+  // It is not optimal that we return "0 seconds" when the time difference is
+  // negative, but it is an easy fix for a bug that arises when the server's local
+  // system time does not match the user's system time. Here it would happen that
+  // the server returned a timestamp that was ~2 seconds into the future compared
+  // to local system time.
   const msDiff = nowStamp.getTime() - date.getTime();
   if (msDiff < 0) {
-    return 'Fra fremtiden..';
+    return '0 sekunder';
   }
 
   const secDiff = msDiff / 1000;
@@ -117,4 +122,44 @@ export function toElapsedTimeStr(date) {
 
   const yearDiff = nowStamp.getFullYear() - date.getFullYear();
   return `${Math.floor(yearDiff)} år`;
+}
+
+export function simpleStringFormat(date) {
+  return `${date.getDate()}/${date.getMonth() + 1}-${date.getFullYear()}`;
+}
+
+export function formatYMD(date) {
+  const dd = date.getDate();
+  const mm = date.getMonth() + 1;
+  const yy = date.getFullYear();
+
+  return `${yy}-${mm < 10 ? 0 : ''}${mm}-${dd < 10 ? 0 : ''}${dd}`;
+}
+
+export function hourJump(date, hours) {
+  const ms = date.getTime();
+  const newMs = ms + (hours * 60 * 60 * 1000);
+
+  return new Date(newMs);
+}
+
+export function dayJump(date, days) {
+  const ms = date.getTime();
+  const newMs = ms + (days * 24 * 60 * 60 * 1000);
+
+  return new Date(newMs);
+}
+
+export function getAllMonthsBetween(start, end) {
+  const months = [];
+
+  let d = new Date(start.getFullYear(), start.getMonth());
+  const f = new Date(end.getFullYear(), end.getMonth());
+
+  while (d.getTime() <= f.getTime()) {
+    months.push(d);
+    d = monthJump(d, 1);
+  }
+
+  return months;
 }

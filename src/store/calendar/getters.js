@@ -1,25 +1,28 @@
-import { dateRangesOverlap } from '@/dateUtils';
+import {
+  dateRangesOverlap,
+  getAllMonthsBetween,
+  monthJump,
+} from '@/dateUtils';
 
 export default {
-  // FIXME: Should this be done server side instead?
   getEventsOnDate: state => (date) => {
     const dayDate = [date.getFullYear(), date.getMonth(), date.getDate()];
     const dayStart = new Date(...dayDate);
     const dayEnd = new Date(...dayDate, 23, 59);
 
-    return state.calendarEvents.filter(event => dateRangesOverlap(
+    return state.allEvents.filter(event => dateRangesOverlap(
       dayStart,
       dayEnd,
-      event.timeframe.start,
-      event.timeframe.end,
+      event.start,
+      event.end,
     ));
   },
 
-  getEventsOnDateFilteredByCategory: (state, getters) => (date) => {
+  getEventsOnDateFilteredByShownCalendar: (state, getters) => (date) => {
     const allEvents = getters.getEventsOnDate(date);
-    const categories = state.currentCalendarCategories;
+    const curCalendarIds = state.currentlyShownCalendars.map(cal => cal.id);
 
-    return allEvents.filter(({ category }) => categories.includes(category));
+    return allEvents.filter(({ parent }) => curCalendarIds.includes(parent.id));
   },
 
   getCurrentlyFocusedEvent(state) {
@@ -39,7 +42,37 @@ export default {
     return state.calendarCategories.map(({ name }) => name);
   },
 
-  getCurrentCalendarCategories(state) {
-    return state.currentCalendarCategories;
+  getCurrentlyShownCalendars(state) {
+    return state.currentlyShownCalendars;
+  },
+
+  getRangeToLoad: state => (start, end) => {
+    const allMonths = getAllMonthsBetween(start, end);
+    const notLoaded = allMonths.filter(month => state.loadedMonths[month] === undefined);
+
+    const minNotLoaded = Math.min(...notLoaded);
+    const maxNotLoaded = Math.max(...notLoaded);
+
+    if (minNotLoaded === Infinity || maxNotLoaded === Infinity) {
+      return null;
+    }
+
+    return {
+      start: new Date(minNotLoaded),
+      // We want to load the entire month, so by jumping forward to the first date
+      // of the next month at midnight and then back 1 second we get the last second
+      // of the current month.
+      end: monthJump(new Date(maxNotLoaded), 1),
+    };
+  },
+
+  getCalendarFromId: state => id => state.allCalendars.find(cal => cal.id === id),
+
+  getCalendarsWhereCanAddEvents(state) {
+    if (state.allCalendars === null) {
+      return null;
+    }
+
+    return state.allCalendars.filter(cal => cal.permissions.canAddEvents);
   },
 };

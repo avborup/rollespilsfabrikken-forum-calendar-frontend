@@ -1,11 +1,22 @@
 <template>
-  <router-link to="/kalender/begivenhed" title="Se begivenhed">
+  <router-link
+    :to="{
+      name: 'event-viewer',
+      params: {
+        calendarId: event.parent.id,
+        eventId: event.id,
+      },
+      query: {
+        date: event.start.toISOString(),
+      },
+    }"
+    title="Se begivenhed"
+  >
     <div
       class="event-container"
-      @click="updateCurrentlyFocusedEventId(id)"
-      :style="{ backgroundColor: getCategoryColour(category) }"
+      :style="{ backgroundColor: event.parent.colour }"
     >
-      <p>{{ title }}</p>
+      <p>{{ event.title }}</p>
     </div>
   </router-link>
 </template>
@@ -17,16 +28,8 @@ export default {
   name: 'CalendarEvent',
 
   props: {
-    title: {
-      type: String,
-      required: true,
-    },
-    id: {
-      type: String,
-      required: true,
-    },
-    category: {
-      type: String,
+    event: {
+      type: Object,
       required: true,
     },
   },

@@ -11,6 +11,15 @@ import LoginPage from './views/LoginPage.vue';
 import HomePage from './views/HomePage.vue';
 import PageNotFound from './views/PageNotFound.vue';
 import ForumPostCreator from './views/ForumPostCreator.vue';
+import UserAdministration from './views/UserAdministration.vue';
+import RolesAdministrator from './views/RolesAdministrator.vue';
+import CalendarForumAdministrator from './views/CalendarForumAdministrator.vue';
+import SignUpPage from './views/SignUpPage.vue';
+import CalendarEventCreatorView from './views/CalendarEventCreatorView.vue';
+import ForumCommentViewer from './views/ForumCommentViewer.vue';
+import UserProfileView from './views/UserProfileView.vue';
+import EmailConfirmationPage from './views/EmailConfirmationPage.vue';
+import PasswordResetPage from './views/PasswordResetPage.vue';
 
 Vue.use(Router);
 
@@ -38,8 +47,14 @@ const router = new Router({
       component: Calendar,
     },
     {
-      path: '/kalender/begivenhed',
+      path: '/kalender/:calendarId/begivenhed/:eventId',
+      name: 'event-viewer',
       component: CalendarEventViewer,
+    },
+    {
+      path: '/kalender/ny-begivenhed',
+      name: 'create-event',
+      component: CalendarEventCreatorView,
     },
     {
       path: '/forum/:forum?',
@@ -52,14 +67,61 @@ const router = new Router({
       component: ForumPostViewer,
     },
     {
+      path: '/forum/:forum/opslag/:postId/kommentar/:commentId',
+      name: 'comment',
+      component: ForumCommentViewer,
+    },
+    {
       path: '/nyt-opslag',
       name: 'create-post',
       component: ForumPostCreator,
     },
     {
+      path: '/opret-bruger',
+      name: 'signup',
+      component: SignUpPage,
+      meta: {
+        isPublic: true,
+      },
+    },
+    {
+      path: '/admin/brugere',
+      name: 'admin-users',
+      component: UserAdministration,
+    },
+    {
+      path: '/admin/roller',
+      name: 'admin-roles',
+      component: RolesAdministrator,
+    },
+    {
+      path: '/admin/forum-kalender',
+      name: 'admin-forum-calendar',
+      component: CalendarForumAdministrator,
+    },
+    {
+      path: '/profil',
+      name: 'profile',
+      component: UserProfileView,
+    },
+    {
       path: '/markdown-guide',
       name: 'markdown-guide',
       component: MarkdownGuideView,
+    },
+    {
+      path: '/bekraeft-email',
+      component: EmailConfirmationPage,
+      meta: {
+        isPublic: true,
+      },
+    },
+    {
+      path: '/nulstil-password',
+      component: PasswordResetPage,
+      meta: {
+        isPublic: true,
+      },
     },
     {
       path: '*',
@@ -80,6 +142,7 @@ router.beforeEach((to, from, next) => {
           redirect: to.fullPath,
         },
       });
+      return;
     }
   }
 

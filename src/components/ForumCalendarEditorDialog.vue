@@ -1,0 +1,138 @@
+<template>
+  <div class="dg-view-wrapper">
+    <div class="form-field" :class="{ 'is-error': nameHasError }">
+      <label>Navn</label>
+      <input type="text" v-model="entityName">
+      <span v-if="nameHasError" class="field-error-msg">{{ nameErrMsg }}</span>
+    </div>
+    <div class="form-field">
+      <label>Beskrivelse</label>
+      <input type="text" v-model="desc">
+    </div>
+    <div class="form-field">
+      <label>Farve</label>
+      <Chrome v-model="colour" class="color-picker" />
+    </div>
+    <div class="dg-content-footer">
+      <button @click="cancel" class="dg-btn dg-btn--cancel">Fortryd</button>
+      <button @click="handleProceed" class="dg-btn dg-btn--ok">
+        {{ loading ? 'Vent venligst...' : 'Fortsæt' }}
+      </button>
+    </div>
+  </div>
+</template>
+
+<script>
+import DialogMixin from 'vuejs-dialog/dist/vuejs-dialog-mixin.min';
+import { Chrome } from 'vue-color';
+import store from '@/store/store';
+
+export default {
+  name: 'ForumCalendarEditorDialog',
+
+  components: {
+    Chrome,
+  },
+
+  mixins: [
+    // This mixin includes the methods `proceed` and `cancel` to interface with
+    // the dialog window. Also provides the `loading` property. For a full reference,
+    // see the mixin source code at: https://github.com/Godofbrowser/vuejs-dialog/blob/master/src/plugin/js/mixins/dialog-mixin.js
+    DialogMixin,
+  ],
+
+  data() {
+    let entityName = '';
+    let colour = {
+      hex: '#8C14C1',
+    };
+    let desc = '';
+
+    const init = store.state.editForumCalendarDetails;
+
+    if (init) {
+      entityName = init.name;
+      //  eslint-disable-next-line
+      colour = init.colour;
+      desc = init.description;
+
+      if (typeof colour === 'string') {
+        colour = { hex: colour };
+      }
+    }
+
+    store.dispatch('setEditForumCalendarDetails', null);
+
+    return {
+      entityName,
+      colour,
+      desc,
+      nameHasError: false,
+      nameErrMsg: '',
+    };
+  },
+
+  methods: {
+    handleProceed() {
+      this.nameHasError = false;
+
+      if (this.entityName.length === 0) {
+        this.nameHasError = true;
+        this.nameErrMsg = 'Navnet må ikke være tomt';
+        return;
+      }
+
+      this.proceed({
+        name: this.entityName,
+        colour: this.colour,
+        desc: this.desc,
+      });
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/theme.scss';
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1rem;
+
+  label {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  input[type='text'] {
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.2rem;
+    border: 0.1rem solid #f0efef;
+    background-color: #f7f7f7;
+    font-size: 1rem;
+    font-family: $fonts;
+
+    &:focus {
+      border-color: $primary-accent;
+    }
+  }
+
+  &.is-error > input[type='text'] {
+    border-color: $err-colour;
+  }
+
+  .field-error-msg {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: $err-colour;
+  }
+}
+
+.color-picker {
+  display: block;
+  margin: 0 auto;
+}
+</style>

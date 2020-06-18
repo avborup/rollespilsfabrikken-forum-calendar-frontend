@@ -3,16 +3,16 @@
     <div class="post-container">
       <div v-if="!isLoadingPost" class="post-wrapper">
         <div class="post-header">
-          <div class="avatar">
-            <img src="/assets/icons/person.svg" alt="Avatar icon">
-          </div>
+          <UserAvatar :url="post.user.avatarUrl" class="avatar" />
           <span class="author">{{ post.user.username }}</span>
           <span class="date">Slået op for {{ toElapsedTimeStr(post.createdAt) }} siden</span>
           <h1 class="title">{{ post.title }}</h1>
         </div>
         <vue-markdown
           class="md-content post-content"
+          :breaks="true"
           :html="false"
+          :emoji="false"
         >{{ post.body }}</vue-markdown>
       </div>
       <div v-else class="skeleton-post-wrapper">
@@ -49,8 +49,28 @@
           <img src="/assets/icons/comment.svg" alt="Comment icon">
           {{ post.commentCount }} kommentarer
         </div>
-        <button class="icon-and-label">
-          <img src="/assets/icons/send.svg" alt="Comment icon">
+        <button
+          v-if="post.permissions.canAddComments"
+          @click="openCommentEditor"
+          class="icon-and-label"
+        >
+          <span class="fas fa-reply icon"></span>
+          Skriv kommentar
+        </button>
+        <button
+          v-if="post.permissions.canUpdate"
+          @click="togglePostUpdater"
+          class="icon-and-label"
+        >
+          <span class="fas fa-pen icon"></span>
+          Redigér opslag
+        </button>
+        <button v-if="post.permissions.canDelete" @click="deletePost" class="icon-and-label">
+          <span class="fas fa-trash icon"></span>
+          Slet opslag
+        </button>
+        <button @click="sharePost" class="icon-and-label">
+          <span class="fas fa-share-square icon"></span>
           Del
         </button>
       </div>
@@ -63,10 +83,28 @@
           <span class="skeleton-icon"></span>
           <span class="skeleton-label skeleton-line"></span>
         </div>
+        <div class="icon-and-label">
+          <span class="skeleton-icon"></span>
+          <span class="skeleton-label skeleton-line"></span>
+        </div>
       </div>
+      <PostUpdater
+        v-if="isEditingPost"
+        :postId="post.id"
+        :originalBody="post.body"
+        :originalTitle="post.title"
+        ref="postUpdater"
+        @post-updated="reload"
+        class="post-updater"
+      />
       <div class="comments-wrapper">
         <h2 class="comments-header">Kommentarer</h2>
-        <CommentSection :isLoading="isLoadingComments" />
+        <CommentCreator v-if="isWritingComment" @comment-created="reload" class="comment-creator" />
+        <CommentSection
+          :isLoading="isLoadingComments"
+          @reload-post-view="reload"
+          :comments="comments"
+        />
       </div>
     </div>
   </div>
@@ -86,6 +124,9 @@
 import { mapGetters } from 'vuex';
 import VueMarkdown from 'vue-markdown';
 import CommentSection from '@/components/CommentSection.vue';
+import CommentCreator from '@/components/CommentCreator.vue';
+import PostUpdater from '@/components/PostUpdater.vue';
+import UserAvatar from '@/components/UserAvatar.vue';
 import { ResourceNotFoundError } from '@/api/errors';
 import { toElapsedTimeStr } from '@/dateUtils';
 
@@ -94,6 +135,9 @@ export default {
   components: {
     VueMarkdown,
     CommentSection,
+    CommentCreator,
+    PostUpdater,
+    UserAvatar,
   },
 
   data() {
@@ -102,6 +146,8 @@ export default {
       isLoadingComments: true,
       postExists: true,
       otherErrorOccurred: false,
+      isWritingComment: false,
+      isEditingPost: false,
     };
   },
 
@@ -109,6 +155,7 @@ export default {
     ...mapGetters('forum', {
       forums: 'getAllForums',
       post: 'getCurrentPost',
+      comments: 'getCurrentPostComments',
     }),
   },
 
@@ -148,6 +195,67 @@ export default {
           this.otherErrorOccurred = true;
         });
     },
+
+    reload() {
+      this.isWritingComment = false;
+      this.isEditingPost = false;
+      this.fetchPost();
+    },
+
+    openCommentEditor() {
+      this.isWritingComment = true;
+    },
+
+    togglePostUpdater() {
+      if (this.isEditingPost && this.$refs.postUpdater.hasChanged()) {
+        this.$dialog.confirm('Dine ændringer vil gå tabt. Vil du fortsætte?')
+          .then(() => {
+            this.isEditingPost = !this.isEditingPost;
+          })
+          .catch(() => {});
+      } else {
+        this.isEditingPost = !this.isEditingPost;
+      }
+    },
+
+    deletePost() {
+      const msg = 'Er du sikker på, at du vil slette dette opslag?';
+      const options = {
+        loader: true,
+      };
+
+      this.$dialog.confirm(msg, options)
+        .then(async (dialog) => {
+          const { forum, postId } = this.$route.params;
+
+          try {
+            await this.$store.dispatch('forum/deletePost', {
+              forumPathName: forum,
+              postId,
+            });
+
+            dialog.close();
+            this.fetchPost();
+          } catch (error) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
+    },
+
+    sharePost() {
+      this.$dialog.alert(`
+        <p class="share-prompt" style="text-align: center">Du kan dele dette URL:</p>
+        <a
+          class="share-prompt"
+          href="${window.location.href}"
+          style="text-align: center; margin-top: 0.5rem; display: block;"
+        >${window.location.href}</a>
+      `, {
+        html: true,
+      });
+    },
   },
 
   watch: {
@@ -169,11 +277,9 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
+@import '@/assets/scss/consts.scss';
 
 .post-container {
-  margin: 0.8rem;
-  padding: 1rem 0;
-
   .post-header {
     display: grid;
     grid-template-columns: 3rem 1fr;
@@ -192,16 +298,6 @@ export default {
       width: 3rem;
       height: 3rem;
       grid-area: avatar;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: $primary-accent;
-      border-radius: 100%;
-
-      img {
-        width: 1.5rem;
-        height: 1.5rem;
-      }
     }
 
     .author {
@@ -224,6 +320,8 @@ export default {
 
   .post-info-and-buttons {
     display: flex;
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
 
     .icon-and-label {
       margin-right: 1rem;
@@ -232,10 +330,12 @@ export default {
       font-size: 0.9rem;
       color: rgba(0, 0, 0, 0.6);
 
-      img {
+      img, .icon {
         height: 1rem;
         width: 1rem;
         margin-right: 0.3rem;
+        font-size: 0.9rem;
+        color: rgba(0, 0, 0, 0.25);
       }
     }
 
@@ -353,6 +453,14 @@ export default {
   margin-top: 1.5rem;
 }
 
+.comment-creator {
+  margin-top: 1rem;
+}
+
+.post-updater {
+  margin-top: 1rem;
+}
+
 .post-not-found, .error-occurred {
   padding: 1rem;
   display: flex;
@@ -371,25 +479,20 @@ export default {
     margin-bottom: 1rem;
 
     &.attempted-post {
-      font-family: monospace;
+      font-family: $fonts-monospace;
+      font-size: 0.8rem;
     }
   }
 }
 
-@media (min-width: 700px) {
-  .post-container {
-    width: 700px;
-    margin-right: auto;
-    margin-left: auto;
-  }
-
+@media (min-width: $content-width) {
   @keyframes skeleton-shimmer {
     from {
       background-position: 0 0;
     }
 
     to {
-      background-position: 700px 0;
+      background-position: $content-width 0;
     }
   }
 }

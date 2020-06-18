@@ -33,4 +33,45 @@ export default {
       }
     }
   },
+
+  getSecurityQuestion() {
+    return auth.getSecurityQuestion();
+  },
+
+  async signUp(context, form) {
+    await auth.signUp(form);
+  },
+
+  async resendEmail(context, email) {
+    await auth.resendEmail(email);
+  },
+
+  logout(context) {
+    const { authToken } = context.state;
+    auth.logout(authToken).catch(() => {});
+    window.localStorage.removeItem('authToken');
+    context.dispatch('resetAllState', null, { root: true });
+  },
+
+  async confirmEmail(context, { confirmationToken }) {
+    await auth.confirmEmail(confirmationToken);
+  },
+
+  async sendPasswordResetMail(context, email) {
+    await auth.sendPasswordResetMail(email);
+  },
+
+  async getResetTokenDetails(context, resetToken) {
+    const resetTokenDetails = await auth.getResetTokenDetails(resetToken);
+    return resetTokenDetails;
+  },
+
+  async changePassword(context, {
+    resetToken,
+    email,
+    newPassword,
+    passwordRepeated,
+  }) {
+    await auth.changePassword(resetToken, email, newPassword, passwordRepeated);
+  },
 };

@@ -1,15 +1,11 @@
 <template>
   <li class="day" :class="{ 'active-date': isActive }">
     <h6>{{ timestamp.getDate() }}</h6>
-    <transition-group name="fade">
-      <CalendarEvent
-        v-for="event in getEventsOnDateFilteredByCategory(timestamp)"
-        :key="event.id"
-        :title="event.title"
-        :id="event.id"
-        :category="event.category"
-      />
-    </transition-group>
+    <CalendarEvent
+      v-for="event in getEventsOnDateFilteredByShownCalendar(timestamp)"
+      :key="event.id"
+      :event="event"
+    />
   </li>
 </template>
 
@@ -36,7 +32,7 @@ export default {
 
   computed: {
     ...mapGetters('calendar', [
-      'getEventsOnDateFilteredByCategory',
+      'getEventsOnDateFilteredByShownCalendar',
     ]),
   },
 };
@@ -48,6 +44,7 @@ export default {
 .day {
   text-align: center;
   padding: 0.5rem 0.1rem;
+  overflow-y: auto;
 
   h6 {
     font-weight: 400;
@@ -65,13 +62,5 @@ export default {
     background-color: $primary-accent;
     color: #fff;
   }
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.25s;
-}
-
-.fade-enter, .fade-leave-to {
-  opacity: 0;
 }
 </style>

@@ -1,3 +1,6 @@
+// Temporary value. This is simply the date and time I added the variable.
+export const VERSION = '202006151401';
+
 export const monthNames = [
   'Januar',
   'Februar',

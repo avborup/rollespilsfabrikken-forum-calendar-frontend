@@ -5,13 +5,21 @@
         <span>&times;</span>
       </button>
     </div>
+    <router-link v-if="user !== null" :to="{ name: 'profile' }" class="user-section">
+      <UserAvatar :url="user.avatarUrl" class="avatar" />
+      <p class="username">{{ user.username }}</p>
+      <p class="profile-link">Gå til profil</p>
+    </router-link>
     <h3 class="sidebar-section-header">Sider</h3>
     <nav class="sidebar-nav">
-      <router-link :to="{ name: 'forum'}">
-        <img class="icon" src="assets/icons/forum.svg" alt="Forumikon">
+      <router-link :to="{ name: 'forum'}" class="main-nav">
+        <img class="icon" src="/assets/icons/forum.svg" alt="Forumikon">
         <p>Forum</p>
       </router-link>
       <div class="sub-nav">
+        <router-link v-if="canPostInAForum" :to="{ name: 'create-post' }" class="sub-nav-item">
+          <p>Opret opslag</p>
+        </router-link>
         <router-link
           v-for="forum in forums"
           :key="forum.pathName"
@@ -21,48 +29,99 @@
           <p>{{ forum.name }}</p>
         </router-link>
       </div>
-      <router-link :to="{ name: 'calendar'}">
+      <router-link :to="{ name: 'calendar'}" class="main-nav">
         <CalendarIcon class="icon" />
         <p>Kalender</p>
       </router-link>
-    </nav>
-    <h3 class="sidebar-section-header">Kalendervisning</h3>
-    <ul class="choose-category">
-      <li v-for="category in categories" :key="category">
-        <input
-          type="checkbox"
-          checked
-          :value="category"
-          :id="'checkbox-' + category"
-          v-model="checkedCategories"
+      <div class="sub-nav">
+        <router-link
+          v-if="canCreateEventsInACalendar"
+          :to="{ name: 'create-event' }"
+          class="sub-nav-item"
         >
-        <label class="category-option" :for="'checkbox-' + category" tabindex="0">
-          <div class="checkbox" :style="{ backgroundColor: getCategoryColour(category) }">
-            <img src="assets/icons/checkmark.svg" alt="Flueben">
-          </div>
-          <span class="option-text">{{ category }}</span>
-        </label>
-      </li>
-    </ul>
+          <p>Opret begivenhed</p>
+        </router-link>
+      </div>
+      <div v-if="user !== null && user.isSuperUser" class="main-nav">
+        <span class="icon fas fa-tools"></span>
+        <p>Administration</p>
+      </div>
+      <div class="sub-nav" v-if="user !== null && user.isSuperUser">
+        <router-link :to="{ name: 'admin-users' }" class="sub-nav-item">
+          <p>Administrér brugere</p>
+        </router-link>
+        <router-link :to="{ name: 'admin-roles' }" class="sub-nav-item">
+          <p>Administrér roller</p>
+        </router-link>
+        <router-link :to="{ name: 'admin-forum-calendar' }" class="sub-nav-item">
+          <p>Administrér kalendre og fora</p>
+        </router-link>
+      </div>
+      <div @click="logout" class="main-nav clickable">
+        <span class="icon fas fa-sign-out-alt"></span>
+        <p>Log ud</p>
+      </div>
+    </nav>
+    <div v-if="shouldShowCalendarSection">
+      <h3 class="sidebar-section-header">Kalendervisning</h3>
+      <ul v-if="allCalendars !== null && allCalendars.length > 0" class="choose-category">
+        <li v-for="calendar in allCalendars" :key="calendar.id">
+          <input
+            type="checkbox"
+            tabindex="-1"
+            checked
+            :value="calendar"
+            :id="`checkbox-${calendar.id}`"
+            v-model="checkedCalendars"
+          >
+          <label class="category-option" :for="`checkbox-${calendar.id}`" tabindex="0">
+            <div class="checkbox" :style="{ backgroundColor: calendar.colour }">
+              <img src="/assets/icons/checkmark.svg" alt="Flueben">
+            </div>
+            <span class="option-text">{{ calendar.name }}</span>
+          </label>
+        </li>
+      </ul>
+      <p v-else-if="allCalendars !== null">Du kan ikke se nogle kalendre.</p>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import CalendarIcon from '@/components/CalendarIcon.vue';
+import UserAvatar from '@/components/UserAvatar.vue';
 
 export default {
   name: 'PageSidebar',
   components: {
     CalendarIcon,
+    UserAvatar,
+  },
+
+  data() {
+    return {
+      shouldShowCalendarSection: true,
+    };
   },
 
   watch: {
     isAuthenticated(isAuth) {
       if (isAuth) {
         this.$store.dispatch('forum/fetchAllForums');
+        this.$store.dispatch('calendar/fetchAllCalendars');
+
+        this.$store.dispatch('fetchUser');
       }
     },
+
+    $route() {
+      this.setShownSections();
+    },
+  },
+
+  mounted() {
+    this.setShownSections();
   },
 
   computed: {
@@ -70,19 +129,54 @@ export default {
       categories: 'getAllCategories',
       getCategoryColour: 'getCategoryColour',
     }),
+    ...mapState('calendar', [
+      'allCalendars',
+    ]),
     ...mapGetters('forum', {
       forums: 'getAllForums',
     }),
     ...mapGetters('auth', [
       'isAuthenticated',
     ]),
-    checkedCategories: {
+    ...mapState([
+      'user',
+    ]),
+    checkedCalendars: {
       get() {
-        return this.$store.getters['calendar/getCurrentCalendarCategories'];
+        return this.$store.getters['calendar/getCurrentlyShownCalendars'];
       },
-      set(newCategories) {
-        this.$store.dispatch('calendar/updateCurrentCalendarCategories', newCategories);
+      set(newShownCalendars) {
+        this.$store.dispatch('calendar/updateCurrentlyShownCalendars', newShownCalendars);
       },
+    },
+
+    canPostInAForum() {
+      if (this.forums.length === 0) {
+        return false;
+      }
+
+      return this.forums.filter(f => f.permissions.canAddPosts).length > 0;
+    },
+
+    canCreateEventsInACalendar() {
+      if (!this.allCalendars) {
+        return false;
+      }
+
+      return this.allCalendars.filter(c => c.permissions.canAddEvents).length > 0;
+    },
+  },
+
+  methods: {
+    setShownSections() {
+      this.shouldShowCalendarSection = this.$route.fullPath.startsWith('/kalender');
+    },
+
+    logout() {
+      this.$store.dispatch('auth/logout');
+      this.$router.push({
+        name: 'login',
+      });
     },
   },
 };
@@ -90,6 +184,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
+@import '@/assets/scss/consts.scss';
 
 $listitem-padding: 0.5rem;
 
@@ -110,11 +205,16 @@ $listitem-padding: 0.5rem;
 .content {
   background-color: #fff;
   color: $primary-text;
-  width: 15rem;
+  width: $sidebar-width;
   padding: 1rem;
   font-size: 1rem;
   font-weight: 400;
   overflow-y: auto;
+  border-right: 0.1rem solid rgba(0, 0, 0, 0.15);
+
+  & > :last-child {
+    margin-bottom: 1rem;
+  }
 
   .close-sidebar-button {
     position: relative;
@@ -210,15 +310,16 @@ $listitem-padding: 0.5rem;
   display: flex;
   flex-direction: column;
 
-  a {
+  .main-nav, a {
     display: flex;
     align-items: center;
     padding: 0.2rem $listitem-padding;
     text-decoration: none;
     color: $primary-text;
+    margin-bottom: 0.4rem;
 
-    &:not(:last-child) {
-      margin-bottom: 0.4rem;
+    &.clickable {
+      cursor: pointer;
     }
 
     &:hover {
@@ -229,6 +330,10 @@ $listitem-padding: 0.5rem;
     .icon {
       width: 1.4rem;
       height: 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgb(0, 0, 0, 0.6);
       margin-right: 0.6rem;
     }
   }
@@ -255,6 +360,42 @@ $listitem-padding: 0.5rem;
         margin-right: 0.2rem;
       }
     }
+  }
+}
+
+.user-section {
+  display: grid;
+  grid-template-areas:
+    "avatar username"
+    "avatar profile-link";
+  grid-template-columns: 2rem 1fr;
+  column-gap: 0.5rem;
+  margin-bottom: 1rem;
+  text-decoration: none;
+
+  .avatar {
+    grid-area: avatar;
+    width: 2rem;
+    height: 2rem;
+    align-self: center;
+  }
+
+  .username {
+    grid-area: username;
+    text-transform: uppercase;
+    color: $primary-accent;
+    font-weight: bold;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .profile-link {
+    grid-area: profile-link;
+    font-size: 0.8rem;
+    align-self: end;
+    color: rgba(0, 0, 0, 0.6);
   }
 }
 

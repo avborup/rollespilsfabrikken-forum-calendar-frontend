@@ -9,7 +9,6 @@
 @import '@/assets/scss/theme.scss';
 
 .not-found-wrapper {
-  padding: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;

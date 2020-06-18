@@ -1,10 +1,14 @@
 <template>
     <ul v-if="!isLoading" class="comment-section">
+      <p v-if="comments.length === 0" class="no-comments-msg">
+        Dette opslag har ingen kommentarer.
+      </p>
       <SingleComment
         v-for="comment in comments"
         :key="comment.id"
         v-bind="comment"
         :depth="0"
+        :maxDepth="maxDepth"
       />
     </ul>
     <ul v-else>
@@ -24,7 +28,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import SingleComment from '@/components/SingleComment.vue';
 
 export default {
@@ -38,18 +41,38 @@ export default {
       type: Boolean,
       default: false,
     },
+
+    comments: {
+      type: Array,
+      required: true,
+    },
   },
 
-  computed: {
-    ...mapGetters('forum', {
-      comments: 'getCurrentPostComments',
-    }),
+  data() {
+    return {
+      maxDepth: 7,
+    };
+  },
+
+  mounted() {
+    const width = this.$el.offsetWidth;
+    const spaceLeftOfEachComment = 24;
+    const minimumCommentWidth = 200;
+    const maxDepth = Math.floor((width - minimumCommentWidth) / spaceLeftOfEachComment);
+
+    this.maxDepth = maxDepth;
   },
 };
 </script>
 
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
+
+.comment-section {
+  .no-comments-msg {
+    margin: 1rem 0;
+  }
+}
 
 .skeleton-comment {
   display: grid;

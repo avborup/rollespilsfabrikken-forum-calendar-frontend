@@ -7,9 +7,7 @@
     },
   }">
     <li class="post-list-item">
-      <div class="avatar">
-        <img src="/assets/icons/person.svg" alt="Avatar icon">
-      </div>
+      <UserAvatar :url="user.avatarUrl" class="avatar" />
       <h4 :title="title">{{ title }}</h4>
       <p class="author-date">
         <span class="author">{{ user.username }}</span>
@@ -40,9 +38,14 @@
 
 <script>
 import { toElapsedTimeStr } from '@/dateUtils';
+import UserAvatar from '@/components/UserAvatar.vue';
 
 export default {
   name: 'PostsListItem',
+
+  components: {
+    UserAvatar,
+  },
 
   props: {
     title: {
@@ -98,7 +101,7 @@ a {
   align-items: center;
   padding: 0.75rem 0.5rem;
   border-radius: 0.5rem;
-  border: 0.1rem solid rgba(0, 0, 0, 0.05);
+  border: 0.1rem solid rgba(0, 0, 0, 0.15);
   margin-bottom: 1rem;
 
   &:hover {
@@ -109,16 +112,6 @@ a {
     width: 3rem;
     height: 3rem;
     grid-area: avatar;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: $primary-accent;
-    border-radius: 100%;
-
-    img {
-      width: 1.5rem;
-      height: 1.5rem;
-    }
   }
 
   h4 {
@@ -191,11 +184,6 @@ a {
     .avatar {
       width: 2rem;
       height: 2rem;
-
-      img {
-        width: 1rem;
-        height: 1rem;
-      }
     }
 
     .author-date {

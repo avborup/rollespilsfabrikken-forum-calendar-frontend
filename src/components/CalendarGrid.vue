@@ -55,32 +55,35 @@ export default {
       type: Date,
       default: today,
     },
-    activeDate: {
-      type: Date,
-      default: today,
-    },
   },
 
   data() {
-    const year = this.timestamp.getFullYear();
-    const month = this.timestamp.getMonth();
-
-    const numDays = daysInMonth(month, year);
-    const firstDay = getWeekday(year, month, 1);
-    const numUsedFields = numDays + firstDay;
-    const numWeeks = Math.ceil(numUsedFields / 7);
-    const numLeftOverFields = numWeeks * 7 - numUsedFields;
     const weekDays = weekDayNames.map(weekDay => weekDay.replace(/dag/g, ''));
 
     return {
       weekDays,
-      gridInfo: {
+      activeDate: today(),
+    };
+  },
+
+  computed: {
+    gridInfo() {
+      const year = this.timestamp.getFullYear();
+      const month = this.timestamp.getMonth();
+
+      const numDays = daysInMonth(month, year);
+      const firstDay = getWeekday(year, month, 1);
+      const numUsedFields = numDays + firstDay;
+      const numWeeks = Math.ceil(numUsedFields / 7);
+      const numLeftOverFields = numWeeks * 7 - numUsedFields;
+
+      return {
         numDays,
         numWeeks,
         firstDay,
         numLeftOverFields,
-      },
-    };
+      };
+    },
   },
 
   methods: {
@@ -88,9 +91,7 @@ export default {
       this.currentTimestamp = newTimestamp;
     },
 
-    isSameDay(a, b) {
-      return isSameDay(a, b);
-    },
+    isSameDay,
   },
 };
 </script>

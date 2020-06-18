@@ -15,6 +15,12 @@
       </div>
       <input class="form-submit" type="submit" value="Log ind">
     </form>
+    <router-link :to="{ name: 'signup' }" class="signup-link" title="Opret bruger">
+      Har du ikke en bruger endnu? Opret en her!
+    </router-link>
+    <button @click="handleForgottenPassword" type="button" class="forgot-password">
+      Glemt password?
+    </button>
   </div>
 </template>
 
@@ -59,7 +65,7 @@ export default {
         this.isInvalidLogin = err instanceof UnauthorizedError;
 
         if (!this.isInvalidLogin) {
-          alert('Der opstod en fejl!');
+          this.$dialog.alert('Vi beklager, men der opstod en fejl.');
         }
       }
     },
@@ -75,6 +81,29 @@ export default {
           name: 'home',
         });
       }
+    },
+
+    handleForgottenPassword() {
+      this.$dialog.prompt('Indtast din kontos emailadresse:', {
+        promptHelp: '',
+        loader: true,
+      })
+        .then(async (dialog) => {
+          if (!dialog.data) {
+            dialog.close();
+            return;
+          }
+
+          try {
+            await this.$store.dispatch('auth/sendPasswordResetMail', dialog.data);
+            dialog.close();
+            this.$dialog.alert(`En mail er blevet sendt til ${dialog.data}, hvor du kan nulstille dit password.`);
+          } catch (err) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
     },
   },
 
@@ -103,10 +132,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
 
-$err-colour: #e90000;
-
 .login-wrapper {
-  padding: 2rem 1rem;
   width: 100%;
 
   .login-form {
@@ -166,6 +192,24 @@ $err-colour: #e90000;
     color: $err-colour;
     padding-bottom: 1rem;
   }
+
+  .forgot-password {
+    border: none;
+    background:none;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: $fonts;
+  }
+
+  .signup-link, .forgot-password {
+    color: rgba(0, 0, 0, 0.4);
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    display: block;
+    text-align: center;
+  }
 }
 
 h1 {
@@ -174,10 +218,8 @@ h1 {
 }
 
 @media (min-width: 300px) {
-  .login-wrapper {
+  main > .login-wrapper {
     width: 300px;
-    margin-right: auto;
-    margin-left: auto;
   }
 }
 </style>

@@ -48,7 +48,15 @@ export async function fetchAllForums(token) {
 
   const withPathNames = addPathNames(forums);
 
-  return withPathNames;
+  return withPathNames.map(forum => ({
+    ...forum,
+    permissions: renameKeys(forum.permissions, {
+      canAddComments: 'can_add_comments',
+      canAddPosts: 'can_add_posts',
+      canDelete: 'can_delete',
+      canUpdate: 'can_update',
+    }),
+  }));
 }
 
 // Fix up the key names and data types to be more JavaScripty.
@@ -61,7 +69,17 @@ function jsifyPostResponse(post) {
 
   renamedUser.createdAt = new Date(renamedUser.createdAt);
 
-  const renamedPost = renameKeys({ ...post, user: renamedUser }, {
+  const renamedPermissions = renameKeys(post.permissions, {
+    canAddComments: 'can_add_comments',
+    canDelete: 'can_delete',
+    canUpdate: 'can_update',
+  });
+
+  const renamedPost = renameKeys({
+    ...post,
+    user: renamedUser,
+    permissions: renamedPermissions,
+  }, {
     createdAt: 'created_at',
     updatedAt: 'updated_at',
     commentCount: 'comments',
@@ -180,10 +198,376 @@ export async function fetchPost(token, forumId, postId) {
   return jsifyPostResponse(post);
 }
 
+function countCommentNodes(comment) {
+  return comment.childComments
+    .reduce((acc, cur) => acc + countCommentNodes(cur), 1);
+}
+
+function recursivelyFixComments(cmts) {
+  return cmts.map((comment) => {
+    const renamedUser = renameKeys(comment.user, {
+      avatarUrl: 'avatar_url',
+      createdAt: 'created_at',
+    });
+
+    renamedUser.createdAt = new Date(renamedUser.createdAt);
+
+    const renamedPermissions = renameKeys(comment.permissions, {
+      canDelete: 'can_delete',
+      canUpdate: 'can_update',
+      canAddComments: 'can_add_comments',
+    });
+
+    const renamedComment = renameKeys({
+      ...comment,
+      user: renamedUser,
+      permissions: renamedPermissions,
+    }, {
+      childComments: 'child_comments',
+      createdAt: 'created_at',
+      updatedAt: 'updated_at',
+    });
+
+    renamedComment.createdAt = new Date(renamedComment.createdAt);
+    renamedComment.updatedAt = new Date(renamedComment.updatedAt);
+    renamedComment.childComments = recursivelyFixComments(renamedComment.childComments);
+
+    renamedComment.numChildren = countCommentNodes(renamedComment) - 1;
+
+    return renamedComment;
+  });
+}
+
 export async function fetchComments(token, forumId, postId) {
   const encodedForumId = encodeURIComponent(forumId);
   const encodedPostId = encodeURIComponent(postId);
+
+  const allComments = [];
+  const itemsPerPage = 100;
+  let curPage = 1;
+  let hasMoreComments = true;
+
+  /* eslint-disable no-await-in-loop */
+  while (hasMoreComments) {
+    const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment`, {
+      page: curPage,
+      items: itemsPerPage,
+    });
+
+    const res = await fetch(url, {
+      headers: {
+        ...alwaysHeaders,
+        ...makeAuthHeader(token),
+      },
+    });
+
+    if (!res.ok) {
+      throw new ServerError(`Failed to fetch comments for post with id ${postId}`);
+    }
+
+    const json = await res.json();
+    const { comments, links } = json.data;
+
+    allComments.push(...comments);
+
+    curPage += 1;
+    hasMoreComments = links.next_page !== null;
+  }
+  /* eslint-enable no-await-in-loop */
+
+  return recursivelyFixComments(allComments);
+}
+
+export async function createPost(token, forumId, post) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post`);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(post),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when creating a post in the forum ${forumId}`);
+  }
+
+  const json = await res.json();
+
+  return jsifyPostResponse(json.post);
+}
+
+export async function createComment(token, forumId, postId, comment) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
   const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment`);
+
+  const body = {
+    body: comment.body,
+  };
+
+  if (comment.parentId !== null) {
+    body.parent_id = comment.parentId;
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when creating a comment on the post with id ${postId} and parent id ${comment.parentId}`);
+  }
+}
+
+export async function updateComment(token, {
+  forumId,
+  postId,
+  commentId,
+  newBody,
+}) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const encodedCommentId = encodeURIComponent(commentId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment/${encodedCommentId}`);
+
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify({ body: newBody }),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when updating the comment with id ${commentId}`);
+  }
+}
+
+export async function deleteComment(token, forumId, postId, commentId) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const encodedCommentId = encodeURIComponent(commentId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment/${encodedCommentId}`);
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when deleting comment with id ${commentId}`);
+  }
+}
+
+export async function deletePost(token, forumId, postId) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}`);
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when deleting post with id ${postId}`);
+  }
+}
+
+export async function updatePost(token, {
+  forumId,
+  postId,
+  newTitle,
+  newBody,
+}) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}`);
+
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify({
+      title: newTitle,
+      body: newBody,
+    }),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when updating the post with id ${postId}`);
+  }
+}
+
+export async function getUser(token) {
+  const url = makeUrl('/api/user');
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to fetch user.');
+  }
+
+  const json = await res.json();
+  const user = renameKeys(json.user, {
+    avatarUrl: 'avatar_url',
+    createdAt: 'created_at',
+    isSuperUser: 'super_user',
+  });
+
+  user.createdAt = new Date(user.createdAt);
+
+  return user;
+}
+
+export async function getAllUsers(token) {
+  const url = makeUrl('/api/user/index');
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to fetch users');
+  }
+
+  const json = await res.json();
+  const users = json.users.map((user) => {
+    const renamed = renameKeys(user, {
+      avatarUrl: 'avatar_url',
+      createdAt: 'created_at',
+      isSuperUser: 'super_user',
+    });
+
+    renamed.createdAt = new Date(renamed.createdAt);
+
+    return renamed;
+  });
+
+  users.sort((a, b) => a.username.localeCompare(b.username));
+
+  return users;
+}
+
+export async function deleteForumOrCalendar(token, id, type) {
+  if (type !== 'calendar' && type !== 'forum') {
+    throw new Error('Argument "type" must be either forum or calendar');
+  }
+
+  const encodedId = encodeURIComponent(id);
+  const url = makeUrl(`/api/${type}/${encodedId}`);
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when deleting ${type} with id ${id}`);
+  }
+}
+
+export async function editForumOrCalendar(token, id, name, desc, colour, type) {
+  if (type !== 'calendar' && type !== 'forum') {
+    throw new Error('Argument "type" must be either forum or calendar');
+  }
+
+  const encodedId = encodeURIComponent(id);
+  const url = makeUrl(`/api/${type}/${encodedId}`);
+
+  const body = {
+    title: name,
+    colour,
+  };
+
+  // If an empty string is sent, the API returns an error. Either the description
+  // has to be non-empty or not exist.
+  if (desc.length > 0) {
+    body.description = desc;
+  }
+
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when editing ${type} with id ${id}`);
+  }
+}
+
+export async function createForumOrCalendar(token, name, desc, colour, type) {
+  if (type !== 'calendar' && type !== 'forum') {
+    throw new Error('Argument "type" must be either forum or calendar');
+  }
+
+  const url = makeUrl(`/api/${type}`);
+
+  const body = {
+    title: name,
+    colour,
+  };
+
+  // If an empty string is sent, the API returns an error. Either the description
+  // has to be non-empty or not exist.
+  if (desc.length > 0) {
+    body.description = desc;
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when creating new ${type}`);
+  }
+}
+
+export async function getComment(token, forumId, postId, commentId) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const encodedCommentId = encodeURIComponent(commentId);
+
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment/${encodedCommentId}`);
 
   const res = await fetch(url, {
     headers: {
@@ -192,35 +576,59 @@ export async function fetchComments(token, forumId, postId) {
     },
   });
 
+  if (res.status === 404) {
+    throw new ResourceNotFoundError('Could not find comment');
+  }
+
   if (!res.ok) {
-    throw new ServerError(`Failed to fetch comments for post with id ${postId}`);
+    throw new ServerError('Failed to fetch comment');
   }
 
   const json = await res.json();
-  const { comments } = json.data;
+  const { comment } = json;
 
-  function recursivelyFixData(cmts) {
-    return cmts.map((comment) => {
-      const renamedUser = renameKeys(comment.user, {
-        avatarUrl: 'avatar_url',
-        createdAt: 'created_at',
-      });
+  return recursivelyFixComments([comment])[0];
+}
 
-      renamedUser.createdAt = new Date(renamedUser.createdAt);
+export async function updateUsername(token, newUsername) {
+  const url = makeUrl('/api/user/username');
 
-      const renamedComment = renameKeys({ ...comment, user: renamedUser }, {
-        childComments: 'child_comments',
-        createdAt: 'created_at',
-        updatedAt: 'updated_at',
-      });
+  const body = {
+    username: newUsername,
+    username_confirmation: newUsername,
+  };
 
-      renamedComment.createdAt = new Date(renamedComment.createdAt);
-      renamedComment.updatedAt = new Date(renamedComment.updatedAt);
-      renamedComment.childComments = recursivelyFixData(renamedComment.childComments);
+  const res = await fetch(url, {
+    method: 'PATCH',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
 
-      return renamedComment;
-    });
+  if (!res.ok) {
+    throw new ServerError('Failed to update username');
   }
+}
 
-  return recursivelyFixData(comments);
+export async function updateAvatar(token, newAvatar) {
+  const url = makeUrl('/api/user/avatar');
+
+  const formData = new FormData();
+  formData.append('avatar', newAvatar);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      ...makeAuthHeader(token),
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to update avatar');
+  }
 }

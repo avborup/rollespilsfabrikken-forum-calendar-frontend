@@ -9,10 +9,13 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "v-markdown-editor": "github:KongBorup/v-markdown-editor",
     "vue": "^2.6.10",
+    "vue-color": "^2.7.1",
     "vue-markdown": "^2.2.4",
     "vue-multiselect": "^2.1.6",
     "vue-router": "^3.0.3",
+    "vuejs-dialog": "^1.4.1",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

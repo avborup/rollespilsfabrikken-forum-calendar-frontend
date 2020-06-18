@@ -3,7 +3,9 @@
     <div class="content-container">
       <vue-markdown
           class="md-content"
+          :breaks="true"
           :html="false"
+          :emoji="false"
       >{{ guideMd }}</vue-markdown>
     </div>
   </div>
@@ -28,18 +30,3 @@ export default {
   },
 };
 </script>
-
-<style lang="scss" scoped>
-.content-container {
-  margin: 0.8rem;
-  padding: 1rem 0;
-}
-
-@media (min-width: 700px) {
-  .content-container {
-    width: 700px;
-    margin-right: auto;
-    margin-left: auto;
-  }
-}
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <ul v-if="!isLoading" class="posts">
+  <ul v-if="!isLoading && posts.length > 0" class="posts">
     <PostsListItem
       v-for="post in posts"
       :key="post.id"
@@ -7,8 +7,9 @@
       :forum="getForumFromId(post.forumId)"
     />
   </ul>
+  <p v-else-if="!isLoading && posts.length === 0" class="no-posts">Dette forum har ingen opslag.</p>
   <ul v-else class="posts">
-    <li v-for="i in 6" :key="i" class="post-list-item skeleton-post-item">
+    <li v-for="i in numPostsPerPage" :key="i" class="post-list-item skeleton-post-item">
       <div class="avatar"></div>
       <h4></h4>
       <p class="author-date">
@@ -38,6 +39,10 @@ export default {
       type: Number,
       required: true,
     },
+    numPostsPerPage: {
+      type: Number,
+      default: 10,
+    },
   },
 
   data() {
@@ -65,14 +70,13 @@ export default {
       this.$emit('scroll-to-top');
 
       const forumPathName = this.$router.history.current.params.forum;
-      const { page } = this;
+      const { page, numPostsPerPage } = this;
 
       try {
-        await this.$store.dispatch('forum/fetchPosts', { forumPathName, page });
+        await this.$store.dispatch('forum/fetchPosts', { forumPathName, page, numPostsPerPage });
         this.isLoading = false;
       } catch (err) {
-        // TODO: Will be handled.
-        console.log(err);
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
       }
     },
   },
@@ -149,6 +153,10 @@ export default {
     background: linear-gradient(to right,#f3f3f3 1rem,#eee 4rem,#f3f3f3 7rem);
     animation: skeleton-shimmer 4s linear 0s infinite normal forwards;
   }
+}
+
+.no-posts {
+  margin-bottom: 1rem;
 }
 
 @keyframes skeleton-shimmer {

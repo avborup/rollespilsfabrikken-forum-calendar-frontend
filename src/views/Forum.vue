@@ -1,7 +1,14 @@
 <template>
   <div class="forum-content-wrapper">
     <div v-if="forumExists" class="forum">
-      <h1>Opslag</h1>
+      <h1 v-if="forum !== null">{{ isAllForums ? 'Alle fora' : forum.name }}</h1>
+      <p v-if="isAllForums" class="desc">
+        Dette er en liste af opslag fra alle de fora, du har adgang til.
+      </p>
+      <p v-else-if="forum !== null && forum.description.length > 0" class="desc">
+        {{ forum.description }}
+      </p>
+      <h2>Opslag</h2>
       <PostsList
         ref="postsList"
         :page="currentPage"
@@ -14,7 +21,7 @@
           class="pg-item"
           title="Forrige side"
         >
-          <img src="assets/icons/less-than.svg" alt="Forrige side">
+          <img src="/assets/icons/less-than.svg" alt="Forrige side">
         </button>
         <div class="pg-item cur-page" :title="`Side ${currentPage}`">{{ currentPage }}</div>
         <button
@@ -23,7 +30,7 @@
           class="pg-item"
           title="Næste side"
         >
-          <img src="assets/icons/less-than.svg" alt="Næste side" class="next-page-icon">
+          <img src="/assets/icons/less-than.svg" alt="Næste side" class="next-page-icon">
         </button>
       </div>
     </div>
@@ -49,6 +56,8 @@ export default {
   data() {
     return {
       forumExists: true,
+      forum: null,
+      isAllForums: null,
     };
   },
 
@@ -126,7 +135,7 @@ export default {
 
     scrollToTop() {
       if (this.$el) {
-        this.$el.scrollTo(0, 0);
+        this.$el.scrollTop = 0;
       }
     },
 
@@ -137,10 +146,12 @@ export default {
 
       const forumPathName = this.$route.params.forum;
 
-      const isAllForums = forumPathName === undefined;
-      const exists = this.forums.find(forum => forum.pathName === forumPathName) !== undefined;
+      this.isAllForums = forumPathName === undefined;
+      const foundForum = this.forums.find(forum => forum.pathName === forumPathName);
+      const exists = foundForum !== undefined;
 
-      this.forumExists = isAllForums || exists;
+      this.forumExists = this.isAllForums || exists;
+      this.forum = foundForum;
     },
   },
 };
@@ -149,16 +160,18 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/scss/theme.scss';
 
-.forum-content-wrapper {
-  overflow: auto;
-}
-
-.forum {
-  padding: 2rem 1rem;
-}
-
 h1 {
   font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+.desc {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+h2 {
+  font-size: 1.3rem;
   margin-bottom: 1rem;
 }
 
@@ -215,20 +228,9 @@ h1 {
     margin-bottom: 1rem;
 
     &.attempted-forum {
-      font-family: monospace;
+      font-family: $fonts-monospace;
+      font-size: 0.8rem;
     }
-  }
-}
-
-@media (min-width: 900px) {
-  .forum {
-    max-width: 900px;
-  }
-}
-
-@media (min-width: 1000px) {
-  .forum {
-    margin-left: 2rem;
   }
 }
 </style>

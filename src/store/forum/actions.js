@@ -8,11 +8,12 @@ export default {
     context.commit('SET_FORUMS', forums);
   },
 
-  async fetchPosts(context, { forumPathName, page }) {
+  async fetchPosts(context, { forumPathName, page, numPostsPerPage = 10 }) {
     const { authToken } = context.rootState.auth;
 
     const params = {
       page,
+      numPostsPerPage,
       extraQueries: {
         sort: 'created_at',
       },
@@ -103,5 +104,83 @@ export default {
 
   resetPage(context) {
     context.commit('SET_CURRENT_PAGE', 1);
+  },
+
+  async createPost(context, { forumId, post }) {
+    const { authToken } = context.rootState.auth;
+
+    const createdPost = await api.createPost(authToken, forumId, post);
+
+    return { ...createdPost, forumId };
+  },
+
+  async createComment(context, {
+    forumPathName,
+    postId,
+    body,
+    parentId,
+  }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.createComment(authToken, forumId, postId, {
+      body,
+      parentId,
+    });
+  },
+
+  async updateComment(context, {
+    forumPathName,
+    postId,
+    commentId,
+    newBody,
+  }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.updateComment(authToken, {
+      forumId,
+      postId,
+      commentId,
+      newBody,
+    });
+  },
+
+  async deleteComment(context, { forumPathName, postId, commentId }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.deleteComment(authToken, forumId, postId, commentId);
+  },
+
+  async deletePost(context, { forumPathName, postId }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.deletePost(authToken, forumId, postId);
+  },
+
+  async updatePost(context, {
+    forumPathName,
+    postId,
+    newTitle,
+    newBody,
+  }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.updatePost(authToken, {
+      forumId,
+      postId,
+      newTitle,
+      newBody,
+    });
+  },
+
+  async fetchComment(context, { forumId, postId, commentId }) {
+    const { authToken } = context.rootState.auth;
+    const comment = await api.getComment(authToken, forumId, postId, commentId);
+
+    context.commit('SET_COMMENT', comment);
   },
 };
