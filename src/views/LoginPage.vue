@@ -18,6 +18,9 @@
     <router-link :to="{ name: 'signup' }" class="signup-link" title="Opret bruger">
       Har du ikke en bruger endnu? Opret en her!
     </router-link>
+    <button @click="handleForgottenPassword" type="button" class="forgot-password">
+      Glemt password?
+    </button>
   </div>
 </template>
 
@@ -78,6 +81,29 @@ export default {
           name: 'home',
         });
       }
+    },
+
+    handleForgottenPassword() {
+      this.$dialog.prompt('Indtast din kontos emailadresse:', {
+        promptHelp: '',
+        loader: true,
+      })
+        .then(async (dialog) => {
+          if (!dialog.data) {
+            dialog.close();
+            return;
+          }
+
+          try {
+            await this.$store.dispatch('auth/sendPasswordResetMail', dialog.data);
+            dialog.close();
+            this.$dialog.alert(`En mail er blevet sendt til ${dialog.data}, hvor du kan nulstille dit password.`);
+          } catch (err) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
     },
   },
 
@@ -167,7 +193,17 @@ export default {
     padding-bottom: 1rem;
   }
 
-  .signup-link {
+  .forgot-password {
+    border: none;
+    background:none;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: $fonts;
+  }
+
+  .signup-link, .forgot-password {
     color: rgba(0, 0, 0, 0.4);
     font-size: 0.8rem;
     margin-top: 1rem;
