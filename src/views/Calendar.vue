@@ -2,11 +2,11 @@
   <div class="calendar">
     <header>
       <button title="Forrige måned" @click="decrementMonth">
-        <img src="assets/icons/less-than.svg" alt="Forrige måned">
+        <img src="/assets/icons/less-than.svg" alt="Forrige måned">
       </button>
       <h2>{{ monthName }} {{ viewTimestamp.getFullYear() }}</h2>
       <button title="Næste måned" @click="incrementMonth">
-        <img src="assets/icons/less-than.svg" alt="Næste måned" class="next-month-icon">
+        <img src="/assets/icons/less-than.svg" alt="Næste måned" class="next-month-icon">
       </button>
     </header>
     <transition name="slide" @before-enter="setSlidingClass">

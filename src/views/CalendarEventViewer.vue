@@ -23,7 +23,7 @@
         <p class="timeframe">{{ formatTimeframe(event.start, event.end) }}</p>
         <div class="fields">
           <div class="field">
-            <img class="icon" src="assets/icons/desc.svg" alt="Beskrivelse" title="Beskrivelse">
+            <img class="icon" src="/assets/icons/desc.svg" alt="Beskrivelse" title="Beskrivelse">
             <p class="description">
               {{
                 event.description.trim().length > 0

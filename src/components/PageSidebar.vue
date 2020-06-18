@@ -13,7 +13,7 @@
     <h3 class="sidebar-section-header">Sider</h3>
     <nav class="sidebar-nav">
       <router-link :to="{ name: 'forum'}" class="main-nav">
-        <img class="icon" src="assets/icons/forum.svg" alt="Forumikon">
+        <img class="icon" src="/assets/icons/forum.svg" alt="Forumikon">
         <p>Forum</p>
       </router-link>
       <div class="sub-nav">
@@ -76,7 +76,7 @@
           >
           <label class="category-option" :for="`checkbox-${calendar.id}`" tabindex="0">
             <div class="checkbox" :style="{ backgroundColor: calendar.colour }">
-              <img src="assets/icons/checkmark.svg" alt="Flueben">
+              <img src="/assets/icons/checkmark.svg" alt="Flueben">
             </div>
             <span class="option-text">{{ calendar.name }}</span>
           </label>

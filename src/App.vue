@@ -7,7 +7,7 @@
         title="Åben sidebjælke"
         :class="{ hidden: shouldHideSidebar }"
       >
-        <img src="assets/icons/sidebar.svg">
+        <img src="/assets/icons/sidebar.svg">
       </button>
       <router-link :to="{ name: 'home' }" class="page-title">
         <img

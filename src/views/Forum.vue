@@ -21,7 +21,7 @@
           class="pg-item"
           title="Forrige side"
         >
-          <img src="assets/icons/less-than.svg" alt="Forrige side">
+          <img src="/assets/icons/less-than.svg" alt="Forrige side">
         </button>
         <div class="pg-item cur-page" :title="`Side ${currentPage}`">{{ currentPage }}</div>
         <button
@@ -30,7 +30,7 @@
           class="pg-item"
           title="Næste side"
         >
-          <img src="assets/icons/less-than.svg" alt="Næste side" class="next-page-icon">
+          <img src="/assets/icons/less-than.svg" alt="Næste side" class="next-page-icon">
         </button>
       </div>
     </div>
