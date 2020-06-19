@@ -1,6 +1,6 @@
 export const baseUrl = process.env.NODE_ENV === 'development'
   ? 'http://forum.studiogoose.dk'
-  : 'http://forum.rollespilsfabrikken.dk';
+  : 'https://forum.rollespilsfabrikken.dk';
 
 export const alwaysHeaders = {
   'Content-Type': 'application/json',
