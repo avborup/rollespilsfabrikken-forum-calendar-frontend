@@ -149,6 +149,14 @@ export default {
     },
   },
 
+  created() {
+    if (!this.user) {
+      return;
+    }
+
+    this.form.username = this.user.username;
+  },
+
   watch: {
     user(userValue) {
       this.form.username = userValue.username;
