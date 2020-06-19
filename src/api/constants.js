@@ -1,5 +1,5 @@
 export const baseUrl = process.env.NODE_ENV === 'development'
-  ? 'http://forum.studiogoose.dk'
+  ? 'https://forum.studiogoose.dk'
   : 'https://forum.rollespilsfabrikken.dk';
 
 export const alwaysHeaders = {
