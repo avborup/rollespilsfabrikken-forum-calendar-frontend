@@ -259,7 +259,6 @@ export default {
     grid-area: info;
 
     .author {
-      text-transform: uppercase;
       color: $primary-accent;
       font-weight: bold;
       font-size: 0.9rem;

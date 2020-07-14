@@ -301,7 +301,6 @@ export default {
     }
 
     .author {
-      text-transform: uppercase;
       color: $primary-accent;
       font-weight: bold;
       font-size: 1rem;

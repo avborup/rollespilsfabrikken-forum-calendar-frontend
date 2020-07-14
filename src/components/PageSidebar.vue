@@ -382,7 +382,6 @@ $listitem-padding: 0.5rem;
 
   .username {
     grid-area: username;
-    text-transform: uppercase;
     color: $primary-accent;
     font-weight: bold;
     font-size: 0.9rem;
