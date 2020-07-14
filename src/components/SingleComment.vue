@@ -10,12 +10,17 @@
           For {{ toElapsedTimeStr(createdAt) }} siden
         </span>
       </p>
-      <vue-markdown
-        class="md-content comment-body"
-        :breaks="true"
-        :html="false"
-        :emoji="false"
-      >{{ body }}</vue-markdown>
+      <div class="comment-body">
+        <vue-markdown
+          class="md-content "
+          :breaks="true"
+          :html="false"
+          :emoji="false"
+        >{{ body }}</vue-markdown>
+        <p v-if="createdAt < updatedAt" class="comment-edited">
+          Kommentar redigeret for {{ toElapsedTimeStr(updatedAt) }} siden
+        </p>
+      </div>
       <div class="comment-buttons">
         <button v-if="permissions.canAddComments" @click="toggleCreating" class="icon-and-label">
           <span class="fas fa-reply icon"></span>
@@ -234,6 +239,13 @@ export default {
 
   .child-comments {
     grid-area: children;
+  }
+
+  .comment-edited {
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.6);
+    font-style: italic;
   }
 
   &:first-child {

@@ -14,6 +14,9 @@
           :html="false"
           :emoji="false"
         >{{ post.body }}</vue-markdown>
+        <p v-if="post.createdAt < post.updatedAt" class="post-edited">
+          Opslag redigeret for {{ toElapsedTimeStr(post.updatedAt) }} siden
+        </p>
       </div>
       <div v-else class="skeleton-post-wrapper">
         <div class="post-header">
@@ -317,6 +320,13 @@ export default {
     }
   }
 
+  .post-edited {
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.6);
+    font-style: italic;
+  }
+
   .post-info-and-buttons {
     display: flex;
     flex-wrap: wrap;
@@ -348,7 +358,6 @@ export default {
 
   .post-content {
     padding: 0 0.8rem;
-    margin-bottom: 0.5rem;
   }
 }
 
