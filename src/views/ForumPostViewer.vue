@@ -2,6 +2,7 @@
   <div v-if="postExists && !otherErrorOccurred" class="view-container">
     <div class="post-container">
       <div v-if="!isLoadingPost" class="post-wrapper">
+        <span v-if="post.pinned" class="fas fa-thumbtack pin-icon"></span>
         <div class="post-header">
           <UserAvatar :url="post.user.avatarUrl" class="avatar" />
           <span class="author">{{ post.user.username }}</span>
@@ -283,6 +284,8 @@ export default {
 @import '@/assets/scss/consts.scss';
 
 .post-container {
+  position: relative;
+
   .post-header {
     display: grid;
     grid-template-columns: 3rem 1fr;
@@ -358,6 +361,15 @@ export default {
 
   .post-content {
     padding: 0 0.8rem;
+  }
+
+  .pin-icon {
+    color: $pin-colour;
+    position: absolute;
+    font-size: 1rem;
+    top: 0rem;
+    right: 1rem;
+    transform: rotate(35deg);
   }
 }
 
