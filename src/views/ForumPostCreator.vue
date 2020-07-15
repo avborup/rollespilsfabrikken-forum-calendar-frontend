@@ -131,6 +131,29 @@ export default {
 
       this.isWaiting = false;
     },
+
+    setInitialForum() {
+      const forumPathName = this.$route.query.forum;
+      const forum = this.$store.getters['forum/getForumFromPathName'](forumPathName);
+
+      if (!forum) {
+        return;
+      }
+
+      if (!this.selectedForum) {
+        this.selectedForum = forum;
+      }
+    },
+  },
+
+  created() {
+    this.setInitialForum();
+  },
+
+  watch: {
+    forums() {
+      this.setInitialForum();
+    },
   },
 };
 </script>

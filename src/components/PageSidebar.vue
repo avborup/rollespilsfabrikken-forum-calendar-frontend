@@ -17,9 +17,6 @@
         <p>Forum</p>
       </router-link>
       <div class="sub-nav">
-        <router-link v-if="canPostInAForum" :to="{ name: 'create-post' }" class="sub-nav-item">
-          <p>Opret opslag</p>
-        </router-link>
         <router-link
           v-for="forum in forums"
           :key="forum.pathName"
@@ -148,14 +145,6 @@ export default {
       set(newShownCalendars) {
         this.$store.dispatch('calendar/updateCurrentlyShownCalendars', newShownCalendars);
       },
-    },
-
-    canPostInAForum() {
-      if (this.forums.length === 0) {
-        return false;
-      }
-
-      return this.forums.filter(f => f.permissions.canAddPosts).length > 0;
     },
 
     canCreateEventsInACalendar() {
