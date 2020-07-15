@@ -33,7 +33,7 @@ export function monthJump(oldDate, amount, dir = 1) {
 // Returns 0-indexed day of the week, Monday-Sunday
 export function getWeekday(...args) {
   // FIXME: Why does the date go one month back by default?
-  const date = monthJump(new Date(args), 1);
+  const date = monthJump(new Date(...args), 1);
   let weekDay = date.getDay() - 1;
 
   if (weekDay === -1) {
