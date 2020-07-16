@@ -9,6 +9,7 @@
         v-bind="comment"
         :depth="0"
         :maxDepth="maxDepth"
+        :isRootComment="!disableRoot"
       />
     </ul>
     <ul v-else>
@@ -45,6 +46,11 @@ export default {
     comments: {
       type: Array,
       required: true,
+    },
+
+    disableRoot: {
+      type: Boolean,
+      default: false,
     },
   },
 

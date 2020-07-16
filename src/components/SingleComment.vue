@@ -1,9 +1,10 @@
 <template>
-    <li class="comment" :style="{
-      borderLeftColor: colourCycle[depth % colourCycle.length],
+    <li class="comment" :class="{ pinned }" :style="{
+      borderLeftColor: pinned ? undefined : colourCycle[depth % colourCycle.length],
     }">
       <UserAvatar :url="user.avatarUrl" class="avatar" />
       <p class="author-date">
+        <span v-if="pinned" class="fas fa-thumbtack pin-icon"></span>
         <span class="author">{{ user.username }}</span>
         <span class="date">
           <span class="sep"> &ndash;</span>
@@ -33,6 +34,10 @@
         <button v-if="permissions.canDelete" @click="deleteComment" class="icon-and-label">
           <span class="fas fa-trash icon"></span>
           Slet
+        </button>
+        <button v-if="isRootComment" @click="togglePinnedComment" class="icon-and-label">
+          <span class="fas fa-thumbtack icon"></span>
+          {{ pinned ? 'Frigør' : 'Fastgør' }}
         </button>
         <button @click="shareComment" class="icon-and-label">
           <span class="fas fa-share-square icon"></span>
@@ -140,6 +145,14 @@ export default {
       type: Object,
       required: true,
     },
+    pinned: {
+      type: Boolean,
+      required: true,
+    },
+    isRootComment: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
@@ -207,6 +220,10 @@ export default {
       `, {
         html: true,
       });
+    },
+
+    togglePinnedComment() {
+      // TBA..
     },
   },
 
@@ -331,6 +348,24 @@ export default {
     .icon {
       margin-left: 0.5rem;
       font-size: 0.7rem;
+    }
+  }
+
+  &.pinned {
+    border-left-color: $pin-colour;
+
+    > .author-date > .author {
+      background-color: $pin-colour;
+      color: #fff;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.2rem;
+    }
+
+    .pin-icon {
+      color: $pin-colour;
+      font-size: 0.9rem;
+      transform: rotate(35deg);
+      margin-right: 0.5rem;
     }
   }
 }
