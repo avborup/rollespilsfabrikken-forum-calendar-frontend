@@ -632,3 +632,22 @@ export async function updateAvatar(token, newAvatar) {
     throw new ServerError('Failed to update avatar');
   }
 }
+
+export async function saveForumOrder(token, forumIds) {
+  const url = makeUrl('/api/forums/priorities');
+
+  const body = forumIds.map((id, index) => ({ id, priority: index + 1 }));
+
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to update forum order');
+  }
+}

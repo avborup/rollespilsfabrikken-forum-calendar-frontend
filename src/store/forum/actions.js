@@ -185,4 +185,10 @@ export default {
 
     context.commit('SET_COMMENT', comment);
   },
+
+  async saveForumOrder(context, forumIds) {
+    const { authToken } = context.rootState.auth;
+
+    await api.saveForumOrder(authToken, forumIds);
+  },
 };

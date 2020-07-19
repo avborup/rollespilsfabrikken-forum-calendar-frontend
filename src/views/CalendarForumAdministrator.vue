@@ -35,8 +35,8 @@
             @change-priority="changePriority"
           />
         </ul>
-        <button v-if="forumOrderHasChanged" class="save-btn">
-          Gem ændring af rækkefølge
+        <button v-if="forumOrderHasChanged" @click="saveForumOrder" class="save-btn">
+          {{ isChangingForumOrder ? 'Vent venligst...' : 'Gem ændring af rækkefølge' }}
         </button>
       </div>
       <div class="loading" v-else>
@@ -64,6 +64,7 @@ export default {
       isLoading: false,
       orderedForumIds: [],
       forumOrderHasChanged: false,
+      isChangingForumOrder: false,
     };
   },
 
@@ -141,6 +142,21 @@ export default {
 
       this.orderedForumIds = newOrder;
       this.forumOrderHasChanged = true;
+    },
+
+    async saveForumOrder() {
+      if (this.isChangingForumOrder) {
+        return;
+      }
+
+      this.isChangingForumOrder = true;
+      try {
+        await this.$store.dispatch('forum/saveForumOrder', this.orderedForumIds);
+        this.fetchForumsAndCalendars();
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+      }
+      this.isChangingForumOrder = false;
     },
   },
 
