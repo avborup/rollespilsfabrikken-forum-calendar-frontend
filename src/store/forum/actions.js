@@ -5,6 +5,8 @@ export default {
     const { authToken } = context.rootState.auth;
     const forums = await api.fetchAllForums(authToken);
 
+    forums.sort((a, b) => a.priority - b.priority);
+
     context.commit('SET_FORUMS', forums);
   },
 
