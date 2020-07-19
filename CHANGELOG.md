@@ -5,3 +5,4 @@
 - Add button to create a new post to each forum
 - Remove button to create a new post from the sidebar
 - Fix calendar not working in Edge
+- Make superusers able to change the order in which forums are shown
