@@ -160,6 +160,7 @@ export default {
       colourCycle,
       isWritingComment: false,
       isEditingComment: false,
+      isTogglingPin: false,
     };
   },
 
@@ -222,8 +223,28 @@ export default {
       });
     },
 
-    togglePinnedComment() {
-      // TBA..
+    async togglePinnedComment() {
+      if (this.isTogglingPin) {
+        return;
+      }
+
+      this.isTogglingPin = true;
+
+      const { forum, postId } = this.$route.params;
+
+      try {
+        await this.$store.dispatch('forum/togglePinnedComment', {
+          forumPathName: forum,
+          postId,
+          commentId: this.id,
+        });
+
+        this.reload();
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+      }
+
+      this.isTogglingPin = false;
     },
   },
 

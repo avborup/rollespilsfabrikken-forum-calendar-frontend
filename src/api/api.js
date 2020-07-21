@@ -651,3 +651,23 @@ export async function saveForumOrder(token, forumIds) {
     throw new ServerError('Failed to update forum order');
   }
 }
+
+export async function togglePinnedComment(token, forumId, postId, commentId) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const encodedCommentId = encodeURIComponent(commentId);
+
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment/${encodedCommentId}/pin`);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to pin/unpin comment');
+  }
+}

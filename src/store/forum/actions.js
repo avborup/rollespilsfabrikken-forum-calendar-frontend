@@ -191,4 +191,11 @@ export default {
 
     await api.saveForumOrder(authToken, forumIds);
   },
+
+  async togglePinnedComment(context, { forumPathName, postId, commentId }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.togglePinnedComment(authToken, forumId, postId, commentId);
+  },
 };
