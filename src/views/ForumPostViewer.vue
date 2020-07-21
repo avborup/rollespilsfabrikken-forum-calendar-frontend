@@ -73,6 +73,10 @@
           <span class="fas fa-trash icon"></span>
           Slet opslag
         </button>
+        <button v-if="post.permissions.canPin" @click="togglePinnedPost" class="icon-and-label">
+          <span class="fas fa-thumbtack icon"></span>
+          {{ post.pinned ? 'Frigør' : 'Fastgør' }}
+        </button>
         <button @click="sharePost" class="icon-and-label">
           <span class="fas fa-share-square icon"></span>
           Del
@@ -152,6 +156,7 @@ export default {
       otherErrorOccurred: false,
       isWritingComment: false,
       isEditingPost: false,
+      isTogglingPin: false,
     };
   },
 
@@ -259,6 +264,29 @@ export default {
       `, {
         html: true,
       });
+    },
+
+    async togglePinnedPost() {
+      if (this.isTogglingPin) {
+        return;
+      }
+
+      this.isTogglingPin = true;
+
+      const { forum, postId } = this.$route.params;
+
+      try {
+        await this.$store.dispatch('forum/togglePinnedPost', {
+          forumPathName: forum,
+          postId,
+        });
+
+        this.reload();
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+      }
+
+      this.isTogglingPin = false;
     },
   },
 

@@ -73,6 +73,7 @@ function jsifyPostResponse(post) {
     canAddComments: 'can_add_comments',
     canDelete: 'can_delete',
     canUpdate: 'can_update',
+    canPin: 'can_pin',
   });
 
   const renamedPost = renameKeys({
@@ -670,5 +671,24 @@ export async function togglePinnedComment(token, forumId, postId, commentId) {
 
   if (!res.ok) {
     throw new ServerError('Failed to pin/unpin comment');
+  }
+}
+
+export async function togglePinnedPost(token, forumId, postId) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/pin`);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to pin/unpin post');
   }
 }
