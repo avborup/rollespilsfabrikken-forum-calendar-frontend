@@ -7,3 +7,4 @@
 - Fix calendar not working in Edge
 - Make superusers able to change the order in which forums are shown
 - Pin and unpin posts and comments
+- Add event reccurence options for every fortnight and every three weeks

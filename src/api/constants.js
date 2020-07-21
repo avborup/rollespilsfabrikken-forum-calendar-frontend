@@ -25,6 +25,14 @@ export const recurringTypes = [
     real: 'yearly',
     text: 'Årligt',
   },
+  {
+    real: 'biweekly',
+    text: 'Hver anden uge',
+  },
+  {
+    real: 'triweekly',
+    text: 'Hver tredje uge',
+  },
 ];
 
 export const affectRecurrenceOptions = [
