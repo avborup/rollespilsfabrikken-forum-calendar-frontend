@@ -216,6 +216,7 @@ function recursivelyFixComments(cmts) {
       canDelete: 'can_delete',
       canUpdate: 'can_update',
       canAddComments: 'can_add_comments',
+      canPin: 'can_pin',
     });
 
     const renamedComment = renameKeys({

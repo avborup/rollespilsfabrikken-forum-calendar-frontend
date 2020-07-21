@@ -35,7 +35,11 @@
           <span class="fas fa-trash icon"></span>
           Slet
         </button>
-        <button v-if="isRootComment" @click="togglePinnedComment" class="icon-and-label">
+        <button
+          v-if="isRootComment && permissions.canPin"
+          @click="togglePinnedComment"
+          class="icon-and-label"
+        >
           <span class="fas fa-thumbtack icon"></span>
           {{ pinned ? 'Frigør' : 'Fastgør' }}
         </button>
