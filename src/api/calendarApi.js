@@ -4,7 +4,7 @@ import {
   renameKeys,
 } from '@/api/utils';
 import { alwaysHeaders } from '@/api/constants';
-import { ServerError, ResourceNotFoundError } from '@/api/errors';
+import { ServerError, ResourceNotFoundError, OverlappingEventsError } from '@/api/errors';
 
 // eslint-disable-next-line
 export async function fetchAllCalendars(token) {
@@ -237,5 +237,58 @@ export async function deleteEvent(token, settings) {
 
   if (!res.ok) {
     throw new ServerError('Failed to delete event');
+  }
+}
+
+export async function checkEvent(token, eventInfo) {
+  const encodedCalendarId = encodeURIComponent(eventInfo.calendarId);
+  const url = makeUrl(`/api/calendar/${encodedCalendarId}/event/check`);
+
+  const body = {
+    title: eventInfo.title,
+    start: eventInfo.start.toISOString(),
+    end: eventInfo.end.toISOString(),
+    recurring: eventInfo.isRecurring,
+  };
+
+  if (eventInfo.description.length > 0) {
+    body.description = eventInfo.description;
+  }
+
+  if (eventInfo.isRecurring) {
+    body.recurrence = {
+      type: eventInfo.recurringType,
+    };
+
+    if (eventInfo.recurringEnd !== null) {
+      body.recurrence.end = eventInfo.recurringEnd.toISOString();
+    }
+  }
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  const json = await res.json();
+
+  if (res.status === 400) {
+    json.warnings.forEach((warning) => {
+      switch (warning.message) {
+        case 'Event overlaps with another event':
+          throw new OverlappingEventsError();
+
+        default:
+          break;
+      }
+    });
+  }
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when checking event in the calendar ${eventInfo.calendarId}`);
   }
 }
