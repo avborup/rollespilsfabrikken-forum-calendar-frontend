@@ -16,22 +16,27 @@ export const recurringTypes = [
   {
     real: 'daily',
     text: 'Dagligt',
+    interval: 1,
   },
   {
     real: 'weekly',
     text: 'Ugentligt',
+    interval: 7,
   },
   {
     real: 'yearly',
     text: 'Årligt',
+    interval: 365,
   },
   {
     real: 'biweekly',
     text: 'Hver anden uge',
+    interval: 14,
   },
   {
     real: 'triweekly',
     text: 'Hver tredje uge',
+    interval: 21,
   },
 ];
 
