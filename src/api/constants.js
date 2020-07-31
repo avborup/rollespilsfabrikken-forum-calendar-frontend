@@ -66,3 +66,6 @@ export const affectRecurrenceOptions = [
     justThisOne: false,
   },
 ];
+
+// Max size of file uploads in MB
+export const MAX_FILE_SIZE = 250;
