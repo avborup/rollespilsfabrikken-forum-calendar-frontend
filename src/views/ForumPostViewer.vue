@@ -541,7 +541,7 @@ export default {
 }
 
 .files-list {
-  padding: 0.5rem 0.5rem 0 0.5rem;
+  padding: 0 0.5rem;
   display: flex;
   list-style-type: none;
   flex-wrap: wrap;
