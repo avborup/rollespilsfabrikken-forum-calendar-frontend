@@ -15,6 +15,12 @@
           :html="false"
           :emoji="false"
         >{{ post.body }}</vue-markdown>
+        <ul v-if="post.files.length > 0" class="files-list">
+          <li v-for="file in post.files" :key="file.name" :title="file.name">
+            <span class="fas fa-file file-icon"></span>
+            <span class="file-name">{{ file.name }}</span>
+          </li>
+        </ul>
         <p v-if="post.createdAt < post.updatedAt" class="post-edited">
           Opslag redigeret for {{ toElapsedTimeStr(post.updatedAt) }} siden
         </p>
@@ -530,6 +536,37 @@ export default {
     &.attempted-post {
       font-family: $fonts-monospace;
       font-size: 0.8rem;
+    }
+  }
+}
+
+.files-list {
+  padding: 0.5rem 0.5rem 0 0.5rem;
+  display: flex;
+  list-style-type: none;
+  flex-wrap: wrap;
+
+  li {
+    border: 1px solid #e8e8e8;
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 0.5rem;
+    max-width: 7rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 0.8rem;
+    color: #666;
+    cursor: pointer;
+
+    &:not(:last-child) {
+      margin-right: 0.5rem;
+    }
+
+    .file-icon {
+      margin-right: 0.3rem;
+      font-size: 0.7rem;
     }
   }
 }
