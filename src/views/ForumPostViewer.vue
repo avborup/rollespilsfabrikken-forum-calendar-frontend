@@ -16,8 +16,14 @@
           :emoji="false"
         >{{ post.body }}</vue-markdown>
         <ul v-if="post.files.length > 0" class="files-list">
-          <li v-for="file in post.files" :key="file.name" :title="file.name">
-            <span class="fas fa-file file-icon"></span>
+          <li
+            v-for="file in post.files"
+            :key="file.name"
+            :title="file.name"
+            @click="downloadFile(file.id, file.name)"
+          >
+            <span v-if="!waitingFiles[file.id]" class="fas fa-file file-icon"></span>
+            <span v-else class="fas fa-circle-notch fa-spin file-icon"></span>
             <span class="file-name">{{ file.name }}</span>
           </li>
         </ul>
@@ -164,6 +170,7 @@ export default {
       isWritingComment: false,
       isEditingPost: false,
       isTogglingPin: false,
+      waitingFiles: {},
     };
   },
 
@@ -294,6 +301,29 @@ export default {
       }
 
       this.isTogglingPin = false;
+    },
+
+    async downloadFile(fileId, fileName) {
+      if (this.waitingFiles[fileId]) {
+        return;
+      }
+
+      const { forum, postId } = this.$route.params;
+
+      this.waitingFiles = { ...this.waitingFiles, [fileId]: true };
+
+      try {
+        await this.$store.dispatch('forum/downloadFile', {
+          forumPathName: forum,
+          postId,
+          fileId,
+          fileName,
+        });
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+      }
+
+      this.waitingFiles = { ...this.waitingFiles, [fileId]: false };
     },
   },
 

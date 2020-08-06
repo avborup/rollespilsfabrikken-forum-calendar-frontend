@@ -1,3 +1,4 @@
+import download from 'downloadjs';
 import {
   makeUrl,
   makeAuthHeader,
@@ -691,4 +692,26 @@ export async function togglePinnedPost(token, forumId, postId) {
   if (!res.ok) {
     throw new ServerError('Failed to pin/unpin post');
   }
+}
+
+export async function downloadFile(token, forumId, postId, fileId, fileName) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const encodedFileId = encodeURIComponent(fileId);
+
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/file/${encodedFileId}`);
+
+  const res = await fetch(url, {
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`Failed to download file ${fileName} with ID ${fileId}`);
+  }
+
+  const blob = await res.blob();
+  download(blob, fileName, blob.type);
 }

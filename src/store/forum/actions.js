@@ -209,4 +209,16 @@ export default {
   setMdEditorFileList(context, files) {
     context.commit('SET_MD_EDITOR_FILE_LIST', files);
   },
+
+  async downloadFile(context, {
+    forumPathName,
+    postId,
+    fileId,
+    fileName,
+  }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.downloadFile(authToken, forumId, postId, fileId, fileName);
+  },
 };
