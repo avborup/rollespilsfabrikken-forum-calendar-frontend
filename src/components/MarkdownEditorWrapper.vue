@@ -114,6 +114,10 @@ export default {
     setValue(val) {
       return this.$refs.markdownEditor.editor.setValue(val);
     },
+
+    getFiles() {
+      return this.files;
+    },
   },
 
   created() {

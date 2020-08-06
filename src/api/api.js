@@ -285,13 +285,21 @@ export async function createPost(token, forumId, post) {
   const encodedForumId = encodeURIComponent(forumId);
   const url = makeUrl(`/api/forum/${encodedForumId}/post`);
 
+  const formData = new FormData();
+
+  formData.append('title', post.title);
+  formData.append('body', post.body);
+
+  post.files.forEach(file => formData.append('files[]', file));
+
   const res = await fetch(url, {
     method: 'POST',
     headers: {
-      ...alwaysHeaders,
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
       ...makeAuthHeader(token),
     },
-    body: JSON.stringify(post),
+    body: formData,
   });
 
   if (!res.ok) {
