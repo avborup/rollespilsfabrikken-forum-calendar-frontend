@@ -1,6 +1,6 @@
 <template>
   <form @submit="handleSubmit" :class="{ waiting: isWaiting }">
-    <MarkdownEditorWrapper ref="markdownEditor" :disabled="isWaiting" />
+    <MarkdownEditorWrapper ref="markdownEditor" :disabled="isWaiting" :hideFileUpload="true" />
     <input v-if="!isWaiting" class="form-submit" type="submit" value="Opdatér kommentar!">
     <span v-else class="waiting-text">Vent venligst..</span>
     <div v-if="isWaiting" class="overlay"></div>

@@ -205,4 +205,8 @@ export default {
 
     await api.togglePinnedPost(authToken, forumId, postId);
   },
+
+  setMdEditorFileList(context, files) {
+    context.commit('SET_MD_EDITOR_FILE_LIST', files);
+  },
 };

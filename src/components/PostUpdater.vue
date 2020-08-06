@@ -1,7 +1,11 @@
 <template>
   <form @submit="handleSubmit" :class="{ waiting: isWaiting }">
     <input v-model="newTitle" type="text">
-    <MarkdownEditorWrapper ref="markdownEditor" :disabled="isWaiting" />
+    <MarkdownEditorWrapper
+      ref="markdownEditor"
+      :disabled="isWaiting"
+      :initialFiles="originalFiles"
+    />
     <input v-if="!isWaiting" class="form-submit" type="submit" value="Opdatér opslag!">
     <span v-else class="waiting-text">Vent venligst..</span>
     <div v-if="isWaiting" class="overlay"></div>
@@ -28,6 +32,10 @@ export default {
     },
     originalTitle: {
       type: String,
+      required: true,
+    },
+    originalFiles: {
+      type: Array,
       required: true,
     },
   },

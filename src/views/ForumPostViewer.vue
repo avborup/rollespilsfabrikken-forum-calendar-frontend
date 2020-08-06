@@ -101,6 +101,7 @@
         :postId="post.id"
         :originalBody="post.body"
         :originalTitle="post.title"
+        :originalFiles="post.files"
         ref="postUpdater"
         @post-updated="reload"
         class="post-updater"

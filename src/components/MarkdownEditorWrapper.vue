@@ -1,10 +1,10 @@
 <template>
   <div class="markdown-editor-container">
-    <!-- eslint-disable -->
     <markdown-editor
-      toolbar="redo undo | bold italic heading strikethrough | numlist bullist quote code | preview | help"
+      :toolbar="toolbar"
       :extend="customButtons"
       @command:help="help"
+      @command:upload="upload"
       height="auto"
       :shouldBreakOnNewline="true"
       :titles="{
@@ -23,26 +23,58 @@
       class="markdown-editor"
       ref="markdownEditor"
     ></markdown-editor>
-    <!-- eslint-enable -->
+    <ul v-if="!hideFileUpload && files.length > 0" class="files-list">
+      <li v-for="file in files" :key="file.name" :title="file.name">
+        <span class="fas fa-file file-icon"></span>
+        <span class="file-name">{{ file.name }}</span>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
 import 'v-markdown-editor/dist/v-markdown-editor.css';
+import { mapState } from 'vuex';
 
 export default {
   name: 'MarkdownEditorWrapper',
 
+  props: {
+    hideFileUpload: {
+      type: Boolean,
+      default: false,
+    },
+    initialFiles: {
+      type: Array,
+      default: () => [],
+    },
+  },
+
   data() {
+    const uploadToolbar = this.hideFileUpload ? '' : ' upload |';
+    const toolbar = `redo undo | bold italic heading strikethrough | numlist bullist quote code |${uploadToolbar} preview | help`;
+
     return {
+      toolbar,
       customButtons: {
         help: {
           cmd: 'help',
           ico: 'fas fa-question',
           title: 'Få hjælp til Markdown',
         },
+        upload: {
+          cmd: 'upload',
+          ico: 'fas fa-file-upload',
+          title: 'Upload filer',
+        },
       },
     };
+  },
+
+  computed: {
+    ...mapState('forum', {
+      files: 'mdEditorFileList',
+    }),
   },
 
   methods: {
@@ -64,6 +96,17 @@ export default {
       }
     },
 
+    upload() {
+      this.$dialog.confirm(null, {
+        view: 'file-upload-dialog',
+      })
+        .then((data) => {
+          const files = data.data;
+          this.$store.dispatch('forum/setMdEditorFileList', files);
+        })
+        .catch(() => {});
+    },
+
     getValue() {
       return this.$refs.markdownEditor.editor.getValue();
     },
@@ -71,6 +114,10 @@ export default {
     setValue(val) {
       return this.$refs.markdownEditor.editor.setValue(val);
     },
+  },
+
+  created() {
+    this.$store.dispatch('forum/setMdEditorFileList', this.initialFiles);
   },
 };
 </script>
@@ -123,6 +170,36 @@ export default {
             margin-left: -0.1rem;
           }
         }
+      }
+    }
+  }
+
+  .files-list {
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    display: flex;
+    list-style-type: none;
+    flex-wrap: wrap;
+
+    li {
+      border: 1px solid #e8e8e8;
+      border-radius: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      margin-bottom: 0.5rem;
+      max-width: 7rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      font-size: 0.8rem;
+      color: #666;
+
+      &:not(:last-child) {
+        margin-right: 0.5rem;
+      }
+
+      .file-icon {
+        margin-right: 0.3rem;
+        font-size: 0.7rem;
       }
     }
   }

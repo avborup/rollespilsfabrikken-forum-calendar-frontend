@@ -29,6 +29,7 @@
 
 <script>
 import DialogMixin from 'vuejs-dialog/dist/vuejs-dialog-mixin.min';
+import store from '@/store/store';
 import { MAX_FILE_SIZE } from '@/api/constants';
 
 export default {
@@ -42,8 +43,11 @@ export default {
   ],
 
   data() {
+    // If we don't spread the property here, we would modify vuex state directly.
+    const initialFiles = [...store.state.forum.mdEditorFileList];
+
     return {
-      files: [],
+      files: initialFiles,
       hasErr: false,
       errMsg: '',
     };
@@ -63,7 +67,18 @@ export default {
       const files = [...fileList]
         .filter(file => this.files.find(({ name }) => file.name === name) === undefined);
 
+      // A file is updated when the original form is an Object and the new one is File.
+      // "Updated" means that a file locally is overwriting a file from the server.
+      const updatedFiles = [...fileList]
+        .filter(file => this.files
+          .find(({ name }) => file.name === name && !(file instanceof File)) === undefined);
+
       this.files.push(...files);
+
+      updatedFiles.forEach((file) => {
+        const index = this.files.findIndex(({ name }) => file.name === name);
+        this.files[index] = file;
+      });
     },
 
     removeFile(filename) {

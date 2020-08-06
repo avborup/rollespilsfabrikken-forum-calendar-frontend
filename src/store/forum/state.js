@@ -8,4 +8,5 @@ export default () => ({
   hasMorePosts: false,
   currentPage: 1,
   currentComment: null,
+  mdEditorFileList: [],
 });
