@@ -104,8 +104,8 @@ export async function fetchEvent(token, calendarId, eventId, date) {
 
   const json = await res.json();
   const event = {
-    ...json.post,
-    permissions: renameKeys(json.post.permissions, {
+    ...json.event,
+    permissions: renameKeys(json.event.permissions, {
       canDelete: 'can_delete',
       canUpdate: 'can_update',
     }),
