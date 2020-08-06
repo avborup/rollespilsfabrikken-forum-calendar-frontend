@@ -33,7 +33,7 @@ export default {
       this.$refs.eventCreator.setLoading(true);
 
       try {
-        await this.$store.dispatch('calendar/checkEvent', eventInfo);
+        await this.$store.dispatch('calendar/checkEvent', { eventInfo });
       } catch (err) {
         if (err instanceof OverlappingEventsError) {
           try {

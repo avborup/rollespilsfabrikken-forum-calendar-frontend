@@ -240,9 +240,15 @@ export async function deleteEvent(token, settings) {
   }
 }
 
-export async function checkEvent(token, eventInfo) {
+export async function checkEvent(token, eventInfo, ignoreIds) {
+  const params = {};
+
+  if (ignoreIds.length > 0) {
+    params.ignore = ignoreIds.map(encodeURIComponent).join(',');
+  }
+
   const encodedCalendarId = encodeURIComponent(eventInfo.calendarId);
-  const url = makeUrl(`/api/calendar/${encodedCalendarId}/event/check`);
+  const url = makeUrl(`/api/calendar/${encodedCalendarId}/event/check`, params);
 
   const body = {
     title: eventInfo.title,
