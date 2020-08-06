@@ -221,4 +221,16 @@ export default {
 
     await api.downloadFile(authToken, forumId, postId, fileId, fileName);
   },
+
+  async updatePostFiles(context, {
+    forumPathName,
+    postId,
+    addedOrUpdatedFiles,
+    deletedFiles,
+  }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.updatePostFiles(authToken, forumId, postId, addedOrUpdatedFiles, deletedFiles);
+  },
 };

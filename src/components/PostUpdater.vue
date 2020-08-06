@@ -81,15 +81,36 @@ export default {
 
       const { forum, postId } = this.$route.params;
 
-      this.isWaiting = true;
+      const files = this.$refs.markdownEditor.getFiles();
 
-      try {
-        await this.$store.dispatch('forum/updatePost', {
+      const addedOrUpdatedFiles = files.filter(file => file instanceof File);
+      const deletedFiles = this.originalFiles
+        .filter(file => files.find(({ name }) => name === file.name) === undefined);
+
+      const promises = [
+        this.$store.dispatch('forum/updatePost', {
           forumPathName: forum,
           postId,
           newTitle: this.newTitle,
           newBody: postContent,
+        }),
+      ];
+
+      if (addedOrUpdatedFiles.length > 0 || deletedFiles.length > 0) {
+        const promise = this.$store.dispatch('forum/updatePostFiles', {
+          forumPathName: forum,
+          postId,
+          addedOrUpdatedFiles,
+          deletedFiles,
         });
+
+        promises.push(promise);
+      }
+
+      this.isWaiting = true;
+
+      try {
+        await Promise.all(promises);
 
         this.$emit('post-updated');
       } catch (error) {

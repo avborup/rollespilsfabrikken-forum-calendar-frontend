@@ -10,3 +10,4 @@
 - Add event reccurence options for every fortnight and every three weeks
 - Add warning when creating overlapping events
 - Restrict recurring events to be shorter than the space between each event
+- Add file sharing in posts

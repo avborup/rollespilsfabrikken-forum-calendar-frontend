@@ -427,6 +427,31 @@ export async function updatePost(token, {
   }
 }
 
+export async function updatePostFiles(token, forumId, postId, addedOrUpdatedFiles, deletedFiles) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/file`);
+
+  const formData = new FormData();
+
+  addedOrUpdatedFiles.forEach(file => formData.append('files[]', file));
+  deletedFiles.forEach(file => formData.append('file_deletions[]', file.id));
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      ...makeAuthHeader(token),
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when updating files for post with ID ${postId}`);
+  }
+}
+
 export async function getUser(token) {
   const url = makeUrl('/api/user');
 
