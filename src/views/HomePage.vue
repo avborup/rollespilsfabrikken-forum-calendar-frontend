@@ -14,8 +14,8 @@
     </div>
     <div class="events-posts-viewer">
       <div class="posts-col">
-        <h2>Nyeste opslag</h2>
-        <PostsList :page="1" :numPostsPerPage="3" ref="postsList" />
+        <h2>Relevante opslag</h2>
+        <PostsList :page="1" :numPostsPerPage="3" sortBy="relevance" ref="postsList" />
       </div>
       <div class="events-col">
         <h2>Kommende begivenheder</h2>

@@ -10,14 +10,19 @@ export default {
     context.commit('SET_FORUMS', forums);
   },
 
-  async fetchPosts(context, { forumPathName, page, numPostsPerPage = 10 }) {
+  async fetchPosts(context, {
+    forumPathName,
+    page,
+    numPostsPerPage = 10,
+    sortBy = 'created_at',
+  }) {
     const { authToken } = context.rootState.auth;
 
     const params = {
       page,
       numPostsPerPage,
       extraQueries: {
-        sort: 'created_at',
+        sort: sortBy,
       },
     };
     const forum = context.getters.getForumFromPathName(forumPathName);
