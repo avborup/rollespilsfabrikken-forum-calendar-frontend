@@ -2,6 +2,7 @@
   <div v-if="postExists && !otherErrorOccurred" class="view-container">
     <div class="post-container">
       <div v-if="!isLoadingPost" class="post-wrapper">
+        <span v-if="post.pinned" class="fas fa-thumbtack pin-icon"></span>
         <div class="post-header">
           <UserAvatar :url="post.user.avatarUrl" class="avatar" />
           <span class="author">{{ post.user.username }}</span>
@@ -14,6 +15,21 @@
           :html="false"
           :emoji="false"
         >{{ post.body }}</vue-markdown>
+        <ul v-if="post.files.length > 0" class="files-list">
+          <li
+            v-for="file in post.files"
+            :key="file.name"
+            :title="file.name"
+            @click="downloadFile(file.id, file.name)"
+          >
+            <span v-if="!waitingFiles[file.id]" class="fas fa-file file-icon"></span>
+            <span v-else class="fas fa-circle-notch fa-spin file-icon"></span>
+            <span class="file-name">{{ file.name }}</span>
+          </li>
+        </ul>
+        <p v-if="post.createdAt < post.updatedAt" class="post-edited">
+          Opslag redigeret for {{ toElapsedTimeStr(post.updatedAt) }} siden
+        </p>
       </div>
       <div v-else class="skeleton-post-wrapper">
         <div class="post-header">
@@ -69,6 +85,10 @@
           <span class="fas fa-trash icon"></span>
           Slet opslag
         </button>
+        <button v-if="post.permissions.canPin" @click="togglePinnedPost" class="icon-and-label">
+          <span class="fas fa-thumbtack icon"></span>
+          {{ post.pinned ? 'Frigør' : 'Fastgør' }}
+        </button>
         <button @click="sharePost" class="icon-and-label">
           <span class="fas fa-share-square icon"></span>
           Del
@@ -93,6 +113,7 @@
         :postId="post.id"
         :originalBody="post.body"
         :originalTitle="post.title"
+        :originalFiles="post.files"
         ref="postUpdater"
         @post-updated="reload"
         class="post-updater"
@@ -148,6 +169,8 @@ export default {
       otherErrorOccurred: false,
       isWritingComment: false,
       isEditingPost: false,
+      isTogglingPin: false,
+      waitingFiles: {},
     };
   },
 
@@ -256,6 +279,52 @@ export default {
         html: true,
       });
     },
+
+    async togglePinnedPost() {
+      if (this.isTogglingPin) {
+        return;
+      }
+
+      this.isTogglingPin = true;
+
+      const { forum, postId } = this.$route.params;
+
+      try {
+        await this.$store.dispatch('forum/togglePinnedPost', {
+          forumPathName: forum,
+          postId,
+        });
+
+        this.reload();
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+      }
+
+      this.isTogglingPin = false;
+    },
+
+    async downloadFile(fileId, fileName) {
+      if (this.waitingFiles[fileId]) {
+        return;
+      }
+
+      const { forum, postId } = this.$route.params;
+
+      this.waitingFiles = { ...this.waitingFiles, [fileId]: true };
+
+      try {
+        await this.$store.dispatch('forum/downloadFile', {
+          forumPathName: forum,
+          postId,
+          fileId,
+          fileName,
+        });
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+      }
+
+      this.waitingFiles = { ...this.waitingFiles, [fileId]: false };
+    },
   },
 
   watch: {
@@ -280,6 +349,8 @@ export default {
 @import '@/assets/scss/consts.scss';
 
 .post-container {
+  position: relative;
+
   .post-header {
     display: grid;
     grid-template-columns: 3rem 1fr;
@@ -301,7 +372,6 @@ export default {
     }
 
     .author {
-      text-transform: uppercase;
       color: $primary-accent;
       font-weight: bold;
       font-size: 1rem;
@@ -316,6 +386,13 @@ export default {
       font-size: 1.7rem;
       margin-top: 1rem;
     }
+  }
+
+  .post-edited {
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.6);
+    font-style: italic;
   }
 
   .post-info-and-buttons {
@@ -349,7 +426,15 @@ export default {
 
   .post-content {
     padding: 0 0.8rem;
-    margin-bottom: 0.5rem;
+  }
+
+  .pin-icon {
+    color: $pin-colour;
+    position: absolute;
+    font-size: 1rem;
+    top: 0rem;
+    right: 1rem;
+    transform: rotate(35deg);
   }
 }
 
@@ -481,6 +566,37 @@ export default {
     &.attempted-post {
       font-family: $fonts-monospace;
       font-size: 0.8rem;
+    }
+  }
+}
+
+.files-list {
+  padding: 0 0.5rem;
+  display: flex;
+  list-style-type: none;
+  flex-wrap: wrap;
+
+  li {
+    border: 1px solid #e8e8e8;
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    margin-bottom: 0.5rem;
+    max-width: 7rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 0.8rem;
+    color: #666;
+    cursor: pointer;
+
+    &:not(:last-child) {
+      margin-right: 0.5rem;
+    }
+
+    .file-icon {
+      margin-right: 0.3rem;
+      font-size: 0.7rem;
     }
   }
 }

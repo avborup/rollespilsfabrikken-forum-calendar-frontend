@@ -5,8 +5,12 @@
       postId: id,
       forum: forum.pathName,
     },
-  }">
-    <li class="post-list-item">
+  }" class="post-link-wrapper">
+    <p v-if="pinned" class="pinned-msg">
+      <span class="fas fa-thumbtack pin-icon"></span>
+      Fastgjort opslag
+    </p>
+    <li class="post-list-item" :class="{ pinned }">
       <UserAvatar :url="user.avatarUrl" class="avatar" />
       <h4 :title="title">{{ title }}</h4>
       <p class="author-date">
@@ -72,6 +76,10 @@ export default {
       type: Object,
       required: true,
     },
+    pinned: {
+      type: Boolean,
+      required: true,
+    },
   },
 
   methods: {
@@ -127,7 +135,6 @@ a {
     grid-area: author-date;
 
     .author {
-      text-transform: uppercase;
       color: $primary-accent;
       font-weight: bold;
       font-size: 0.9rem;
@@ -168,6 +175,32 @@ a {
     text-transform: uppercase;
     font-weight: bold;
     color: $primary-accent;
+  }
+
+  &.pinned {
+    border-color: $pin-colour;
+    padding-top: 1.75rem;
+  }
+}
+
+.post-link-wrapper {
+  position: relative;
+}
+
+.pinned-msg {
+  color: $pin-colour;
+  position: absolute;
+  font-size: 0.8rem;
+  top: 1.4rem;
+  left: 0.75rem;
+  display: flex;
+  align-items: center;
+  width: 8rem;
+  font-weight: 600;
+
+  .pin-icon {
+    transform: rotate(35deg);
+    margin-right: 0.4rem;
   }
 }
 

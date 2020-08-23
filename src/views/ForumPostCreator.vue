@@ -34,6 +34,7 @@
   </div>
   <div v-else class="waiting">
     <p>Dit opslag oprettes...</p>
+    <p v-if="files.length > 0" class="small-msg">Jo større dine filer er, jo længere tager dette</p>
     <LoadingSpinner />
   </div>
 </template>
@@ -62,6 +63,7 @@ export default {
       contentHasError: false,
       contentErrMsg: '',
       isWaiting: false,
+      files: [],
     };
   },
 
@@ -83,6 +85,7 @@ export default {
 
       const { postTitle, selectedForum } = this;
       const postContent = this.$refs.markdownEditor.getValue();
+      this.files = this.$refs.markdownEditor.getFiles();
 
       if (selectedForum === null) {
         this.forumHasError = true;
@@ -112,6 +115,7 @@ export default {
       const post = {
         title: postTitle,
         body: postContent,
+        files: this.files,
       };
 
       this.isWaiting = true;
@@ -130,6 +134,29 @@ export default {
       }
 
       this.isWaiting = false;
+    },
+
+    setInitialForum() {
+      const forumPathName = this.$route.query.forum;
+      const forum = this.$store.getters['forum/getForumFromPathName'](forumPathName);
+
+      if (!forum) {
+        return;
+      }
+
+      if (!this.selectedForum) {
+        this.selectedForum = forum;
+      }
+    },
+  },
+
+  created() {
+    this.setInitialForum();
+  },
+
+  watch: {
+    forums() {
+      this.setInitialForum();
     },
   },
 };
@@ -216,6 +243,10 @@ export default {
   font-size: 1.5rem;
   font-weight: 600;
   row-gap: 2rem;
+
+  .small-msg {
+    font-size: 1rem;
+  }
 }
 
 @media (min-width: 700px) {

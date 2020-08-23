@@ -43,6 +43,10 @@ export default {
       type: Number,
       default: 10,
     },
+    sortBy: {
+      type: String,
+      default: 'created_at',
+    },
   },
 
   data() {
@@ -73,7 +77,12 @@ export default {
       const { page, numPostsPerPage } = this;
 
       try {
-        await this.$store.dispatch('forum/fetchPosts', { forumPathName, page, numPostsPerPage });
+        await this.$store.dispatch('forum/fetchPosts', {
+          forumPathName,
+          page,
+          numPostsPerPage,
+          sortBy: this.sortBy,
+        });
         this.isLoading = false;
       } catch (err) {
         this.$dialog.alert('Vi beklager, men der opstod en fejl.');

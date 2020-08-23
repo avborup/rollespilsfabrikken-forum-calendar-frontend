@@ -5,17 +5,24 @@ export default {
     const { authToken } = context.rootState.auth;
     const forums = await api.fetchAllForums(authToken);
 
+    forums.sort((a, b) => a.priority - b.priority);
+
     context.commit('SET_FORUMS', forums);
   },
 
-  async fetchPosts(context, { forumPathName, page, numPostsPerPage = 10 }) {
+  async fetchPosts(context, {
+    forumPathName,
+    page,
+    numPostsPerPage = 10,
+    sortBy = 'created_at',
+  }) {
     const { authToken } = context.rootState.auth;
 
     const params = {
       page,
       numPostsPerPage,
       extraQueries: {
-        sort: 'created_at',
+        sort: sortBy,
       },
     };
     const forum = context.getters.getForumFromPathName(forumPathName);
@@ -182,5 +189,53 @@ export default {
     const comment = await api.getComment(authToken, forumId, postId, commentId);
 
     context.commit('SET_COMMENT', comment);
+  },
+
+  async saveForumOrder(context, forumIds) {
+    const { authToken } = context.rootState.auth;
+
+    await api.saveForumOrder(authToken, forumIds);
+  },
+
+  async togglePinnedComment(context, { forumPathName, postId, commentId }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.togglePinnedComment(authToken, forumId, postId, commentId);
+  },
+
+  async togglePinnedPost(context, { forumPathName, postId }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.togglePinnedPost(authToken, forumId, postId);
+  },
+
+  setMdEditorFileList(context, files) {
+    context.commit('SET_MD_EDITOR_FILE_LIST', files);
+  },
+
+  async downloadFile(context, {
+    forumPathName,
+    postId,
+    fileId,
+    fileName,
+  }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.downloadFile(authToken, forumId, postId, fileId, fileName);
+  },
+
+  async updatePostFiles(context, {
+    forumPathName,
+    postId,
+    addedOrUpdatedFiles,
+    deletedFiles,
+  }) {
+    const { authToken } = context.rootState.auth;
+    const forumId = context.getters.getForumFromPathName(forumPathName).id;
+
+    await api.updatePostFiles(authToken, forumId, postId, addedOrUpdatedFiles, deletedFiles);
   },
 };

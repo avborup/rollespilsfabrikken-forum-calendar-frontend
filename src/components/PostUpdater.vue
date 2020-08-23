@@ -1,7 +1,11 @@
 <template>
   <form @submit="handleSubmit" :class="{ waiting: isWaiting }">
     <input v-model="newTitle" type="text">
-    <MarkdownEditorWrapper ref="markdownEditor" :disabled="isWaiting" />
+    <MarkdownEditorWrapper
+      ref="markdownEditor"
+      :disabled="isWaiting"
+      :initialFiles="originalFiles"
+    />
     <input v-if="!isWaiting" class="form-submit" type="submit" value="Opdatér opslag!">
     <span v-else class="waiting-text">Vent venligst..</span>
     <div v-if="isWaiting" class="overlay"></div>
@@ -28,6 +32,10 @@ export default {
     },
     originalTitle: {
       type: String,
+      required: true,
+    },
+    originalFiles: {
+      type: Array,
       required: true,
     },
   },
@@ -73,15 +81,36 @@ export default {
 
       const { forum, postId } = this.$route.params;
 
-      this.isWaiting = true;
+      const files = this.$refs.markdownEditor.getFiles();
 
-      try {
-        await this.$store.dispatch('forum/updatePost', {
+      const addedOrUpdatedFiles = files.filter(file => file instanceof File);
+      const deletedFiles = this.originalFiles
+        .filter(file => files.find(({ name }) => name === file.name) === undefined);
+
+      const promises = [
+        this.$store.dispatch('forum/updatePost', {
           forumPathName: forum,
           postId,
           newTitle: this.newTitle,
           newBody: postContent,
+        }),
+      ];
+
+      if (addedOrUpdatedFiles.length > 0 || deletedFiles.length > 0) {
+        const promise = this.$store.dispatch('forum/updatePostFiles', {
+          forumPathName: forum,
+          postId,
+          addedOrUpdatedFiles,
+          deletedFiles,
         });
+
+        promises.push(promise);
+      }
+
+      this.isWaiting = true;
+
+      try {
+        await Promise.all(promises);
 
         this.$emit('post-updated');
       } catch (error) {

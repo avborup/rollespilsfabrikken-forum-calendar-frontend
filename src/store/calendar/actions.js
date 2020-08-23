@@ -81,4 +81,11 @@ export default {
 
     context.commit('SET_PREVIEW_EVENTS', eventsToShow);
   },
+
+  async checkEvent(context, { eventInfo, ignoreIds = [] }) {
+    const { authToken } = context.rootState.auth;
+    const event = await calendarApi.checkEvent(authToken, eventInfo, ignoreIds);
+
+    return event;
+  },
 };

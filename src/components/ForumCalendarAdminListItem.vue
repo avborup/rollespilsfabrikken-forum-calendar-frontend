@@ -1,12 +1,30 @@
 <template>
   <li class="ent-li-wrapper">
-     <button class="ent-btn" :style="{ color: entity.colour }" @click="toggleCollapsible">
-      <span class="fas fa-circle color-circle"></span>
-      {{ entity.name }}
-    </button>
-    <div v-if="collapsibleIsOpen" class="collapsible-main">
-      <button class="delete-btn" @click="deleteEntity">Slet</button>
-      <button class="btn" @click="editEntity">Redigér</button>
+    <div v-if="canChangeOrder" class="order-controls">
+      <button
+        type="button"
+        title="Ryk op"
+        @click="$emit('change-priority', { entityType, id: entity.id, direction: 'up' })"
+      >
+        <span class="icon fas fa-chevron-up"></span>
+      </button>
+      <button
+        type="button"
+        title="Ryk ned"
+        @click="$emit('change-priority', { entityType, id: entity.id, direction: 'down' })"
+      >
+        <span class="icon fas fa-chevron-down"></span>
+      </button>
+    </div>
+    <div class="content-wrapper">
+      <button class="ent-btn" :style="{ color: entity.colour }" @click="toggleCollapsible">
+        <span class="fas fa-circle color-circle"></span>
+        {{ entity.name }}
+      </button>
+      <div v-if="collapsibleIsOpen" class="collapsible-main">
+        <button class="delete-btn" @click="deleteEntity">Slet</button>
+        <button class="btn" @click="editEntity">Redigér</button>
+      </div>
     </div>
   </li>
 </template>
@@ -22,9 +40,13 @@ export default {
       type: Object,
     },
     entityType: {
-      requried: true,
+      required: true,
       type: String,
       validator: value => value === 'calendar' || value === 'forum',
+    },
+    canChangeOrder: {
+      type: Boolean,
+      default: false,
     },
   },
 
@@ -100,9 +122,15 @@ export default {
 @import '@/assets/scss/theme.scss';
 
 .ent-li-wrapper {
+  display: flex;
+
   &:not(:last-child) {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
+}
+
+.content-wrapper {
+  width: 100%;
 }
 
 .ent-btn {
@@ -125,6 +153,26 @@ export default {
 
   .color-circle {
     font-size: 0.9rem;
+  }
+}
+
+.order-controls {
+  width: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 0.3rem;
+
+  button {
+    background: none;
+    border: none;
+    padding: none;
+  }
+
+  .icon {
+    font-size: 1rem;
+    color: rgba(0, 0, 0, 0.6);
+    cursor: pointer;
   }
 }
 

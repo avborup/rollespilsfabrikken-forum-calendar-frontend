@@ -44,7 +44,7 @@
         </div>
         <span v-if="endErr.has" class="field-error-msg">{{ endErr.msg }}</span>
       </div>
-      <div class="form-field">
+      <div class="form-field" :class="{ 'is-error': recurrenceErr.has }">
         <label>Gentag</label>
         <multiselect
           v-model="recurringType"
@@ -57,6 +57,7 @@
           :searchable="false"
           :allow-empty="false"
         />
+        <span v-if="recurrenceErr.has" class="field-error-msg">{{ recurrenceErr.msg }}</span>
       </div>
       <div v-if="isRecurring" class="form-field">
         <label>Gentag indtil</label>
@@ -172,6 +173,10 @@ export default {
         has: false,
         msg: '',
       },
+      recurrenceErr: {
+        has: false,
+        msg: '',
+      },
     };
   },
 
@@ -199,6 +204,7 @@ export default {
       this.startErr.has = false;
       this.endErr.has = false;
       this.calendarErr.has = false;
+      this.recurrenceErr.has = false;
 
       if (this.eventTitle.trim().length === 0) {
         this.titleErr.has = true;
@@ -239,6 +245,13 @@ export default {
       if (start > end) {
         this.endErr.has = true;
         this.endErr.msg = 'Sluttidspunktet må ikke være før starttidspunktet';
+        return;
+      }
+
+      const durationDays = (end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24);
+      if (this.recurringType.real !== 'none' && durationDays > this.recurringType.interval) {
+        this.recurrenceErr.has = true;
+        this.recurrenceErr.msg = 'Begivenhedens længde skal være kortere end intervallet, den gentages i';
         return;
       }
 

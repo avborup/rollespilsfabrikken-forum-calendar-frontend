@@ -26,13 +26,18 @@
         <h2>Fora</h2>
         <ul>
           <ForumCalendarAdminListItem
-            v-for="forum in forums"
+            v-for="forum in orderedForums"
             :key="forum.id"
             :entity="forum"
             entityType="forum"
             @reload="fetchForumsAndCalendars"
+            :canChangeOrder="true"
+            @change-priority="changePriority"
           />
         </ul>
+        <button v-if="forumOrderHasChanged" @click="saveForumOrder" class="save-btn">
+          {{ isChangingForumOrder ? 'Vent venligst...' : 'Gem ændring af rækkefølge' }}
+        </button>
       </div>
       <div class="loading" v-else>
         <LoadingSpinner />
@@ -57,6 +62,9 @@ export default {
   data() {
     return {
       isLoading: false,
+      orderedForumIds: [],
+      forumOrderHasChanged: false,
+      isChangingForumOrder: false,
     };
   },
 
@@ -67,6 +75,10 @@ export default {
     ...mapState('calendar', {
       calendars: 'allCalendars',
     }),
+
+    orderedForums() {
+      return this.orderedForumIds.map(id => this.forums.find(f => f.id === id));
+    },
   },
 
   methods: {
@@ -108,6 +120,49 @@ export default {
           }
         })
         .catch(() => {});
+    },
+
+    // Currently only works on the forum side of things
+    changePriority(toChange) {
+      if (toChange.entityType !== 'forum') {
+        return;
+      }
+
+      const currentIndex = this.orderedForums.findIndex(val => val.id === toChange.id);
+      const newIndex = currentIndex + (toChange.direction === 'up' ? -1 : 1);
+
+      if (newIndex < 0 || newIndex >= this.forums.length) {
+        return;
+      }
+
+      const newOrder = [...this.orderedForumIds];
+      const tmp = newOrder[currentIndex];
+      newOrder[currentIndex] = newOrder[newIndex];
+      newOrder[newIndex] = tmp;
+
+      this.orderedForumIds = newOrder;
+      this.forumOrderHasChanged = true;
+    },
+
+    async saveForumOrder() {
+      if (this.isChangingForumOrder) {
+        return;
+      }
+
+      this.isChangingForumOrder = true;
+      try {
+        await this.$store.dispatch('forum/saveForumOrder', this.orderedForumIds);
+        this.fetchForumsAndCalendars();
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+      }
+      this.isChangingForumOrder = false;
+    },
+  },
+
+  watch: {
+    forums(forums) {
+      this.orderedForumIds = forums.map(forum => forum.id);
     },
   },
 
@@ -152,6 +207,17 @@ export default {
   ul {
     margin: 0.5rem 0;
     list-style-type: none;
+  }
+
+  .save-btn {
+    font-family: $fonts;
+    font-size: 0.9rem;
+    background-color: $primary-accent;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.2rem;
+    border: none;
+    color: #fff;
+    cursor: pointer;
   }
 }
 

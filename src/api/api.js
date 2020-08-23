@@ -1,3 +1,4 @@
+import download from 'downloadjs';
 import {
   makeUrl,
   makeAuthHeader,
@@ -73,6 +74,7 @@ function jsifyPostResponse(post) {
     canAddComments: 'can_add_comments',
     canDelete: 'can_delete',
     canUpdate: 'can_update',
+    canPin: 'can_pin',
   });
 
   const renamedPost = renameKeys({
@@ -216,6 +218,7 @@ function recursivelyFixComments(cmts) {
       canDelete: 'can_delete',
       canUpdate: 'can_update',
       canAddComments: 'can_add_comments',
+      canPin: 'can_pin',
     });
 
     const renamedComment = renameKeys({
@@ -282,13 +285,21 @@ export async function createPost(token, forumId, post) {
   const encodedForumId = encodeURIComponent(forumId);
   const url = makeUrl(`/api/forum/${encodedForumId}/post`);
 
+  const formData = new FormData();
+
+  formData.append('title', post.title);
+  formData.append('body', post.body);
+
+  post.files.forEach(file => formData.append('files[]', file));
+
   const res = await fetch(url, {
     method: 'POST',
     headers: {
-      ...alwaysHeaders,
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
       ...makeAuthHeader(token),
     },
-    body: JSON.stringify(post),
+    body: formData,
   });
 
   if (!res.ok) {
@@ -413,6 +424,31 @@ export async function updatePost(token, {
 
   if (!res.ok) {
     throw new ServerError(`An error occurred when updating the post with id ${postId}`);
+  }
+}
+
+export async function updatePostFiles(token, forumId, postId, addedOrUpdatedFiles, deletedFiles) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/file`);
+
+  const formData = new FormData();
+
+  addedOrUpdatedFiles.forEach(file => formData.append('files[]', file));
+  deletedFiles.forEach(file => formData.append('file_deletions[]', file.id));
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      ...makeAuthHeader(token),
+    },
+    body: formData,
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`An error occurred when updating files for post with ID ${postId}`);
   }
 }
 
@@ -631,4 +667,84 @@ export async function updateAvatar(token, newAvatar) {
   if (!res.ok) {
     throw new ServerError('Failed to update avatar');
   }
+}
+
+export async function saveForumOrder(token, forumIds) {
+  const url = makeUrl('/api/forums/priorities');
+
+  const body = forumIds.map((id, index) => ({ id, priority: index + 1 }));
+
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to update forum order');
+  }
+}
+
+export async function togglePinnedComment(token, forumId, postId, commentId) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const encodedCommentId = encodeURIComponent(commentId);
+
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment/${encodedCommentId}/pin`);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to pin/unpin comment');
+  }
+}
+
+export async function togglePinnedPost(token, forumId, postId) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/pin`);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError('Failed to pin/unpin post');
+  }
+}
+
+export async function downloadFile(token, forumId, postId, fileId, fileName) {
+  const encodedForumId = encodeURIComponent(forumId);
+  const encodedPostId = encodeURIComponent(postId);
+  const encodedFileId = encodeURIComponent(fileId);
+
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/file/${encodedFileId}`);
+
+  const res = await fetch(url, {
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`Failed to download file ${fileName} with ID ${fileId}`);
+  }
+
+  const blob = await res.blob();
+  download(blob, fileName, blob.type);
 }

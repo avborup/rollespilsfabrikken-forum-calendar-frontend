@@ -49,4 +49,8 @@ export default {
   RESET_STATE(state) {
     Object.assign(state, initialState());
   },
+
+  SET_MD_EDITOR_FILE_LIST(state, files) {
+    state.mdEditorFileList = files;
+  },
 };

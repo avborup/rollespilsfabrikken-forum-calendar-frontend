@@ -18,6 +18,7 @@
 import DialogMixin from 'vuejs-dialog/dist/vuejs-dialog-mixin.min';
 import store from '@/store/store';
 import { recurringTypes } from '@/api/constants';
+import { OverlappingEventsError } from '@/api/errors';
 import { toDoubleDigitHrMinStr, formatYMD } from '@/dateUtils';
 import CalendarEventCreator from '@/components/CalendarEventCreator.vue';
 
@@ -57,6 +58,23 @@ export default {
   methods: {
     async handleEditorSubmit(newEventInfo) {
       this.$refs.eventCreator.setLoading(true);
+
+      try {
+        await store.dispatch('calendar/checkEvent', {
+          eventInfo: newEventInfo,
+          ignoreIds: [this.eventId],
+        });
+      } catch (err) {
+        if (err instanceof OverlappingEventsError) {
+          try {
+            await this.$dialog.confirm('Begivenheden, du er ved at redigere, kommer til at overlappe med en anden begivenhed i den samme kalender. Er du sikker på, at du vil gemme ændringerne for denne begivenhed?');
+          } catch (e) {
+            this.$refs.eventCreator.setLoading(false);
+            return;
+          }
+        }
+      }
+
       try {
         const newEvent = await store.dispatch('calendar/editEvent', newEventInfo);
         store.dispatch('calendar/resetLoadedEvents');

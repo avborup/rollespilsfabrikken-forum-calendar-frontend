@@ -8,6 +8,20 @@
       <p v-else-if="forum !== null && forum.description.length > 0" class="desc">
         {{ forum.description }}
       </p>
+      <router-link v-if="
+        (isAllForums && canPostInAForum) ||
+        (!isAllForums && forum !== null && forum.permissions.canAddPosts)
+      " :to="{
+        name: 'create-post',
+        query: {
+          forum: isAllForums ? undefined : forum.pathName,
+        },
+      }" class="create-post-link">
+        <button type="button">
+          <span class="fas fa-plus"></span>
+          Opret opslag
+        </button>
+      </router-link>
       <h2>Opslag</h2>
       <PostsList
         ref="postsList"
@@ -69,6 +83,14 @@ export default {
     ...mapGetters('forum', {
       forums: 'getAllForums',
     }),
+
+    canPostInAForum() {
+      if (this.forums.length === 0) {
+        return false;
+      }
+
+      return this.forums.filter(f => f.permissions.canAddPosts).length > 0;
+    },
   },
 
   beforeMount() {
@@ -162,17 +184,45 @@ export default {
 
 h1 {
   font-size: 1.6rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .desc {
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
   font-size: 0.9rem;
 }
 
 h2 {
   font-size: 1.3rem;
   margin-bottom: 1rem;
+}
+
+.create-post-link {
+  margin-bottom: 0.7rem;
+  display: block;
+  width: 7.5rem;
+  text-decoration: none;
+
+  span {
+    font-size: 0.7rem;
+    margin-right: 0.25rem;
+  }
+
+  button {
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: $fonts;
+    font-size: 0.9rem;
+    width: 100%;
+    padding: 0.4rem 0.5rem;
+    border-radius: 0.2rem;
+    border: none;
+    background-color: $primary-accent;
+    color: #fff;
+  }
 }
 
 .page-controls {

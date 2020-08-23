@@ -19,6 +19,7 @@
           :isLoading="isLoading"
           @reload-post-view="fetchComment"
           :comments="[comment]"
+          :disableRoot="true"
         />
       </div>
       <div v-else-if="!commentExists" class="comment-not-found">

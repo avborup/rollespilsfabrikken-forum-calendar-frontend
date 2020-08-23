@@ -32,6 +32,10 @@
               }}
             </p>
           </div>
+          <div class="field">
+            <span class="far fa-user icon" :title="`Oprettet af ${event.user.username}`"></span>
+            <p>{{ event.user.username }}</p>
+          </div>
         </div>
         <div class="action-buttons">
           <button v-if="event.permissions.canUpdate" @click="handleEdit" class="icon-and-label">
@@ -253,16 +257,15 @@ export default {
   display: grid;
   grid-template-columns: 1.5rem 1fr;
   grid-column-gap: 0.5rem;
+  font-size: 0.95rem;
+  color: $primary-text;
 
   .icon {
     width: 1.3rem;
     margin: 0 auto 0 auto;
+    color: #2b2b31;
+    text-align: center;
   }
-}
-
-.description {
-  font-size: 0.95rem;
-  color: $primary-text;
 }
 
 .action-buttons {

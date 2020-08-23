@@ -6,3 +6,4 @@ export class InvalidEmailError extends Error {}
 export class WrongAnswerError extends Error {}
 export class InvalidTokenError extends Error {}
 export class ExpiredTokenError extends Error {}
+export class OverlappingEventsError extends Error {}

@@ -10,6 +10,7 @@ import RoleEditorDialog from '@/components/RoleEditorDialog.vue';
 import ForumCalendarEditorDialog from '@/components/ForumCalendarEditorDialog.vue';
 import CalendarEventEditorDialog from '@/components/CalendarEventEditorDialog.vue';
 import CalendarEventDeleteDialog from '@/components/CalendarEventDeleteDialog.vue';
+import FileUploaderDialog from '@/components/FileUploaderDialog.vue';
 
 Vue.config.productionTip = false;
 
@@ -24,6 +25,7 @@ Vue.dialog.registerComponent('role-editor-dialog', RoleEditorDialog);
 Vue.dialog.registerComponent('forum-calendar-editor-dialog', ForumCalendarEditorDialog);
 Vue.dialog.registerComponent('calendar-event-editor-dialog', CalendarEventEditorDialog);
 Vue.dialog.registerComponent('calendar-event-delete-dialog', CalendarEventDeleteDialog);
+Vue.dialog.registerComponent('file-upload-dialog', FileUploaderDialog);
 
 // This provides a $bubble method that emits an event on ALL parent components.
 Vue.use((vue) => {

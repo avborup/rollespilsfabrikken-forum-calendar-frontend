@@ -13,6 +13,7 @@
 
 <script>
 import CalendarEventCreator from '@/components/CalendarEventCreator.vue';
+import { OverlappingEventsError } from '@/api/errors';
 
 export default {
   name: 'CalendarEventCreatorView',
@@ -30,6 +31,20 @@ export default {
   methods: {
     async handleCreateEvent(eventInfo) {
       this.$refs.eventCreator.setLoading(true);
+
+      try {
+        await this.$store.dispatch('calendar/checkEvent', { eventInfo });
+      } catch (err) {
+        if (err instanceof OverlappingEventsError) {
+          try {
+            await this.$dialog.confirm('Begivenheden, du er ved at oprette, overlapper med en anden begivenhed i den samme kalender. Er du sikker på, at du vil oprette denne begivenhed?');
+          } catch (e) {
+            this.$refs.eventCreator.setLoading(false);
+            return;
+          }
+        }
+      }
+
       try {
         const event = await this.$store.dispatch('calendar/createEvent', eventInfo);
 

@@ -1,21 +1,27 @@
 <template>
-    <li class="comment" :style="{
-      borderLeftColor: colourCycle[depth % colourCycle.length],
+    <li class="comment" :class="{ pinned }" :style="{
+      borderLeftColor: pinned ? undefined : colourCycle[depth % colourCycle.length],
     }">
       <UserAvatar :url="user.avatarUrl" class="avatar" />
       <p class="author-date">
+        <span v-if="pinned" class="fas fa-thumbtack pin-icon"></span>
         <span class="author">{{ user.username }}</span>
         <span class="date">
           <span class="sep"> &ndash;</span>
           For {{ toElapsedTimeStr(createdAt) }} siden
         </span>
       </p>
-      <vue-markdown
-        class="md-content comment-body"
-        :breaks="true"
-        :html="false"
-        :emoji="false"
-      >{{ body }}</vue-markdown>
+      <div class="comment-body">
+        <vue-markdown
+          class="md-content "
+          :breaks="true"
+          :html="false"
+          :emoji="false"
+        >{{ body }}</vue-markdown>
+        <p v-if="createdAt < updatedAt" class="comment-edited">
+          Kommentar redigeret for {{ toElapsedTimeStr(updatedAt) }} siden
+        </p>
+      </div>
       <div class="comment-buttons">
         <button v-if="permissions.canAddComments" @click="toggleCreating" class="icon-and-label">
           <span class="fas fa-reply icon"></span>
@@ -28,6 +34,14 @@
         <button v-if="permissions.canDelete" @click="deleteComment" class="icon-and-label">
           <span class="fas fa-trash icon"></span>
           Slet
+        </button>
+        <button
+          v-if="isRootComment && permissions.canPin"
+          @click="togglePinnedComment"
+          class="icon-and-label"
+        >
+          <span class="fas fa-thumbtack icon"></span>
+          {{ pinned ? 'Frigør' : 'Fastgør' }}
         </button>
         <button @click="shareComment" class="icon-and-label">
           <span class="fas fa-share-square icon"></span>
@@ -135,6 +149,14 @@ export default {
       type: Object,
       required: true,
     },
+    pinned: {
+      type: Boolean,
+      required: true,
+    },
+    isRootComment: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data() {
@@ -142,6 +164,7 @@ export default {
       colourCycle,
       isWritingComment: false,
       isEditingComment: false,
+      isTogglingPin: false,
     };
   },
 
@@ -203,6 +226,30 @@ export default {
         html: true,
       });
     },
+
+    async togglePinnedComment() {
+      if (this.isTogglingPin) {
+        return;
+      }
+
+      this.isTogglingPin = true;
+
+      const { forum, postId } = this.$route.params;
+
+      try {
+        await this.$store.dispatch('forum/togglePinnedComment', {
+          forumPathName: forum,
+          postId,
+          commentId: this.id,
+        });
+
+        this.reload();
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+      }
+
+      this.isTogglingPin = false;
+    },
   },
 
   updated() {
@@ -236,6 +283,13 @@ export default {
     grid-area: children;
   }
 
+  .comment-edited {
+    margin-bottom: 0.75rem;
+    font-size: 0.8rem;
+    color: rgba(0, 0, 0, 0.6);
+    font-style: italic;
+  }
+
   &:first-child {
     margin-top: 1rem;
   }
@@ -259,7 +313,6 @@ export default {
     grid-area: info;
 
     .author {
-      text-transform: uppercase;
       color: $primary-accent;
       font-weight: bold;
       font-size: 0.9rem;
@@ -320,6 +373,24 @@ export default {
     .icon {
       margin-left: 0.5rem;
       font-size: 0.7rem;
+    }
+  }
+
+  &.pinned {
+    border-left-color: $pin-colour;
+
+    > .author-date > .author {
+      background-color: $pin-colour;
+      color: #fff;
+      padding: 0.1rem 0.4rem;
+      border-radius: 0.2rem;
+    }
+
+    .pin-icon {
+      color: $pin-colour;
+      font-size: 0.9rem;
+      transform: rotate(35deg);
+      margin-right: 0.5rem;
     }
   }
 }
