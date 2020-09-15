@@ -220,7 +220,7 @@ export default {
         <p style="text-align: center">Du kan dele dette URL:</p>
         <a
           href="${commentUrl}"
-          style="text-align: center; margin-top: 0.5rem; display: block;"
+          style="text-align: center; margin-top: 0.5rem; display: block; overflow-wrap: break-word;"
         >${commentUrl}</a>
       `, {
         html: true,

@@ -273,7 +273,7 @@ export default {
         <a
           class="share-prompt"
           href="${window.location.href}"
-          style="text-align: center; margin-top: 0.5rem; display: block;"
+          style="text-align: center; margin-top: 0.5rem; display: block; overflow-wrap: break-word;"
         >${window.location.href}</a>
       `, {
         html: true,
