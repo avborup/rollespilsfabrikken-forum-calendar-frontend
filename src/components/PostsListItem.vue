@@ -6,10 +6,6 @@
       forum: forum.pathName,
     },
   }" class="post-link-wrapper">
-    <p v-if="pinned" class="pinned-msg">
-      <span class="fas fa-thumbtack pin-icon"></span>
-      Fastgjort opslag
-    </p>
     <li class="post-list-item" :class="{ pinned }">
       <UserAvatar :url="user.avatarUrl" class="avatar" />
       <h4 :title="title">{{ title }}</h4>
@@ -36,6 +32,10 @@
       >
         {{ forum.name }}
       </div>
+      <p v-if="pinned" class="pinned-msg">
+        <span class="fas fa-thumbtack pin-icon"></span>
+        Fastgjort opslag
+      </p>
     </li>
   </router-link>
 </template>
@@ -99,6 +99,7 @@ a {
 @import '@/assets/scss/theme.scss';
 
 .post-list-item {
+  position: relative;
   display: grid;
   grid-template-columns: 3rem 1fr 3rem 6rem;
   grid-template-rows: 1fr 1fr;
@@ -183,15 +184,11 @@ a {
   }
 }
 
-.post-link-wrapper {
-  position: relative;
-}
-
 .pinned-msg {
   color: $pin-colour;
   position: absolute;
   font-size: 0.8rem;
-  transform: translateY(40%);
+  top: 0.3rem;
   left: 0.75rem;
   display: flex;
   align-items: center;
