@@ -102,13 +102,14 @@ export default {
   input[type='text'] {
     padding: 0.5rem 0.75rem;
     border-radius: 0.2rem;
-    border: 0.1rem solid #f0efef;
+    border: 2px solid #f0efef;
     background-color: #f7f7f7;
     font-size: 1rem;
     font-family: $fonts;
 
     &:focus {
       border-color: $primary-accent;
+      outline: none;
     }
   }
 
