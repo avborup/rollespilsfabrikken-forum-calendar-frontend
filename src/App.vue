@@ -361,6 +361,7 @@ footer {
     word-wrap: break-word;
     background-color: rgba(0, 0, 0, 0.03);
     border-radius: 0.25rem;
+    font-size: 13px;
   }
 
   pre {

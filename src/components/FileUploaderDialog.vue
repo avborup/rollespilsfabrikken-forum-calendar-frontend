@@ -15,7 +15,13 @@
         <li v-for="file in files" :key="file.name" :title="file.name">
           <span class="file-size">{{ (file.size / 1048576).toFixed(1) }} MB</span>
           <span class="file-name">{{ file.name }}</span>
-          <button type="button" title="Fjern fil" @click="removeFile(file.name)">&times;</button>
+          <button
+            type="button"
+            title="Fjern fil"
+            @click="event => removeFile(file.name, event)"
+          >
+            &times;
+          </button>
         </li>
       </ul>
     </label>
@@ -81,7 +87,8 @@ export default {
       });
     },
 
-    removeFile(filename) {
+    removeFile(filename, clickEvent) {
+      clickEvent.preventDefault();
       this.files = this.files.filter(file => file.name !== filename);
     },
 

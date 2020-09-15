@@ -140,6 +140,11 @@ form {
     color: #35495e;
     width: 100%;
     margin-bottom: 0.5rem;
+
+    &:focus {
+      border-color: $primary-accent;
+      outline: none;
+    }
   }
 }
 

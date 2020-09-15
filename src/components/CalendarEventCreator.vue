@@ -332,6 +332,11 @@ export default {
       font-family: $fonts;
       color: #35495e;
       background-color: #fff;
+
+      &:focus {
+        border-color: $primary-accent;
+        outline: 0px solid #fff;
+      }
     }
 
     input[type='text'] {
