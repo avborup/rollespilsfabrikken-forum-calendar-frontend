@@ -191,7 +191,7 @@ a {
   color: $pin-colour;
   position: absolute;
   font-size: 0.8rem;
-  top: 1.4rem;
+  transform: translateY(40%);
   left: 0.75rem;
   display: flex;
   align-items: center;
