@@ -200,6 +200,11 @@ export default {
       height: 40px;
       color: #35495e;
       width: 100%;
+
+      &:focus {
+        border-color: $primary-accent;
+        outline: none;
+      }
     }
 
     &.is-error > input[type='text'] {

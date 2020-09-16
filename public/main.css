@@ -10,3 +10,7 @@ html, body {
     width: 100%;
     height: 100%;
 }
+
+button:focus, input[type='submit']:focus, input[type='button'] {
+    outline: 1px dotted #808080;
+}

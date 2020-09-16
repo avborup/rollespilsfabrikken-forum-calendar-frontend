@@ -3,7 +3,7 @@
     <h6>{{ timestamp.getDate() }}</h6>
     <CalendarEvent
       v-for="event in getEventsOnDateFilteredByShownCalendar(timestamp)"
-      :key="event.id"
+      :key="`${event.id}-${event.start.getTime()}-${event.end.getTime()}`"
       :event="event"
     />
   </li>
