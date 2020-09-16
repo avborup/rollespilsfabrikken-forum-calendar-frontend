@@ -2,6 +2,10 @@
 ## Next release
 - TBA..
 
+## v26671466
+- Fix cross-browser issues
+- Fix issues with two of the same recurring event on the same day
+
 ## v26636462
 - Show usernames in normal letter case
 - Show event author when viewing specific event
