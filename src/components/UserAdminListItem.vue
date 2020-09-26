@@ -26,13 +26,9 @@
       </li>
     </ul>
     <ul class="actions-list">
-      <li @click="toggleBan">
-        {{ isTogglingBan ? 'Vent venligst...' :
-        (user.isBanned ? 'Unban' : 'Ban') }}
-      </li>
+      <li @click="toggleBan">{{ user.isBanned ? 'Unban' : 'Ban' }}</li>
       <li @click="toggleSuperuser">
-        {{ isTogglingSuperuser ? 'Vent venligst...' :
-        (user.isSuperUser ? 'Fjern superbruger' : 'Gør til superbruger') }}
+        {{ user.isSuperUser ? 'Fjern superbruger' : 'Gør til superbruger' }}
       </li>
     </ul>
   </li>
@@ -54,13 +50,6 @@ export default {
       required: true,
       type: Object,
     },
-  },
-
-  data() {
-    return {
-      isTogglingSuperuser: false,
-      isTogglingBan: false,
-    };
   },
 
   methods: {
@@ -117,31 +106,40 @@ export default {
     },
 
     async toggleSuperuser() {
-      if (this.isTogglingSuperuser) {
-        return;
-      }
+      // eslint-disable-next-line prefer-template
+      const msg = 'Er du sikker på, at du vil ' + (this.user.isSuperUser
+        ? `fjerne superbrugerrettighederne for ${this.user.username}?`
+        : `gøre ${this.user.username} til superbruger?`);
 
-      this.isTogglingSuperuser = true;
-      try {
-        this.user.isSuperUser = await this.$store.dispatch('toggleSuperuser', this.user.id);
-      } catch (error) {
-        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
-      }
-      this.isTogglingSuperuser = false;
+      this.$dialog.confirm(msg, {
+        loader: true,
+      })
+        .then(async (dialog) => {
+          try {
+            this.user.isSuperUser = await this.$store.dispatch('toggleSuperuser', this.user.id);
+            dialog.close();
+          } catch (error) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
     },
 
-    async toggleBan() {
-      if (this.isTogglingBan) {
-        return;
-      }
-
-      this.isTogglingBan = true;
-      try {
-        this.user.isBanned = await this.$store.dispatch('toggleBan', this.user.id);
-      } catch (error) {
-        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
-      }
-      this.isTogglingBan = false;
+    toggleBan() {
+      this.$dialog.confirm(`Er du sikker på, at du vil ${this.user.isBanned ? 'un' : ''}banne ${this.user.username}?`, {
+        loader: true,
+      })
+        .then(async (dialog) => {
+          try {
+            this.user.isBanned = await this.$store.dispatch('toggleBan', this.user.id);
+            dialog.close();
+          } catch (error) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
     },
   },
 };
