@@ -475,6 +475,7 @@ export async function getUser(token) {
   });
 
   user.createdAt = new Date(user.createdAt);
+  user.isBanned = user.banned_at !== undefined;
 
   return user;
 }
@@ -503,6 +504,7 @@ export async function getAllUsers(token) {
     });
 
     renamed.createdAt = new Date(renamed.createdAt);
+    renamed.isBanned = renamed.banned_at !== undefined;
 
     return renamed;
   });
@@ -768,4 +770,25 @@ export async function toggleSuperuser(token, userId) {
   const json = await res.json();
 
   return json.user.super_user;
+}
+
+export async function toggleBan(token, userId) {
+  const encodedUserId = encodeURIComponent(userId);
+  const url = makeUrl(`/api/user/${encodedUserId}/ban`);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`Failed to ban/unban user ${userId}`);
+  }
+
+  const json = await res.json();
+
+  return json.user.banned_at !== undefined;
 }

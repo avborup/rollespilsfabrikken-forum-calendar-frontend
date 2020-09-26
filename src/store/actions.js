@@ -120,4 +120,9 @@ export default {
     const { authToken } = context.rootState.auth;
     return api.toggleSuperuser(authToken, userId);
   },
+
+  toggleBan(context, userId) {
+    const { authToken } = context.rootState.auth;
+    return api.toggleBan(authToken, userId);
+  },
 };

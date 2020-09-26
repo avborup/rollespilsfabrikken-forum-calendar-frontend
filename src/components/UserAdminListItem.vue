@@ -26,6 +26,10 @@
       </li>
     </ul>
     <ul class="actions-list">
+      <li @click="toggleBan">
+        {{ isTogglingBan ? 'Vent venligst...' :
+        (user.isBanned ? 'Unban' : 'Ban') }}
+      </li>
       <li @click="toggleSuperuser">
         {{ isTogglingSuperuser ? 'Vent venligst...' :
         (user.isSuperUser ? 'Fjern superbruger' : 'Gør til superbruger') }}
@@ -55,6 +59,7 @@ export default {
   data() {
     return {
       isTogglingSuperuser: false,
+      isTogglingBan: false,
     };
   },
 
@@ -123,6 +128,20 @@ export default {
         this.$dialog.alert('Vi beklager, men der opstod en fejl.');
       }
       this.isTogglingSuperuser = false;
+    },
+
+    async toggleBan() {
+      if (this.isTogglingBan) {
+        return;
+      }
+
+      this.isTogglingBan = true;
+      try {
+        this.user.isBanned = await this.$store.dispatch('toggleBan', this.user.id);
+      } catch (error) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+      }
+      this.isTogglingBan = false;
     },
   },
 };
