@@ -792,3 +792,20 @@ export async function toggleBan(token, userId) {
 
   return json.user.banned_at !== undefined;
 }
+
+export async function deleteUser(token, userId) {
+  const encodedUserId = encodeURIComponent(userId);
+  const url = makeUrl(`/api/user/${encodedUserId}`);
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`Failed to delete user ${userId}`);
+  }
+}

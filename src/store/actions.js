@@ -125,4 +125,12 @@ export default {
     const { authToken } = context.rootState.auth;
     return api.toggleBan(authToken, userId);
   },
+
+  async deleteUser(context, userId) {
+    const { authToken } = context.rootState.auth;
+    await api.deleteUser(authToken, userId);
+
+    const updatedUsersList = context.state.allUsers.filter(user => user.id !== userId);
+    context.commit('SET_USERS', updatedUsersList);
+  },
 };
