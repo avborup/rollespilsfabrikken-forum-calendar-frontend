@@ -29,4 +29,8 @@ export default {
   RESET_STATE(state) {
     Object.assign(state, initialState());
   },
+
+  INCREMENT_COUNTER(state) {
+    state.counter += 1;
+  },
 };

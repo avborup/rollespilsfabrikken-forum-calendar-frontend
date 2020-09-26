@@ -133,4 +133,10 @@ export default {
     const updatedUsersList = context.state.allUsers.filter(user => user.id !== userId);
     context.commit('SET_USERS', updatedUsersList);
   },
+
+  counter(context) {
+    const val = context.state.counter;
+    context.commit('INCREMENT_COUNTER');
+    return val;
+  },
 };

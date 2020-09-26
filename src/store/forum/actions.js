@@ -126,6 +126,7 @@ export default {
     postId,
     body,
     parentId,
+    files,
   }) {
     const { authToken } = context.rootState.auth;
     const forumId = context.getters.getForumFromPathName(forumPathName).id;
@@ -133,6 +134,7 @@ export default {
     await api.createComment(authToken, forumId, postId, {
       body,
       parentId,
+      files,
     });
   },
 
@@ -211,31 +213,49 @@ export default {
     await api.togglePinnedPost(authToken, forumId, postId);
   },
 
-  setMdEditorFileList(context, files) {
-    context.commit('SET_MD_EDITOR_FILE_LIST', files);
+  setEditorFileList(context, { id, files }) {
+    context.commit('SET_EDITOR_FILE_LIST', { id, files });
+  },
+
+  setCurrentEditorFileListId(context, id) {
+    context.commit('SET_CURRENT_EDITOR_FILE_LIST_ID', id);
   },
 
   async downloadFile(context, {
     forumPathName,
     postId,
+    commentId,
     fileId,
     fileName,
   }) {
     const { authToken } = context.rootState.auth;
     const forumId = context.getters.getForumFromPathName(forumPathName).id;
 
-    await api.downloadFile(authToken, forumId, postId, fileId, fileName);
+    await api.downloadFile(authToken, {
+      forumId,
+      postId,
+      commentId,
+      fileId,
+      fileName,
+    });
   },
 
-  async updatePostFiles(context, {
+  async updateFiles(context, {
     forumPathName,
     postId,
+    commentId,
     addedOrUpdatedFiles,
     deletedFiles,
   }) {
     const { authToken } = context.rootState.auth;
     const forumId = context.getters.getForumFromPathName(forumPathName).id;
 
-    await api.updatePostFiles(authToken, forumId, postId, addedOrUpdatedFiles, deletedFiles);
+    await api.updateFiles(authToken, {
+      forumId,
+      postId,
+      commentId,
+      addedOrUpdatedFiles,
+      deletedFiles,
+    });
   },
 };

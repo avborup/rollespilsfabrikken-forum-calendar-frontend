@@ -316,21 +316,22 @@ export async function createComment(token, forumId, postId, comment) {
   const encodedPostId = encodeURIComponent(postId);
   const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment`);
 
-  const body = {
-    body: comment.body,
-  };
+  const formData = new FormData();
+  formData.append('body', comment.body);
+  comment.files.forEach(file => formData.append('files[]', file));
 
   if (comment.parentId !== null) {
-    body.parent_id = comment.parentId;
+    formData.append('parent_id', comment.parentId);
   }
 
   const res = await fetch(url, {
     method: 'POST',
     headers: {
-      ...alwaysHeaders,
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
       ...makeAuthHeader(token),
     },
-    body: JSON.stringify(body),
+    body: formData,
   });
 
   if (!res.ok) {
@@ -427,10 +428,18 @@ export async function updatePost(token, {
   }
 }
 
-export async function updatePostFiles(token, forumId, postId, addedOrUpdatedFiles, deletedFiles) {
+export async function updateFiles(token, {
+  forumId,
+  postId,
+  commentId,
+  addedOrUpdatedFiles,
+  deletedFiles,
+}) {
   const encodedForumId = encodeURIComponent(forumId);
   const encodedPostId = encodeURIComponent(postId);
-  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/file`);
+  const encodedCommentStr = commentId ? `comment/${encodeURIComponent(commentId)}/` : '';
+
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/${encodedCommentStr}file`);
 
   const formData = new FormData();
 
@@ -448,7 +457,7 @@ export async function updatePostFiles(token, forumId, postId, addedOrUpdatedFile
   });
 
   if (!res.ok) {
-    throw new ServerError(`An error occurred when updating files for post with ID ${postId}`);
+    throw new ServerError('An error occurred when updating files');
   }
 }
 
@@ -729,12 +738,19 @@ export async function togglePinnedPost(token, forumId, postId) {
   }
 }
 
-export async function downloadFile(token, forumId, postId, fileId, fileName) {
+export async function downloadFile(token, {
+  forumId,
+  postId,
+  fileId,
+  fileName,
+  commentId,
+}) {
   const encodedForumId = encodeURIComponent(forumId);
   const encodedPostId = encodeURIComponent(postId);
   const encodedFileId = encodeURIComponent(fileId);
+  const encodedCommentStr = commentId ? `comment/${encodeURIComponent(commentId)}/` : '';
 
-  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/file/${encodedFileId}`);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/${encodedCommentStr}file/${encodedFileId}`);
 
   const res = await fetch(url, {
     headers: {

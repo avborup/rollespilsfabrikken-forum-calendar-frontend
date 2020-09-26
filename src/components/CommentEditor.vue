@@ -1,6 +1,11 @@
 <template>
   <form @submit="handleSubmit" :class="{ waiting: isWaiting }">
-    <MarkdownEditorWrapper ref="markdownEditor" :disabled="isWaiting" :hideFileUpload="true" />
+    <MarkdownEditorWrapper
+      ref="markdownEditor"
+      :disabled="isWaiting"
+      :id="id"
+      :initialFiles="initialFiles"
+    />
     <input v-if="!isWaiting" class="form-submit" type="submit" value="Opdatér kommentar!">
     <span v-else class="waiting-text">Vent venligst..</span>
     <div v-if="isWaiting" class="overlay"></div>
@@ -21,6 +26,10 @@ export default {
       type: String,
       required: true,
     },
+    initialFiles: {
+      type: Array,
+      default: () => [],
+    },
   },
 
   data() {
@@ -38,6 +47,7 @@ export default {
       event.preventDefault();
 
       const commentContent = this.$refs.markdownEditor.getValue();
+      const files = this.$refs.markdownEditor.getFiles();
 
       if (commentContent.trim().length === 0) {
         this.$dialog.alert('Indholdet må ikke være tomt!');
@@ -46,15 +56,35 @@ export default {
 
       const { forum, postId } = this.$route.params;
 
-      this.isWaiting = true;
+      const addedOrUpdatedFiles = files.filter(file => file instanceof File);
+      const deletedFiles = this.initialFiles
+        .filter(file => files.find(({ name }) => name === file.name) === undefined);
 
-      try {
-        await this.$store.dispatch('forum/updateComment', {
+      const promises = [
+        this.$store.dispatch('forum/updateComment', {
           postId,
           forumPathName: forum,
           commentId: this.id,
           newBody: commentContent,
+        }),
+      ];
+
+      if (addedOrUpdatedFiles.length > 0 || deletedFiles.length > 0) {
+        const promise = this.$store.dispatch('forum/updateFiles', {
+          forumPathName: forum,
+          postId,
+          commentId: this.id,
+          addedOrUpdatedFiles,
+          deletedFiles,
         });
+
+        promises.push(promise);
+      }
+
+      this.isWaiting = true;
+
+      try {
+        await Promise.all(promises);
 
         this.$emit('comment-updated');
       } catch (error) {

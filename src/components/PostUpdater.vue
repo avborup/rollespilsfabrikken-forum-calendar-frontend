@@ -5,6 +5,7 @@
       ref="markdownEditor"
       :disabled="isWaiting"
       :initialFiles="originalFiles"
+      :id="postId"
     />
     <input v-if="!isWaiting" class="form-submit" type="submit" value="Opdatér opslag!">
     <span v-else class="waiting-text">Vent venligst..</span>
@@ -97,7 +98,7 @@ export default {
       ];
 
       if (addedOrUpdatedFiles.length > 0 || deletedFiles.length > 0) {
-        const promise = this.$store.dispatch('forum/updatePostFiles', {
+        const promise = this.$store.dispatch('forum/updateFiles', {
           forumPathName: forum,
           postId,
           addedOrUpdatedFiles,
