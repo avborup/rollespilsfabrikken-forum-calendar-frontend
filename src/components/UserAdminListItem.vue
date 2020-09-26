@@ -25,6 +25,12 @@
         <span class="fas fa-plus"></span>
       </li>
     </ul>
+    <ul class="actions-list">
+      <li @click="toggleSuperuser">
+        {{ isTogglingSuperuser ? 'Vent venligst...' :
+        (user.isSuperUser ? 'Fjern superbruger' : 'Gør til superbruger') }}
+      </li>
+    </ul>
   </li>
 </template>
 
@@ -44,6 +50,12 @@ export default {
       required: true,
       type: Object,
     },
+  },
+
+  data() {
+    return {
+      isTogglingSuperuser: false,
+    };
   },
 
   methods: {
@@ -98,6 +110,20 @@ export default {
         })
         .catch(() => {});
     },
+
+    async toggleSuperuser() {
+      if (this.isTogglingSuperuser) {
+        return;
+      }
+
+      this.isTogglingSuperuser = true;
+      try {
+        this.user.isSuperUser = await this.$store.dispatch('toggleSuperuser', this.user.id);
+      } catch (error) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+      }
+      this.isTogglingSuperuser = false;
+    },
   },
 };
 </script>
@@ -109,7 +135,8 @@ export default {
   display: grid;
   grid-template-areas:
     "avatar name date"
-    "avatar roles roles";
+    "avatar roles roles"
+    "actions-list actions-list actions-list";
   grid-template-columns: auto 1fr auto;
   grid-template-rows: auto 1fr;
   column-gap: 1rem;
@@ -196,6 +223,27 @@ export default {
           display: inline;
         }
       }
+    }
+  }
+
+  .actions-list {
+    grid-area: actions-list;
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+
+    li {
+      margin-top: 0.3rem;
+      color: rgba(0, 0, 0, 0.6);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    li:not(:last-child)::after {
+      padding-left: 0.5rem;
+      content: '|';
+      padding-right: 0.5rem;
+      cursor: initial;
     }
   }
 }

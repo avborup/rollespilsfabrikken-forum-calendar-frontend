@@ -115,4 +115,9 @@ export default {
     const { authToken } = context.rootState.auth;
     await api.updateAvatar(authToken, newAvatar);
   },
+
+  toggleSuperuser(context, userId) {
+    const { authToken } = context.rootState.auth;
+    return api.toggleSuperuser(authToken, userId);
+  },
 };

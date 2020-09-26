@@ -748,3 +748,24 @@ export async function downloadFile(token, forumId, postId, fileId, fileName) {
   const blob = await res.blob();
   download(blob, fileName, blob.type);
 }
+
+export async function toggleSuperuser(token, userId) {
+  const encodedUserId = encodeURIComponent(userId);
+  const url = makeUrl(`/api/user/${encodedUserId}/op`);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`Failed to toggle superuser privileges for user ${userId}`);
+  }
+
+  const json = await res.json();
+
+  return json.user.super_user;
+}
