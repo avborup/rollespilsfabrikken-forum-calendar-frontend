@@ -1,5 +1,5 @@
 # Changelog
-## Next release
+## v26687954
 - Make superusers able to delete users
 - Make superusers able to ban users
 - Make superusers able to upgrade users to superusers
