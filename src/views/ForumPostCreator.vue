@@ -25,7 +25,7 @@
         </div>
         <div class="form-field" :class="{ 'is-error': contentHasError }">
           <label>Indhold</label>
-          <MarkdownEditorWrapper ref="markdownEditor" />
+          <MarkdownEditorWrapper ref="markdownEditor" id="postCreator" />
           <span v-if="contentHasError" class="field-error-msg">{{ contentErrMsg }}</span>
         </div>
         <input class="form-submit" type="submit" value="Opret opslag!">

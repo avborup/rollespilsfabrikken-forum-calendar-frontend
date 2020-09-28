@@ -50,7 +50,16 @@ export default {
     Object.assign(state, initialState());
   },
 
-  SET_MD_EDITOR_FILE_LIST(state, files) {
-    state.mdEditorFileList = files;
+  SET_EDITOR_FILE_LIST(state, { id, files }) {
+    Object.assign(state, {
+      editorFileLists: {
+        ...state.editorFileLists,
+        [id]: files,
+      },
+    });
+  },
+
+  SET_CURRENT_EDITOR_FILE_LIST_ID(state, id) {
+    state.currentEditorFileListId = id;
   },
 };

@@ -49,8 +49,9 @@ export default {
   ],
 
   data() {
+    const currentFileListId = store.state.forum.currentEditorFileListId;
     // If we don't spread the property here, we would modify vuex state directly.
-    const initialFiles = [...store.state.forum.mdEditorFileList];
+    const initialFiles = [...store.state.forum.editorFileLists[currentFileListId]];
 
     return {
       files: initialFiles,

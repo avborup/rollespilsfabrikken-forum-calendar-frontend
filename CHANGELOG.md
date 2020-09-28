@@ -1,6 +1,9 @@
 # Changelog
-## Next release
-- TBA..
+## v26687954
+- Make superusers able to delete users
+- Make superusers able to ban users
+- Make superusers able to upgrade users to superusers
+- Add file sharing in comments
 
 ## v26671466
 - Fix cross-browser issues

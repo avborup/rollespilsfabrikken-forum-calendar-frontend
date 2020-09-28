@@ -25,6 +25,13 @@
         <span class="fas fa-plus"></span>
       </li>
     </ul>
+    <ul class="actions-list">
+      <li @click="toggleBan">{{ user.isBanned ? 'Unban' : 'Ban' }}</li>
+      <li @click="deleteUser">Slet</li>
+      <li @click="toggleSuperuser">
+        {{ user.isSuperUser ? 'Fjern superbruger' : 'Gør til superbruger' }}
+      </li>
+    </ul>
   </li>
 </template>
 
@@ -98,6 +105,59 @@ export default {
         })
         .catch(() => {});
     },
+
+    async toggleSuperuser() {
+      // eslint-disable-next-line prefer-template
+      const msg = 'Er du sikker på, at du vil ' + (this.user.isSuperUser
+        ? `fjerne superbrugerrettighederne for ${this.user.username}?`
+        : `gøre ${this.user.username} til superbruger?`);
+
+      this.$dialog.confirm(msg, {
+        loader: true,
+      })
+        .then(async (dialog) => {
+          try {
+            this.user.isSuperUser = await this.$store.dispatch('toggleSuperuser', this.user.id);
+            dialog.close();
+          } catch (error) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
+    },
+
+    toggleBan() {
+      this.$dialog.confirm(`Er du sikker på, at du vil ${this.user.isBanned ? 'un' : ''}banne ${this.user.username}?`, {
+        loader: true,
+      })
+        .then(async (dialog) => {
+          try {
+            this.user.isBanned = await this.$store.dispatch('toggleBan', this.user.id);
+            dialog.close();
+          } catch (error) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
+    },
+
+    deleteUser() {
+      this.$dialog.confirm(`Er du sikker på, at du vil slette ${this.user.username}?`, {
+        loader: true,
+      })
+        .then(async (dialog) => {
+          try {
+            await this.$store.dispatch('deleteUser', this.user.id);
+            dialog.close();
+          } catch (error) {
+            dialog.close();
+            this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+          }
+        })
+        .catch(() => {});
+    },
   },
 };
 </script>
@@ -109,7 +169,8 @@ export default {
   display: grid;
   grid-template-areas:
     "avatar name date"
-    "avatar roles roles";
+    "avatar roles roles"
+    "actions-list actions-list actions-list";
   grid-template-columns: auto 1fr auto;
   grid-template-rows: auto 1fr;
   column-gap: 1rem;
@@ -196,6 +257,27 @@ export default {
           display: inline;
         }
       }
+    }
+  }
+
+  .actions-list {
+    grid-area: actions-list;
+    list-style-type: none;
+    display: flex;
+    flex-wrap: wrap;
+
+    li {
+      margin-top: 0.3rem;
+      color: rgba(0, 0, 0, 0.6);
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    li:not(:last-child)::after {
+      padding-left: 0.5rem;
+      content: '|';
+      padding-right: 0.5rem;
+      cursor: initial;
     }
   }
 }

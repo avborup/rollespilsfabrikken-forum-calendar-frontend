@@ -21,6 +21,18 @@
         <p v-if="createdAt < updatedAt" class="comment-edited">
           Kommentar redigeret for {{ toElapsedTimeStr(updatedAt) }} siden
         </p>
+        <ul v-if="files.length > 0" class="files-list">
+          <li
+            v-for="file in files"
+            :key="file.name"
+            :title="file.name"
+            @click="downloadFile(file.id, file.name)"
+          >
+            <span v-if="!waitingFiles[file.id]" class="fas fa-file file-icon"></span>
+            <span v-else class="fas fa-circle-notch fa-spin file-icon"></span>
+            <span class="file-name">{{ file.name }}</span>
+          </li>
+        </ul>
       </div>
       <div class="comment-buttons">
         <button v-if="permissions.canAddComments" @click="toggleCreating" class="icon-and-label">
@@ -57,6 +69,7 @@
       <CommentEditor
         v-if="isEditingComment"
         :id="id"
+        :initialFiles="files"
         @comment-updated="reload"
         ref="commentEditor"
         class="comment-creator"
@@ -157,6 +170,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    files: {
+      type: Array,
+      default: () => [],
+    },
   },
 
   data() {
@@ -165,6 +182,7 @@ export default {
       isWritingComment: false,
       isEditingComment: false,
       isTogglingPin: false,
+      waitingFiles: {},
     };
   },
 
@@ -249,6 +267,30 @@ export default {
       }
 
       this.isTogglingPin = false;
+    },
+
+    async downloadFile(fileId, fileName) {
+      if (this.waitingFiles[fileId]) {
+        return;
+      }
+
+      const { forum, postId } = this.$route.params;
+
+      this.waitingFiles = { ...this.waitingFiles, [fileId]: true };
+
+      try {
+        await this.$store.dispatch('forum/downloadFile', {
+          forumPathName: forum,
+          postId,
+          commentId: this.id,
+          fileId,
+          fileName,
+        });
+      } catch (err) {
+        this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+      }
+
+      this.waitingFiles = { ...this.waitingFiles, [fileId]: false };
     },
   },
 
@@ -391,6 +433,36 @@ export default {
       font-size: 0.9rem;
       transform: rotate(35deg);
       margin-right: 0.5rem;
+    }
+  }
+
+  .files-list {
+    display: flex;
+    list-style-type: none;
+    flex-wrap: wrap;
+
+    li {
+      border: 1px solid #e8e8e8;
+      border-radius: 0.5rem;
+      padding: 0.25rem 0.5rem;
+      margin-bottom: 0.5rem;
+      max-width: 7rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      font-size: 0.8rem;
+      color: #666;
+      cursor: pointer;
+
+      &:not(:last-child) {
+        margin-right: 0.5rem;
+      }
+
+      .file-icon {
+        margin-right: 0.3rem;
+        font-size: 0.7rem;
+      }
     }
   }
 }

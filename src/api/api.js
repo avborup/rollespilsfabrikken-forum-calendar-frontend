@@ -316,21 +316,22 @@ export async function createComment(token, forumId, postId, comment) {
   const encodedPostId = encodeURIComponent(postId);
   const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/comment`);
 
-  const body = {
-    body: comment.body,
-  };
+  const formData = new FormData();
+  formData.append('body', comment.body);
+  comment.files.forEach(file => formData.append('files[]', file));
 
   if (comment.parentId !== null) {
-    body.parent_id = comment.parentId;
+    formData.append('parent_id', comment.parentId);
   }
 
   const res = await fetch(url, {
     method: 'POST',
     headers: {
-      ...alwaysHeaders,
+      Accept: 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
       ...makeAuthHeader(token),
     },
-    body: JSON.stringify(body),
+    body: formData,
   });
 
   if (!res.ok) {
@@ -427,10 +428,18 @@ export async function updatePost(token, {
   }
 }
 
-export async function updatePostFiles(token, forumId, postId, addedOrUpdatedFiles, deletedFiles) {
+export async function updateFiles(token, {
+  forumId,
+  postId,
+  commentId,
+  addedOrUpdatedFiles,
+  deletedFiles,
+}) {
   const encodedForumId = encodeURIComponent(forumId);
   const encodedPostId = encodeURIComponent(postId);
-  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/file`);
+  const encodedCommentStr = commentId ? `comment/${encodeURIComponent(commentId)}/` : '';
+
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/${encodedCommentStr}file`);
 
   const formData = new FormData();
 
@@ -448,7 +457,7 @@ export async function updatePostFiles(token, forumId, postId, addedOrUpdatedFile
   });
 
   if (!res.ok) {
-    throw new ServerError(`An error occurred when updating files for post with ID ${postId}`);
+    throw new ServerError('An error occurred when updating files');
   }
 }
 
@@ -475,6 +484,7 @@ export async function getUser(token) {
   });
 
   user.createdAt = new Date(user.createdAt);
+  user.isBanned = user.banned_at !== undefined;
 
   return user;
 }
@@ -503,6 +513,7 @@ export async function getAllUsers(token) {
     });
 
     renamed.createdAt = new Date(renamed.createdAt);
+    renamed.isBanned = renamed.banned_at !== undefined;
 
     return renamed;
   });
@@ -727,12 +738,19 @@ export async function togglePinnedPost(token, forumId, postId) {
   }
 }
 
-export async function downloadFile(token, forumId, postId, fileId, fileName) {
+export async function downloadFile(token, {
+  forumId,
+  postId,
+  fileId,
+  fileName,
+  commentId,
+}) {
   const encodedForumId = encodeURIComponent(forumId);
   const encodedPostId = encodeURIComponent(postId);
   const encodedFileId = encodeURIComponent(fileId);
+  const encodedCommentStr = commentId ? `comment/${encodeURIComponent(commentId)}/` : '';
 
-  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/file/${encodedFileId}`);
+  const url = makeUrl(`/api/forum/${encodedForumId}/post/${encodedPostId}/${encodedCommentStr}file/${encodedFileId}`);
 
   const res = await fetch(url, {
     headers: {
@@ -747,4 +765,63 @@ export async function downloadFile(token, forumId, postId, fileId, fileName) {
 
   const blob = await res.blob();
   download(blob, fileName, blob.type);
+}
+
+export async function toggleSuperuser(token, userId) {
+  const encodedUserId = encodeURIComponent(userId);
+  const url = makeUrl(`/api/user/${encodedUserId}/op`);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`Failed to toggle superuser privileges for user ${userId}`);
+  }
+
+  const json = await res.json();
+
+  return json.user.super_user;
+}
+
+export async function toggleBan(token, userId) {
+  const encodedUserId = encodeURIComponent(userId);
+  const url = makeUrl(`/api/user/${encodedUserId}/ban`);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`Failed to ban/unban user ${userId}`);
+  }
+
+  const json = await res.json();
+
+  return json.user.banned_at !== undefined;
+}
+
+export async function deleteUser(token, userId) {
+  const encodedUserId = encodeURIComponent(userId);
+  const url = makeUrl(`/api/user/${encodedUserId}`);
+
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      ...alwaysHeaders,
+      ...makeAuthHeader(token),
+    },
+  });
+
+  if (!res.ok) {
+    throw new ServerError(`Failed to delete user ${userId}`);
+  }
 }

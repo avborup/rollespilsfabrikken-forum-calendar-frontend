@@ -40,6 +40,10 @@ export default {
   name: 'MarkdownEditorWrapper',
 
   props: {
+    id: {
+      type: String,
+      required: true,
+    },
     hideFileUpload: {
       type: Boolean,
       default: false,
@@ -73,8 +77,14 @@ export default {
 
   computed: {
     ...mapState('forum', {
-      files: 'mdEditorFileList',
+      fileLists: 'editorFileLists',
     }),
+
+    files() {
+      return this.fileLists[this.id] !== undefined
+        ? this.fileLists[this.id]
+        : [];
+    },
   },
 
   methods: {
@@ -97,12 +107,15 @@ export default {
     },
 
     upload() {
+      this.$store.dispatch('forum/setCurrentEditorFileListId', this.id);
       this.$dialog.confirm(null, {
         view: 'file-upload-dialog',
       })
         .then((data) => {
-          const files = data.data;
-          this.$store.dispatch('forum/setMdEditorFileList', files);
+          this.$store.dispatch('forum/setEditorFileList', {
+            id: this.id,
+            files: data.data,
+          });
         })
         .catch(() => {});
     },
@@ -121,7 +134,10 @@ export default {
   },
 
   created() {
-    this.$store.dispatch('forum/setMdEditorFileList', this.initialFiles);
+    this.$store.dispatch('forum/setEditorFileList', {
+      id: this.id,
+      files: this.initialFiles,
+    });
   },
 };
 </script>
