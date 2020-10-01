@@ -27,7 +27,6 @@
         <input type="password" v-model="passwordConf" name="password-conf">
         <span v-if="passwordConfHasError" class="field-error-msg">{{ passwordConfMessage }}</span>
       </div>
-      <p v-if="isLoadingQuestion">Henter sikkerhedsspørgsmål...</p>
       <input class="form-submit" type="submit" value="Opret bruger">
     </form>
     <input
@@ -42,7 +41,7 @@
 </template>
 
 <script>
-import { InvalidEmailError, EmailAlreadyTakenError, WrongAnswerError } from '@/api/errors';
+import { InvalidEmailError, EmailAlreadyTakenError } from '@/api/errors';
 
 export default {
   name: 'SignUpPage',
@@ -64,7 +63,6 @@ export default {
       emailConfMessage: '',
       passwordMessage: '',
       passwordConfMessage: '',
-      isLoadingQuestion: false,
       sentEmail: '',
     };
   },
@@ -118,81 +116,38 @@ export default {
         return;
       }
 
-      this.isLoadingQuestion = true;
-      let securityQuestion = null;
-      let securityQuestionErrored = false;
       try {
-        securityQuestion = await this.$store.dispatch('auth/getSecurityQuestion');
+        await this.$store.dispatch('auth/signUp', {
+          username: this.username,
+          email: this.email,
+          emailConf: this.emailConf,
+          password: this.password,
+          passwordConf: this.passwordConf,
+        });
+
+        // We will save the sent email as another variable not bound to a v-model
+        // to prevent resending to a wrong email.
+        this.sentEmail = this.email;
+        this.$dialog.alert(`En bekræftelsesmail er blevet sendt til ${this.sentEmail}. Åben den og klik på linket for at fuldføre kontooprettelsen.`);
       } catch (err) {
-        securityQuestionErrored = true;
-        this.$dialog.alert('Vi beklager, men der opstod en fejl, da vi forsøgte at hente et sikkerhedsspørgsmål.');
+        let knownError = false;
+
+        if (err instanceof EmailAlreadyTakenError) {
+          knownError = true;
+          this.emailHasError = true;
+          this.emailMessage = 'Denne email er allerede optaget';
+        }
+
+        if (err instanceof InvalidEmailError) {
+          knownError = true;
+          this.emailHasError = true;
+          this.emailMessage = 'Denne email er ugyldig';
+        }
+
+        if (!knownError) {
+          this.$dialog.alert('Vi beklager, men der opstod en fejl.');
+        }
       }
-      this.isLoadingQuestion = false;
-
-      if (securityQuestionErrored) {
-        return;
-      }
-
-      this.$dialog.prompt({
-        title: 'Sikkerhedsspørgsmål',
-        body: securityQuestion.question,
-      }, {
-        promptHelp: 'Skriv dit svar i nedenstående felt og klik "[+:okText]"',
-        loader: true,
-      })
-        .then((dialog) => {
-          let answer = dialog.data;
-
-          // For some reason, the library returns null if the user presses enter
-          // rather than the button. This quick fix works around that.
-          if (answer === null) {
-            const el = document.getElementById('dg-input-elem');
-            answer = el.value;
-          }
-
-          this.$store.dispatch('auth/signUp', {
-            username: this.username,
-            email: this.email,
-            emailConf: this.emailConf,
-            password: this.password,
-            passwordConf: this.passwordConf,
-            securityQuestionId: securityQuestion.id,
-            securityQuestionAnswer: answer,
-          })
-            .then(() => {
-              // We will save the sent email as another variable not bound to a v-model
-              // to prevent resending to a wrong email.
-              this.sentEmail = this.email;
-              this.$dialog.alert(`En bekræftelsesmail er blevet sendt til ${this.sentEmail}. Åben den og klik på linket for at fuldføre kontooprettelsen.`);
-            })
-            .catch((err) => {
-              let knownError = false;
-
-              if (err instanceof WrongAnswerError) {
-                knownError = true;
-                this.$dialog.alert(`Svaret "${answer}" var forkert! Du kan prøve igen.`);
-              }
-
-              if (err instanceof EmailAlreadyTakenError) {
-                knownError = true;
-                this.emailHasError = true;
-                this.emailMessage = 'Denne email er allerede optaget';
-              }
-
-              if (err instanceof InvalidEmailError) {
-                knownError = true;
-                this.emailHasError = true;
-                this.emailMessage = 'Denne email er ugyldig';
-              }
-
-              if (!knownError) {
-                this.$dialog.alert('Vi beklager, men der opstod en fejl.');
-              }
-            });
-
-          dialog.close();
-        })
-        .catch(() => {});
     },
 
     resendEmail() {

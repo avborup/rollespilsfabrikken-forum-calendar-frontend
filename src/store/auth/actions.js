@@ -34,10 +34,6 @@ export default {
     }
   },
 
-  getSecurityQuestion() {
-    return auth.getSecurityQuestion();
-  },
-
   async signUp(context, form) {
     await auth.signUp(form);
   },
