@@ -1,4 +1,7 @@
 # Changelog
+## Next release
+- Remove security questions
+
 ## v26687954
 - Make superusers able to delete users
 - Make superusers able to ban users
