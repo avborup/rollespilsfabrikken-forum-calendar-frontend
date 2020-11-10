@@ -1,5 +1,5 @@
 # Changelog
-## Next release
+## v26750084
 - Add alternate way to define event title for "Lokalebooking" events (temporary)
 
 ## v26693000
