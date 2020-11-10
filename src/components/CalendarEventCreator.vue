@@ -16,8 +16,19 @@
         <span v-if="calendarErr.has" class="field-error-msg">{{ calendarErr.msg }}</span>
       </div>
       <div class="form-field" :class="{ 'is-error': titleErr.has }">
-        <label for="event-title">Titel</label>
-        <input v-model="eventTitle" type="text" name="event-title">
+        <!-- This is a temporary feature that will be removed again -->
+        <div v-if="shouldUseAlternateTitle">
+          <label>Hvilket lokale booker du?</label>
+          <input v-model="titleWhich" type="text">
+          <label>Hvem booker lokalet?</label>
+          <input v-model="titleWho" type="text">
+          <label>Hvad skal lokalet bruges til?</label>
+          <input v-model="titleWhy" type="text">
+        </div>
+        <div v-else>
+          <label label for="event-title">Titel</label>
+          <input v-model="eventTitle" type="text" name="event-title">
+        </div>
         <span v-if="titleErr.has" class="field-error-msg">{{ titleErr.msg }}</span>
       </div>
       <div class="form-field">
@@ -177,6 +188,10 @@ export default {
         has: false,
         msg: '',
       },
+      titleWhich: '',
+      titleWho: '',
+      titleWhy: '',
+      shouldUseAlternateTitle: false,
     };
   },
 
@@ -206,9 +221,16 @@ export default {
       this.calendarErr.has = false;
       this.recurrenceErr.has = false;
 
-      if (this.eventTitle.trim().length === 0) {
+      if (!this.shouldUseAlternateTitle || this.editMode) {
+        if (this.eventTitle.trim().length === 0) {
+          this.titleErr.has = true;
+          this.titleErr.msg = 'Begivenheden skal have en titel';
+        }
+      } else if (this.titleWhich.trim().length === 0
+        || this.titleWho.trim().length === 0
+        || this.titleWhy.trim().length === 0) {
         this.titleErr.has = true;
-        this.titleErr.msg = 'Begivenheden skal have en titel';
+        this.titleErr.msg = 'Udfyld venligst de tre ovenstående felter';
       }
 
       if (!this.selectedCalendar && !this.editMode) {
@@ -259,6 +281,10 @@ export default {
         return;
       }
 
+      if (this.shouldUseAlternateTitle && !this.editMode) {
+        this.eventTitle = `${this.titleWho} booker ${this.titleWhich} til ${this.titleWhy}`;
+      }
+
       const [rYear, rMonth, rDate] = this.recEndDate.split('-').map(n => Number.parseInt(n, 10));
       let recEnd = new Date(rYear, rMonth - 1, rDate);
 
@@ -298,6 +324,14 @@ export default {
       store.dispatch('calendar/fetchAllCalendars');
     }
   },
+
+  watch: {
+    selectedCalendar(newCalendar) {
+      this.shouldUseAlternateTitle = newCalendar
+        && newCalendar.name.toLowerCase() === 'lokalebooking'
+        && !this.editMode;
+    },
+  },
 };
 </script>
 
@@ -318,6 +352,11 @@ export default {
       font-weight: 600;
       margin-bottom: 0.25rem;
       display: block;
+    }
+
+    // Temporary
+    & > div > label:not(:first-child) {
+      margin-top: 1rem;
     }
 
     p {
