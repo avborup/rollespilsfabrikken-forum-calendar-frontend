@@ -1,4 +1,7 @@
 # Changelog
+## Next release
+- Add alternate way to define event title for "Lokalebooking" events (temporary)
+
 ## v26693000
 - Remove security questions
 
