@@ -113,6 +113,7 @@ export async function fetchEvent(token, calendarId, eventId, date) {
 
   event.start = new Date(event.start);
   event.end = new Date(event.end);
+  event.createdAt = new Date(event.created_at);
 
   if (event.recurrence.end !== null) {
     event.recurrence.end = new Date(event.recurrence.end);

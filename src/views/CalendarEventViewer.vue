@@ -36,6 +36,13 @@
             <span class="far fa-user icon" :title="`Oprettet af ${event.user.username}`"></span>
             <p>{{ event.user.username }}</p>
           </div>
+          <div class="field">
+            <span
+              class="far fa-calendar-plus icon"
+              :title="`Oprettelsestidpunkt ${event.createdAt}`"
+            ></span>
+            <p>Oprettet {{ toFormattedString(event.createdAt) }}</p>
+          </div>
         </div>
         <div class="action-buttons">
           <button v-if="event.permissions.canUpdate" @click="handleEdit" class="icon-and-label">
@@ -94,6 +101,8 @@ export default {
   },
 
   methods: {
+    toFormattedString,
+
     formatTimeframe(start, end) {
       const startStr = toFormattedString(start);
 
