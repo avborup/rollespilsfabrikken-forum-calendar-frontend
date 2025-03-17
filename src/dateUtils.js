@@ -114,12 +114,12 @@ export function toElapsedTimeStr(date) {
     return `${Math.floor(dayDiff)} dag${dayDiff >= 2 ? 'e' : ''}`;
   }
 
-  const monthDiff = nowStamp.getMonth() - date.getMonth();
+  const yearDiff = nowStamp.getFullYear() - date.getFullYear();
+  const monthDiff = nowStamp.getMonth() - date.getMonth() + (12 * yearDiff);
   if (dayDiff < 365) {
     return `${Math.floor(monthDiff)} måned${monthDiff >= 2 ? 'er' : ''}`;
   }
 
-  const yearDiff = nowStamp.getFullYear() - date.getFullYear();
   return `${Math.floor(yearDiff)} år`;
 }
 
